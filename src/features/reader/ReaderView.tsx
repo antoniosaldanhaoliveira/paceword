@@ -317,7 +317,8 @@ export default function ReaderView({ tokens, textId, startIndex = 0 }: ReaderVie
             word={word}
             size={prefs.fontSize}
             color={prefs.textColor}
-            pinColor={prefs.pinColor}
+            pinColor={prefs.highlightPin ? prefs.pinColor : prefs.textColor}
+            fontFamily={prefs.fontFamily}
           />
         </>
       ) : null}

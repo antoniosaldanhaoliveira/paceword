@@ -19,6 +19,7 @@ export interface ReaderWordProps {
   size?: number;
   color?: string;
   pinColor?: string;
+  fontFamily?: string;
 }
 
 const FALLBACK_PIN_WIDTH_RATIO = 0.4;
@@ -28,6 +29,7 @@ export default function ReaderWord({
   size = 54,
   color = 'var(--ink)',
   pinColor = 'var(--accent)',
+  fontFamily,
 }: ReaderWordProps) {
   const idx = pinIndex(word);
   const left = word.slice(0, idx);
@@ -59,7 +61,7 @@ export default function ReaderWord({
     transform: `translate(-${pinWidth / 2}px, -50%)`,
     display: 'flex',
     alignItems: 'baseline',
-    fontFamily: 'var(--font-reader)',
+    fontFamily: fontFamily ?? 'var(--font-reader)',
     fontWeight: 400,
     fontSize: size,
     color,

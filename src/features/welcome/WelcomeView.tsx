@@ -92,6 +92,22 @@ export default function WelcomeView() {
     cursor: 'pointer',
   };
 
+  const secondaryButtonStyle: CSSProperties = {
+    height: 44,
+    borderRadius: 'var(--r-md)',
+    border: '1px solid var(--line-2)',
+    background: 'transparent',
+    color: 'var(--ink)',
+    fontFamily: 'var(--font-ui)',
+    fontSize: 13,
+    fontWeight: 500,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    cursor: 'pointer',
+  };
+
   const ghostButtonStyle: CSSProperties = {
     background: 'transparent',
     border: 'none',
@@ -129,6 +145,12 @@ export default function WelcomeView() {
 
       <div style={actionStackStyle}>
         <button type="button" style={primaryButtonStyle} onClick={handleStart}>
+          <svg width="13" height="15" viewBox="0 0 13 15" fill="currentColor" aria-hidden>
+            <path d="M10.476 7.914c.014-1.33.712-2.563 1.85-3.265a4.09 4.09 0 0 0-3.224-1.742c-1.362-.143-2.673.812-3.365.812-.703 0-1.767-.797-2.911-.774C1.3 2.98.09 3.89-.5 5.22c-1.234 2.134-.317 5.285.882 7.017.587.845 1.28 1.793 2.192 1.759.882-.035 1.213-.567 2.28-.567 1.054 0 1.36.567 2.28.546 1.007-.018 1.605-.862 2.196-1.71a8.84 8.84 0 0 0 .963-1.975 3.96 3.96 0 0 1-2.817-3.376ZM8.41 1.94A3.938 3.938 0 0 0 9.315 0a4.01 4.01 0 0 0-2.594 1.34 3.748 3.748 0 0 0-.926 2.72A3.316 3.316 0 0 0 8.41 1.94Z" />
+          </svg>
+          Continue with Apple
+        </button>
+        <button type="button" style={secondaryButtonStyle} onClick={handleStart}>
           Continue with email
         </button>
         <button type="button" style={ghostButtonStyle} onClick={handleStart}>
