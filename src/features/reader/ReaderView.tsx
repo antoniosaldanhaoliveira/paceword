@@ -180,6 +180,12 @@ export default function ReaderView({ tokens, textId, startIndex = 0 }: ReaderVie
     else play();
   }
 
+  function handleSwipeDown() {
+    pause();
+    if (index > 0 && !window.confirm('Leave this reading? Your progress is saved.')) return;
+    navigate('/library');
+  }
+
   function handleSettingsRequest() {
     setDrawerOpen(true);
   }
@@ -297,6 +303,7 @@ export default function ReaderView({ tokens, textId, startIndex = 0 }: ReaderVie
       onSwipeLeft={() => jump(-5)}
       onSwipeRight={() => jump(5)}
       onSwipeUp={handleSettingsRequest}
+      onSwipeDown={handleSwipeDown}
       style={stageStyle}
     >
       <div style={topBarStyle}>

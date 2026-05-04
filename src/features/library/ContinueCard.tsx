@@ -4,9 +4,9 @@
  * Hero card pinned to the top of the Library screen whenever there is at
  * least one text with in-progress reading (0 < progress < 1). Tapping the
  * card resumes the reader at the saved token position. Pure-visual: progress
- * and minutes-left are derived solely from the supplied `ReadingText`; no
- * preferences or repositories are read here. Rendered as a styled `<button>`
- * so keyboard and screen-reader users get first-class access.
+ * and minutes-left are derived solely from the supplied `ReadingText` and
+ * the caller-supplied `wpm` (the user's live preference). Rendered as a
+ * styled `<button>` so keyboard and screen-reader users get first-class access.
  *
  * See: .gsd/milestones/M001/slices/S03/S03-PLAN.md §6.2 (Library screen —
  *      Continue card) and the design handoff at
@@ -15,12 +15,9 @@
 import type { CSSProperties } from 'react';
 import type { ReadingText } from '@/core/persistence/schema';
 
-/** Default WPM used for the minutes-left estimate. S05 will replace this
- *  with the user's actual preference once the preferences store lands. */
-const DEFAULT_WPM = 350;
-
 export interface ContinueCardProps {
   text: ReadingText;
+  wpm: number;
   onOpen: () => void;
 }
 
@@ -75,11 +72,11 @@ const metaStyle: CSSProperties = {
   letterSpacing: '0.08em', fontWeight: 500,
 };
 
-function ContinueCard({ text, onOpen }: ContinueCardProps) {
+function ContinueCard({ text, wpm, onOpen }: ContinueCardProps) {
   const safeWordCount = Math.max(text.wordCount, 1);
   const progress = clampProgress(text.currentTokenIndex / safeWordCount);
   const wordsRemaining = Math.max(text.wordCount - text.currentTokenIndex, 0);
-  const minsLeft = Math.ceil(wordsRemaining / DEFAULT_WPM);
+  const minsLeft = Math.ceil(wordsRemaining / wpm);
   const percent = Math.round(progress * 100);
 
   const fillStyle: CSSProperties = {
