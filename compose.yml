@@ -8,6 +8,8 @@ services:
     restart: unless-stopped
     networks:
       - traefik
+    depends_on:
+      - pace-proxy
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=n8n_default"
@@ -16,6 +18,18 @@ services:
       - "traefik.http.routers.pace.tls=true"
       - "traefik.http.routers.pace.tls.certresolver=mytlschallenge"
       - "traefik.http.services.pace.loadbalancer.server.port=80"
+
+  pace-proxy:
+    image: node:20-alpine
+    container_name: pace-proxy
+    working_dir: /app
+    volumes:
+      - ./proxy:/app:ro
+    command: node server.mjs
+    restart: unless-stopped
+    networks:
+      - traefik
+    # Not Traefik-labelled — only reachable from pace nginx internally.
 
 networks:
   traefik:
