@@ -39,14 +39,24 @@ the per-property due-diligence gate.
 # 1. Make the skills available outside this repo (optional)
 bash .claude/install.sh
 
-# 2. Choose where the buyer's data lives
-export PROPERTY_WORKSPACE=~/property-portugal      # add to your shell profile
-mkdir -p "$PROPERTY_WORKSPACE"
-cp .claude/skills/pt-property-market-scan/references/profile-template.yaml \
-   "$PROPERTY_WORKSPACE/profile.yaml"
-
-# 3. Fill in the profile — or just run /property-scan and answer the questions
+# 2. Point at the workspace and fill in the profile
+export PROPERTY_WORKSPACE="$PWD/property-workspace"   # add to your shell profile
+$EDITOR "$PROPERTY_WORKSPACE/profile.yaml"            # or run /property-scan and answer
 ```
+
+### Where the data lives, and why it is in the repo
+
+`property-workspace/` is committed. That is deliberate: scheduled runs happen in
+ephemeral cloud containers, so a workspace under `~/` would be wiped between
+runs and the tracker would restart from zero every morning — which destroys the
+one thing the method depends on, the accumulated history.
+
+Keeping it in git means the price history survives, and it doubles as a backup
+and an audit trail of how the market moved.
+
+If you run only locally and would rather keep the data out of the repo, set
+`PROPERTY_WORKSPACE=~/property-portugal` instead and add `property-workspace/`
+to `.gitignore`.
 
 Optional: `pip install pyyaml openpyxl` — PyYAML for richer profile parsing (a
 fallback parser handles the template without it), openpyxl for `export --xlsx`.
@@ -67,7 +77,7 @@ Or address the agent directly: "run my property scan", "what changed this week",
 Everything lives in `$PROPERTY_WORKSPACE` as plain files, so nothing is trapped:
 
 ```
-property-portugal/
+property-workspace/
 ├── profile.yaml         buyer strategy
 ├── listings.csv         one row per property — opens in Excel
 ├── price_history.json   every observed price change
@@ -75,6 +85,17 @@ property-portugal/
 ├── digests/             dated digests, so you can look back
 └── dd/                  due-diligence reports
 ```
+
+## Scheduled runs
+
+A Routine can fire `/property-scan` on a schedule in a fresh cloud session. Such
+a run must, in order: pull the repo, export `PROPERTY_WORKSPACE` to
+`property-workspace/`, run the scan, then **commit and push the workspace** —
+otherwise the container is reclaimed and the day's data is lost.
+
+The scheduled prompt also checks the profile first. An unfilled `profile.yaml`
+means it runs the strategy setup rather than scanning a zone that doesn't exist,
+so the schedule is safe to create before the profile is complete.
 
 ## Two deliberate constraints
 
