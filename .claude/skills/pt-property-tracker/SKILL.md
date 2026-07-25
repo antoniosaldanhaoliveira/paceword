@@ -15,6 +15,24 @@ Everything lives in one CSV plus a JSON price history, in
 `$PROPERTY_WORKSPACE` (default `~/property-portugal/`). Plain files on purpose:
 the user can open them in Excel or Numbers, and nothing is trapped in a tool.
 
+## Searches are the unit of comparison
+
+A buyer may run several searches at once — plots near Loulé, ruins near Évora.
+They share one CSV, but every statistic is scoped by the `search` column, and
+that scoping is not a convenience: a median that pools two different markets
+describes neither, and would quietly make every "below market" judgement wrong in
+both.
+
+So pass `--search <name>` on `ingest`, `sweep`, `stats` and `digest`. The one that
+matters most is **sweep** — without `--search`, a sweep asserts that every id it
+did not see is gone, which buries the other searches' listings wholesale. The
+flag is optional so cross-search views stay possible, not because omitting it is
+safe during a scan.
+
+`tracker.py searches` gives the overview: how many listings each search holds,
+its medians, what needs attention, and how far it is from the ~60-listing point
+where its numbers become trustworthy.
+
 ## The script
 
 `scripts/tracker.py` does the mechanical work. Use it rather than hand-editing
@@ -22,18 +40,21 @@ the CSV — it handles dedupe, price history and status transitions consistently
 
 ```bash
 # Record listings found by a scan (JSON array on stdin or --file)
-python scripts/tracker.py ingest --file today.json
+python scripts/tracker.py ingest --file today.json --search algarve-plots
 
 # What changed since the last run
-python scripts/tracker.py digest
-python scripts/tracker.py digest --since 2026-07-01
+python scripts/tracker.py digest --search algarve-plots
+python scripts/tracker.py digest --search algarve-plots --since 2026-07-01
 
 # Zone statistics: median €/m² by type, days on market, outliers
-python scripts/tracker.py stats
-python scripts/tracker.py stats --type urban_land --concelho "São Brás de Alportel"
+python scripts/tracker.py stats --search algarve-plots
+python scripts/tracker.py stats --search algarve-plots --concelho "Loulé"
+
+# Overview of every search: size, medians, what needs attention
+python scripts/tracker.py searches
 
 # Mark listings still present this run; anything unseen becomes 'disappeared'
-python scripts/tracker.py sweep --seen-file seen_ids.json
+python scripts/tracker.py sweep --search algarve-plots --seen-file seen_ids.json
 
 # Log a visit or free-text note against a tracked property
 python scripts/tracker.py note <id> --visit --text "Agent says buildable; caderneta says rustic"

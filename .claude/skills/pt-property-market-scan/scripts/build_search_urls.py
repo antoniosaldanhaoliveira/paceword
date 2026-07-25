@@ -5,10 +5,14 @@ The URLs are meant to be opened by the user (logged in) so they can save the
 search and switch on the daily email alert — that is the intake channel the
 guide recommends and the one the portals actually permit.
 
+A profile may hold several named searches, each with its own zone, types and
+budget. URLs are always built per search, because a search is the unit that has
+a coherent €/m² baseline.
+
 Usage:
-    python build_search_urls.py --profile ~/property-portugal/profile.yaml
-    python build_search_urls.py --profile ... --portal idealista
-    python build_search_urls.py --profile ... --format json
+    python build_search_urls.py --profile property-workspace/profile.yaml
+    python build_search_urls.py --profile ... --search algarve-plots
+    python build_search_urls.py --profile ... --portal idealista --format json
 """
 
 from __future__ import annotations
@@ -155,20 +159,43 @@ def _scalar(value: str):
     return value
 
 
-def _locations(profile: dict) -> list[str]:
-    zone = (profile.get("strategy") or {}).get("zone") or {}
+def searches(profile: dict, only: str | None = None) -> list[dict]:
+    """Return the profile's searches.
+
+    Accepts both the multi-search schema and the older single-`strategy` profile,
+    so existing profiles keep working without migration.
+    """
+    found = profile.get("searches")
+    if isinstance(found, list) and found:
+        result = [s for s in found if isinstance(s, dict) and s.get("name")]
+    elif profile.get("strategy"):
+        legacy = dict(profile["strategy"])
+        legacy.setdefault("name", "default")
+        legacy["budget"] = profile.get("budget") or {}
+        legacy["requirements"] = profile.get("requirements") or {}
+        result = [legacy]
+    else:
+        result = []
+
+    result = [s for s in result if s.get("active", True)]
+    if only:
+        result = [s for s in result if s.get("name") == only]
+    return result
+
+
+def _locations(search: dict) -> list[str]:
+    zone = search.get("zone") or {}
     locs = [c for c in (zone.get("concelhos") or []) if c]
     if not locs and zone.get("anchor"):
         locs = [zone["anchor"]]
     return locs
 
 
-def idealista_urls(profile: dict) -> list[str]:
-    strategy = profile.get("strategy") or {}
-    budget = profile.get("budget") or {}
-    req = profile.get("requirements") or {}
+def idealista_urls(search: dict) -> list[str]:
+    budget = search.get("budget") or {}
+    req = search.get("requirements") or {}
     urls = []
-    for ptype in strategy.get("property_types") or []:
+    for ptype in search.get("property_types") or []:
         op = IDEALISTA_OP.get(ptype, "comprar-casas")
         filters = ["ordem-publicado-desc"]
         if budget.get("max"):
@@ -179,20 +206,19 @@ def idealista_urls(profile: dict) -> list[str]:
             filters.append(f"tamanho-terreno-min_{int(req['land_m2_min'])}")
         if ptype not in LAND_TYPES and req.get("built_m2_min"):
             filters.append(f"metros-quadrados-min_{int(req['built_m2_min'])}")
-        for loc in _locations(profile):
+        for loc in _locations(search):
             urls.append(
                 f"https://www.idealista.pt/{op}/{slugify(loc)}/com-{','.join(filters)}/"
             )
     return urls
 
 
-def imovirtual_urls(profile: dict) -> list[str]:
-    strategy = profile.get("strategy") or {}
-    zone = strategy.get("zone") or {}
-    budget = profile.get("budget") or {}
-    req = profile.get("requirements") or {}
+def imovirtual_urls(search: dict) -> list[str]:
+    zone = search.get("zone") or {}
+    budget = search.get("budget") or {}
+    req = search.get("requirements") or {}
     urls = []
-    for ptype in strategy.get("property_types") or []:
+    for ptype in search.get("property_types") or []:
         kind = IMOVIRTUAL_TYPE.get(ptype, "moradia")
         params = ["nrAdsPerPage=72", "search%5Border%5D=created_at%3Adesc"]
         if budget.get("max"):
@@ -203,7 +229,7 @@ def imovirtual_urls(profile: dict) -> list[str]:
             params.append(f"search%5Bdist%5D={int(zone['radius_km'])}")
         if ptype in LAND_TYPES and req.get("land_m2_min"):
             params.append(f"search%5Bfilter_float_m%3Afrom%5D={int(req['land_m2_min'])}")
-        for loc in _locations(profile):
+        for loc in _locations(search):
             urls.append(
                 f"https://www.imovirtual.com/comprar/{kind}/{slugify(loc)}/?"
                 + "&".join(params)
@@ -211,29 +237,27 @@ def imovirtual_urls(profile: dict) -> list[str]:
     return urls
 
 
-def casa_sapo_urls(profile: dict) -> list[str]:
-    strategy = profile.get("strategy") or {}
-    budget = profile.get("budget") or {}
+def casa_sapo_urls(search: dict) -> list[str]:
+    budget = search.get("budget") or {}
     urls = []
-    for ptype in strategy.get("property_types") or []:
+    for ptype in search.get("property_types") or []:
         kind = SAPO_TYPE.get(ptype, "moradia")
         params = ["or=10"]  # most recent first
         if budget.get("max"):
             params.append(f"pmax={int(budget['max'])}")
         if budget.get("min"):
             params.append(f"pmin={int(budget['min'])}")
-        for loc in _locations(profile):
+        for loc in _locations(search):
             urls.append(
                 f"https://casa.sapo.pt/comprar-{kind}/{slugify(loc)}/?" + "&".join(params)
             )
     return urls
 
 
-def olx_urls(profile: dict) -> list[str]:
-    strategy = profile.get("strategy") or {}
-    budget = profile.get("budget") or {}
+def olx_urls(search: dict) -> list[str]:
+    budget = search.get("budget") or {}
     urls = []
-    for ptype in strategy.get("property_types") or []:
+    for ptype in search.get("property_types") or []:
         category = (
             "terrenos-quintas" if ptype in LAND_TYPES or ptype == "quinta"
             else "apartamentos" if ptype == "apartment"
@@ -242,14 +266,14 @@ def olx_urls(profile: dict) -> list[str]:
         params = ["search%5Border%5D=created_at%3Adesc"]
         if budget.get("max"):
             params.append(f"search%5Bfilter_float_price%3Ato%5D={int(budget['max'])}")
-        for loc in _locations(profile):
+        for loc in _locations(search):
             urls.append(
                 f"https://www.olx.pt/imoveis/{category}/{slugify(loc)}/?" + "&".join(params)
             )
     return urls
 
 
-def facebook_queries(profile: dict) -> list[str]:
+def facebook_queries(search: dict) -> list[str]:
     terms = {
         "urban_land": "terreno urbano",
         "rustic_land": "terreno rustico",
@@ -261,11 +285,10 @@ def facebook_queries(profile: dict) -> list[str]:
         "modular": "casa modular",
         "mobile_home": "casa movel",
     }
-    strategy = profile.get("strategy") or {}
     out = []
-    for ptype in strategy.get("property_types") or []:
+    for ptype in search.get("property_types") or []:
         term = terms.get(ptype, "terreno")
-        for loc in _locations(profile):
+        for loc in _locations(search):
             out.append(
                 "https://www.facebook.com/marketplace/search/?query="
                 + quote(f"{term} {loc}")
@@ -285,8 +308,10 @@ BUILDERS = {
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--profile", required=True, type=Path)
+    ap.add_argument("--search", help="build only this named search")
     ap.add_argument("--portal", choices=list(BUILDERS), help="limit to one portal")
     ap.add_argument("--format", choices=("markdown", "json", "plain"), default="markdown")
+    ap.add_argument("--list", action="store_true", help="list the searches and exit")
     args = ap.parse_args()
 
     if not args.profile.exists():
@@ -295,38 +320,73 @@ def main() -> int:
         return 1
 
     profile = load_profile(args.profile)
-    strategy = profile.get("strategy") or {}
-    if not strategy.get("property_types"):
-        print("Profile has no strategy.property_types — nothing to search.", file=sys.stderr)
-        return 1
-    if not _locations(profile):
-        print("Profile has no zone.anchor or zone.concelhos — nothing to search.", file=sys.stderr)
+    active = searches(profile, args.search)
+
+    if args.list:
+        every = searches(profile)
+        if not every:
+            print("No searches defined yet.")
+            return 0
+        for s in every:
+            zone = s.get("zone") or {}
+            print(f"{s['name']:24} {', '.join(s.get('property_types') or []) or '?':28} "
+                  f"{zone.get('anchor', '?')} ({zone.get('radius_km', '?')} km)")
+        return 0
+
+    if not active:
+        names = [s.get("name") for s in searches(profile)]
+        if args.search:
+            print(f"No active search named {args.search!r}. Defined: "
+                  f"{', '.join(n for n in names if n) or 'none'}", file=sys.stderr)
+        else:
+            print("No active searches in the profile — nothing to build.", file=sys.stderr)
         return 1
 
     portals = [args.portal] if args.portal else list(BUILDERS)
-    result = {p: BUILDERS[p](profile) for p in portals}
+    result: dict[str, dict[str, list[str]]] = {}
+    for search in active:
+        if not (search.get("property_types") and _locations(search)):
+            print(f"Search {search['name']!r} has no property_types or no zone — skipped.",
+                  file=sys.stderr)
+            continue
+        result[search["name"]] = {p: BUILDERS[p](search) for p in portals}
+
+    if not result:
+        return 1
 
     if args.format == "json":
         print(json.dumps(result, indent=2, ensure_ascii=False))
         return 0
     if args.format == "plain":
-        for urls in result.values():
-            for u in urls:
-                print(u)
+        for per_portal in result.values():
+            for urls in per_portal.values():
+                for u in urls:
+                    print(u)
         return 0
 
-    zone = strategy.get("zone") or {}
-    print(f"# Saved searches — {zone.get('anchor', 'zone')} "
-          f"({zone.get('radius_km', '?')} km radius)\n")
+    print("# Saved searches\n")
     print("Open each while logged in, save the search, and switch on the daily "
-          "email alert.\n")
-    for portal, urls in result.items():
-        if not urls:
+          "email alert. Name each alert after its search so the incoming mail "
+          "sorts itself.\n")
+    for search in active:
+        name = search["name"]
+        if name not in result:
             continue
-        print(f"## {portal.replace('_', ' ').title()}")
-        for u in urls:
-            print(f"- {u}")
-        print()
+        zone = search.get("zone") or {}
+        budget = search.get("budget") or {}
+        header = (f"## {name} — {zone.get('anchor', 'zone')} "
+                  f"({zone.get('radius_km', '?')} km) · "
+                  f"{', '.join(search.get('property_types') or [])}")
+        if budget.get("max"):
+            header += f" · €{int(budget.get('min') or 0):,}–{int(budget['max']):,}"
+        print(header + "\n")
+        for portal, urls in result[name].items():
+            if not urls:
+                continue
+            print(f"### {portal.replace('_', ' ').title()}")
+            for u in urls:
+                print(f"- {u}")
+            print()
     return 0
 
 

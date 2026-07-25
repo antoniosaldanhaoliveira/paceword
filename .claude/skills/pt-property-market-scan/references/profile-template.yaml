@@ -1,5 +1,13 @@
 # Buyer profile — drives every search, score and due-diligence path.
-# Lives at $PROPERTY_WORKSPACE/profile.yaml (default ~/property-portugal/profile.yaml)
+# Lives at $PROPERTY_WORKSPACE/profile.yaml
+#
+# You can run several searches in parallel. Each one keeps its own zone, its own
+# property types and its own €/m² baseline — that separation is the point. A plot
+# in Tavira and a ruin in Alentejo do not belong in the same median, and pooling
+# them produces a number that describes neither market.
+#
+# Keep each individual search narrow (one or two types, one anchor town, 15–20 km).
+# Several narrow searches work. One wide search does not.
 
 buyer:
   name: ""
@@ -8,48 +16,48 @@ buyer:
   pt_bank_account: false # Needed to pay IMT/stamp duty and utilities
   lawyer: ""             # independent lawyer, not the agent's recommendation
 
-# STEP 1 — Strategy. Keep this narrow. One or two types, one zone.
-strategy:
-  purpose: ""            # living | renting | tourism | building | land-banking
-  property_types:        # pick 1–2: urban_land, rustic_land, house, apartment,
-    - ""                 # ruin, tourism_land, modular
-  timeline: ""           # e.g. "buy within 12 months", "learning the market first"
+searches:
+  # ---------------------------------------------------------------------------
+  # Copy this block once per search. `name` is the key used everywhere:
+  #   /property-scan algarve-plots
+  #   python tracker.py stats --search algarve-plots
+  # ---------------------------------------------------------------------------
+  - name: ""             # short slug, e.g. "algarve-plots", "alentejo-ruins"
+    active: true         # set false to pause a search without deleting its history
+    purpose: ""          # living | renting | tourism | building | land-banking
+    property_types:      # 1–2 per search. More than that and the due-diligence
+      - ""               # paths diverge too far to learn any of them properly.
+    timeline: ""         # e.g. "buy within 12 months", "learning the market first"
 
-  zone:
-    anchor: ""           # the town you centre on, e.g. "São Brás de Alportel"
-    radius_km: 20        # the guide's 15–20 km rule — resist widening this
-    concelhos: []        # explicit municipalities inside the radius (for Idealista)
-    freguesias: []       # optional narrower parishes
+    zone:
+      anchor: ""         # the town you centre on, e.g. "São Brás de Alportel"
+      radius_km: 20      # the guide's 15–20 km rule — resist widening this
+      concelhos: []      # explicit municipalities inside the radius (for Idealista)
+      freguesias: []     # optional narrower parishes
 
-budget:
-  currency: EUR
-  min: 0
-  max: 0
-  includes_costs: false  # true if max already covers IMT + stamp duty + notary + works
-  # Rough acquisition costs on top of price: IMT (sliding, ~0–7.5%; 5% flat on
-  # rustic land), stamp duty 0.8%, notary + registration ~1,000–1,500 €,
-  # lawyer ~1–1.5%. Verify current rates at purchase time — they change.
+    budget:
+      currency: EUR
+      min: 0
+      max: 0
+      includes_costs: false  # true if max already covers IMT + stamp duty + works
+      # Rough acquisition costs on top of price: IMT (sliding, ~0–7.5%; 5% flat on
+      # rustic land), stamp duty 0.8%, notary + registration ~1,000–1,500 €,
+      # lawyer ~1–1.5%. Verify current rates at purchase time — they change.
 
-requirements:
-  land_m2_min: 0
-  built_m2_min: 0
-  bedrooms_min: 0
-  must_have: []          # e.g. ["road access", "electricity within 100m", "south facing"]
-  deal_breakers: []      # e.g. ["north facing", "RAN/REN", "no legal ruin registration",
+    requirements:
+      land_m2_min: 0
+      built_m2_min: 0
+      bedrooms_min: 0
+      must_have: []      # e.g. ["road access", "electricity within 100m", "south facing"]
+      deal_breakers: []  # e.g. ["north facing", "RAN/REN", "no legal ruin registration",
                          #       "slope > 15%", "high-voltage lines"]
 
-# STEP 2 — Alerts. Record where saved searches exist so you can tell what is covered.
-alerts:
-  idealista: {saved_search: false, email_alert: false, url: ""}
-  imovirtual: {saved_search: false, email_alert: false, url: ""}
-  casa_sapo:  {saved_search: false, email_alert: false, url: ""}
-  olx:        {saved_search: false, email_alert: false, url: ""}
-  facebook:   {groups: []}
+    alerts:              # where saved searches exist, so you know what is covered
+      idealista: {saved_search: false, email_alert: false}
+      imovirtual: {saved_search: false, email_alert: false}
+      casa_sapo:  {saved_search: false, email_alert: false}
+      olx:        {saved_search: false, email_alert: false}
+      facebook:   {groups: []}
 
-# STEP 6 — Consistency. The tracker updates these; do not hand-edit.
-progress:
-  started: ""            # ISO date the search began
-  last_run: ""
-  runs_completed: 0
-  listings_tracked: 0
-  visits_completed: 0
+# Updated by the tracker — do not hand-edit.
+progress: {}

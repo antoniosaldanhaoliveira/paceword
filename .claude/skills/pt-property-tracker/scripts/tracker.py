@@ -5,6 +5,10 @@ Keeps one CSV of unique properties plus an append-only price history, and
 answers the questions that only accumulate with time: what is new, what dropped,
 what disappeared, and what a square metre actually costs in this zone.
 
+Several named searches can run in parallel. Every statistic is scoped to one
+search, because a search is the unit that has a coherent €/m² baseline — pooling
+two zones produces a median that describes neither.
+
 Standard library only, except `export --xlsx` which uses openpyxl if present.
 
 Commands:
@@ -12,6 +16,7 @@ Commands:
     sweep    mark which listings are still live; flag the rest as disappeared
     digest   what changed since the last run
     stats    €/m² medians, days on market, outliers
+    searches overview of every search being tracked
     note     attach a note or log a visit
     set      change status / rating / dd_status on a listing
     export   write a spreadsheet for the user
@@ -29,7 +34,7 @@ from datetime import date, datetime
 from pathlib import Path
 
 COLUMNS = [
-    "id", "source", "source_ref", "url", "title", "property_type",
+    "id", "search", "source", "source_ref", "url", "title", "property_type",
     "concelho", "freguesia", "lat", "lon",
     "price", "first_price", "land_m2", "built_m2",
     "eur_per_land_m2", "eur_per_built_m2", "bedrooms",
@@ -104,6 +109,23 @@ def save_state(ws: Path, state: dict) -> None:
     paths(ws)["state"].write_text(json.dumps(state, indent=2), encoding="utf-8")
 
 
+def scoped(rows: list[dict], search: str | None) -> list[dict]:
+    """Limit rows to one search.
+
+    Every statistic is scoped this way on purpose. A plot in the Algarve and a
+    ruin in Alentejo pooled into one median produce a number that describes
+    neither market — separate baselines are what make parallel searches work
+    instead of quietly cancelling each other out.
+    """
+    if not search:
+        return rows
+    return [r for r in rows if (r.get("search") or "") == search]
+
+
+def search_names(rows: list[dict]) -> list[str]:
+    return sorted({r.get("search") or "" for r in rows} - {""})
+
+
 def num(value, cast=float):
     if value in (None, "", "None"):
         return None
@@ -175,6 +197,7 @@ def cmd_ingest(args, ws: Path) -> int:
                 "status": "active",
                 "rating": item.get("rating", 0),
                 "dd_status": "none",
+                "search": item.get("search") or args.search or "",
                 "flags": ";".join(item.get("description_flags", []))
                          or item.get("flags", ""),
             })
@@ -188,6 +211,8 @@ def cmd_ingest(args, ws: Path) -> int:
 
         old_price = num(existing.get("price"), int)
         existing["last_seen"] = stamp
+        if not existing.get("search") and (item.get("search") or args.search):
+            existing["search"] = item.get("search") or args.search
         if existing.get("status") not in TERMINAL:
             existing["status"] = "active"
         # Refresh any field the scan learned that we did not have before.
@@ -252,6 +277,10 @@ def cmd_sweep(args, ws: Path) -> int:
             continue
         if args.source and row.get("source") != args.source:
             continue
+        # A sweep only speaks for the search it ran. Without this, scanning one
+        # search would mark every other search's listings as disappeared.
+        if args.search and (row.get("search") or "") != args.search:
+            continue
         if row["id"] in seen or row.get("source_ref") in seen:
             row["last_seen"] = stamp
             continue
@@ -283,7 +312,7 @@ def _fmt(value):
 
 
 def cmd_stats(args, ws: Path) -> int:
-    rows = [r for r in load(ws) if r.get("status") != "rejected"]
+    rows = scoped([r for r in load(ws) if r.get("status") != "rejected"], args.search)
     if args.concelho:
         rows = [r for r in rows if r.get("concelho", "").lower() == args.concelho.lower()]
     if args.type:
@@ -297,6 +326,7 @@ def cmd_stats(args, ws: Path) -> int:
         by_type.setdefault(row.get("property_type") or "unknown", []).append(row)
 
     print(f"Zone statistics — {len(rows)} listing(s)"
+          + (f" in search '{args.search}'" if args.search else "")
           + (f" in {args.concelho}" if args.concelho else "") + "\n")
 
     for ptype, group in sorted(by_type.items(), key=lambda kv: -len(kv[1])):
@@ -379,13 +409,21 @@ def _duplicates(rows: list[dict]) -> list[tuple[dict, dict]]:
 
 
 def cmd_digest(args, ws: Path) -> int:
-    rows = load(ws)
+    rows = scoped(load(ws), args.search)
     if not rows:
-        print("Nothing tracked yet. Run `ingest` first.")
+        if args.search:
+            print(f"Nothing tracked yet in search '{args.search}'.")
+        else:
+            print("Nothing tracked yet. Run `ingest` first.")
         return 0
     hist = load_history(ws)
     state = load_state(ws)
-    since = args.since or state.get("last_digest") or state.get("started") or today()
+    # Each search keeps its own "since" cursor, so scanning one search does not
+    # silently consume the unread window of another.
+    per_search = state.setdefault("searches", {}).setdefault(
+        args.search or "_all", {})
+    since = (args.since or per_search.get("last_digest")
+             or state.get("last_digest") or state.get("started") or today())
 
     def after(value: str | None) -> bool:
         return bool(value) and str(value) >= since
@@ -397,7 +435,10 @@ def cmd_digest(args, ws: Path) -> int:
     stale = [r for r in rows if r.get("status") == "active"
              and (num(r.get("days_on_market"), int) or 0) > 120]
 
-    lines = [f"## Property digest — {today()} (since {since})", ""]
+    title = f"## Property digest — {today()}"
+    if args.search:
+        title += f" — {args.search}"
+    lines = [title + f" (since {since})", ""]
     lines.append(f"**New {len(new)} · Changed {len(changed)} · Gone {len(gone)} · "
                  f"Tracked total {len(rows)}**")
     lines.append("")
@@ -487,9 +528,64 @@ def cmd_digest(args, ws: Path) -> int:
 
     digests = paths(ws)["digests"]
     digests.mkdir(parents=True, exist_ok=True)
-    (digests / f"{today()}.md").write_text(text, encoding="utf-8")
+    stem = f"{today()}-{args.search}" if args.search else today()
+    (digests / f"{stem}.md").write_text(text, encoding="utf-8")
+    per_search["last_digest"] = today()
     state["last_digest"] = today()
     save_state(ws, state)
+    return 0
+
+
+def cmd_searches(args, ws: Path) -> int:
+    """One line per search — what is tracked, and where the action is."""
+    rows = load(ws)
+    names = search_names(rows)
+    unassigned = [r for r in rows if not r.get("search")]
+    if not names and not unassigned:
+        print("No searches tracked yet.")
+        return 0
+
+    for name in names:
+        group = scoped(rows, name)
+        active = [r for r in group if r.get("status") not in TERMINAL
+                  and r.get("status") != "disappeared"]
+        drops = [r for r in group if r.get("status") == "price_drop"]
+        favs = [r for r in group if r.get("status") == "favourite"]
+        stale = [r for r in active if (num(r.get("days_on_market"), int) or 0) > 120]
+        concelhos = sorted({r.get("concelho") for r in group if r.get("concelho")})
+
+        rates = {}
+        for row in group:
+            ptype = row.get("property_type") or "unknown"
+            key = "eur_per_land_m2" if ptype in LAND_TYPES else "eur_per_built_m2"
+            value = num(row.get(key))
+            if value:
+                rates.setdefault(ptype, []).append(value)
+
+        print(f"## {name}  —  {len(group)} tracked, {len(active)} active")
+        print(f"   zone: {', '.join(concelhos) or 'unset'}")
+        for ptype, values in sorted(rates.items()):
+            note = "" if len(values) >= 4 else "  (too few to be reliable)"
+            print(f"   {ptype}: median €{round(statistics.median(values), 2)}/m² "
+                  f"(n={len(values)}){note}")
+        flags = []
+        if drops:
+            flags.append(f"{len(drops)} price drop(s)")
+        if favs:
+            flags.append(f"{len(favs)} favourite(s)")
+        if stale:
+            flags.append(f"{len(stale)} over 120 days")
+        if flags:
+            print(f"   → {' · '.join(flags)}")
+        if len(group) < 60:
+            print(f"   {60 - len(group)} more listings until this zone is readable "
+                  f"from memory.")
+        print()
+
+    if unassigned:
+        print(f"{len(unassigned)} listing(s) have no search assigned "
+              f"(tracked before searches existed). Assign with "
+              f"`set <id> --search <name>`.")
     return 0
 
 
@@ -526,7 +622,7 @@ def cmd_set(args, ws: Path) -> int:
     if row is None:
         print(f"No tracked listing with id {args.id}", file=sys.stderr)
         return 1
-    for field in ("status", "rating", "dd_status"):
+    for field in ("status", "rating", "dd_status", "search"):
         value = getattr(args, field)
         if value is not None:
             row[field] = value
@@ -537,7 +633,7 @@ def cmd_set(args, ws: Path) -> int:
 
 
 def cmd_export(args, ws: Path) -> int:
-    rows = load(ws)
+    rows = scoped(load(ws), args.search)
     if args.status:
         rows = [r for r in rows if r.get("status") == args.status]
     out = Path(args.xlsx or args.csv or "shortlist.csv")
@@ -584,22 +680,30 @@ def main() -> int:
 
     p = sub.add_parser("ingest", help="record listings from a JSON array")
     p.add_argument("--file", help="JSON file; omit to read stdin")
+    p.add_argument("--search", help="assign these listings to a named search")
     p.set_defaults(func=cmd_ingest)
 
     p = sub.add_parser("sweep", help="mark listings still live; flag the rest as gone")
     p.add_argument("--seen-file", help="JSON array of ids or source_refs seen this run")
     p.add_argument("--seen", help="comma-separated ids seen this run")
     p.add_argument("--source", help="limit the sweep to one portal")
+    p.add_argument("--search", help="limit the sweep to one search (recommended — "
+                                    "a sweep only speaks for the search it ran)")
     p.set_defaults(func=cmd_sweep)
 
     p = sub.add_parser("digest", help="what changed since the last run")
-    p.add_argument("--since", help="ISO date; defaults to the last digest")
+    p.add_argument("--since", help="ISO date; defaults to this search's last digest")
+    p.add_argument("--search", help="digest one search only")
     p.set_defaults(func=cmd_digest)
 
     p = sub.add_parser("stats", help="zone medians, ages and outliers")
     p.add_argument("--type", help="filter by property_type")
     p.add_argument("--concelho", help="filter by municipality")
+    p.add_argument("--search", help="scope the statistics to one search")
     p.set_defaults(func=cmd_stats)
+
+    p = sub.add_parser("searches", help="overview of every search being tracked")
+    p.set_defaults(func=cmd_searches)
 
     p = sub.add_parser("note", help="attach a note or log a visit")
     p.add_argument("id")
@@ -612,12 +716,14 @@ def main() -> int:
     p.add_argument("--status")
     p.add_argument("--rating")
     p.add_argument("--dd-status", dest="dd_status")
+    p.add_argument("--search", help="move the listing to a named search")
     p.set_defaults(func=cmd_set)
 
     p = sub.add_parser("export", help="write a spreadsheet")
     p.add_argument("--xlsx")
     p.add_argument("--csv")
     p.add_argument("--status", help="export only listings with this status")
+    p.add_argument("--search", help="export one search only")
     p.set_defaults(func=cmd_export)
 
     args = ap.parse_args()
@@ -626,4 +732,9 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        raise SystemExit(main())
+    except BrokenPipeError:
+        # Piping into `head` closes the stream early; that is not an error.
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        raise SystemExit(0)

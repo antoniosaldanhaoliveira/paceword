@@ -23,9 +23,9 @@ the per-property due-diligence gate.
 
 | Guide step | Automated by |
 |---|---|
-| 1. Define your strategy | `profile.yaml` — type, anchor town + 15–20 km, purpose, budget |
-| 2. Set up property alerts | `build_search_urls.py` generates saved-search URLs for 5 portals |
-| 3. Study the market | `tracker.py stats` — €/m² medians, quartiles, outliers by type and concelho |
+| 1. Define your strategy | `profile.yaml` — one or more named searches, each with type, anchor town + 15–20 km, purpose, budget |
+| 2. Set up property alerts | `build_search_urls.py` generates saved-search URLs per search across 5 portals |
+| 3. Study the market | `tracker.py stats --search X` — €/m² medians, quartiles, outliers |
 | 4. Visit properties | `tracker.py note --visit` — visit log per property, agent network captured |
 | 5. Save & track listings | `tracker.py ingest` / `sweep` — price history, days on market, disappearances |
 | 6. Be consistent | `/property-scan` daily; the digest tracks the streak and milestones |
@@ -61,16 +61,52 @@ to `.gitignore`.
 Optional: `pip install pyyaml openpyxl` — PyYAML for richer profile parsing (a
 fallback parser handles the template without it), openpyxl for `export --xlsx`.
 
+## Multiple searches
+
+A profile holds any number of named searches, each with its own zone, property
+types, budget and — critically — its own €/m² baseline:
+
+```yaml
+searches:
+  - name: algarve-plots
+    property_types: [urban_land]
+    zone: {anchor: "São Brás de Alportel", radius_km: 20, concelhos: [...]}
+    budget: {min: 50000, max: 200000}
+  - name: alentejo-ruins
+    property_types: [ruin, rustic_land]
+    zone: {anchor: "Évora", radius_km: 20, concelhos: [...]}
+    budget: {min: 20000, max: 120000}
+  - name: porto-houses
+    active: false        # paused, history kept
+```
+
+Every statistic is scoped by search. That is deliberate: a median pooling plots
+near Loulé with ruins near Évora describes neither market, and would make every
+"below market" judgement wrong in both.
+
+The trade-off worth knowing: each search needs its own 60–80 tracked listings
+before its numbers are trustworthy, so three searches is three times the runway,
+not three times the coverage. Two or three active at once is realistic. Widening
+one search's zone is the thing to avoid — add a second narrow search instead.
+
+```bash
+python .claude/skills/pt-property-tracker/scripts/tracker.py searches
+```
+
+shows every search's size, medians, and distance from that 60-listing mark.
+
 ## Daily use
 
 ```
-/property-scan                      today's new listings, price drops, digest
-/property-scan stats                zone statistics only
+/property-scan                      every active search — new listings, drops, digests
+/property-scan algarve-plots        one search only
+/property-scan searches             overview of all searches
+/property-scan stats algarve-plots  zone statistics only
 /property-dd <listing-url>          full due diligence on one property
 ```
 
-Or address the agent directly: "run my property scan", "what changed this week",
-"should I buy this plot: <url>".
+Or address the agent directly: "run my property scan", "what changed in Alentejo
+this week", "should I buy this plot: <url>".
 
 ## The data
 

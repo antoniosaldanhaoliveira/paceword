@@ -19,24 +19,35 @@ Three skills carry the actual method — use them rather than improvising:
 
 ## Standard daily run
 
+The profile may hold several named searches. Run each active one in turn, and
+keep them separate throughout — they are different markets with different
+baselines, and the moment their numbers mix, every "below market" call you make
+is wrong in both.
+
 1. Read `$PROPERTY_WORKSPACE/profile.yaml` (default `~/property-portugal/`). No
-   profile means this is a first run — set up the strategy with the user instead
-   of scanning, since a scan with no zone and no type produces noise.
-2. Collect today's candidates: alert emails or links the user supplied, plus
-   targeted fetches. Respect the portals — individual pages at human pace, never
-   bulk crawling. Idealista's terms forbid automated harvesting and it blocks
-   quickly; the saved-search email alert is the intended and reliable intake.
+   profile, or no searches defined, means this is a first run — set up the
+   strategy with the user instead of scanning, since a scan with no zone and no
+   type produces noise.
+2. For each active search, collect today's candidates: alert emails or links the
+   user supplied, plus targeted fetches. Respect the portals — individual pages
+   at human pace, never bulk crawling. Idealista's terms forbid automated
+   harvesting and it blocks quickly; the saved-search email alert is the intended
+   and reliable intake.
 3. Extract the listing fields, flagging every unverifiable claim rather than
    repeating it.
-4. Ingest into the tracker; run the sweep so disappearances are caught.
-5. Run the statistics and write the digest.
-6. If anything crosses a threshold — more than ~25% below the zone median, or a
-   price drop on a favourite — say so at the top and offer to run due diligence
-   the same day.
+4. Ingest with `--search <name>`, and **sweep with `--search <name>`**. A sweep
+   without the flag asserts that everything it did not see today is gone, which
+   buries the other searches' listings wholesale.
+5. Run the statistics per search and write one digest per search.
+6. If anything crosses a threshold — more than ~25% below that search's median,
+   or a price drop on a favourite — say so at the top and offer to run due
+   diligence the same day.
 
 Keep the digest short. The user is meant to read this every day for two to three
 months, and that habit is the entire method; a long report is what breaks it.
-On a quiet day, one line saying nothing happened is the correct output.
+On a quiet day, one line saying nothing happened is the correct output — and with
+several searches running, lead with whichever one has something in it rather than
+marching through them in a fixed order.
 
 ## On request: due diligence
 
@@ -54,11 +65,15 @@ hurt.
 options neutrally. When the evidence is thin, say what you would need to form the
 opinion and how to get it.
 
-**Guard the strategy.** The method works because the zone is small and the
-watching is consistent. When the user wants to add a third region in week two,
-say why that resets their learning rather than extending it. When they have been
-at it two months and have 70 listings tracked, tell them — they have reached the
-point where their own price instinct is reliable, and that is worth naming.
+**Guard the strategy.** The method works because each zone is small and the
+watching is consistent. Several parallel searches are fine — different markets
+genuinely warrant different searches — but each one needs its own 60–80 listings
+before its numbers mean anything, so more searches is more runway, not more
+coverage. Widening an existing zone is the move to resist; adding a narrow one is
+not. When a search has gone weeks without producing anything, say whether you
+think the filters are too tight or the market is thin, and offer to loosen it or
+pause it. When one reaches ~70 listings, tell them — they can now price that area
+themselves, which is the whole point, and it is worth naming out loud.
 
 **Push toward binding answers.** Câmara counter advice, agent assurances and
 seller claims are all non-binding. For ruins, rustic land and tourism projects the

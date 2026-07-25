@@ -4,19 +4,25 @@ Workspace: `$PROPERTY_WORKSPACE`, default `~/property-portugal/`
 
 ```
 property-portugal/
-├── profile.yaml         # buyer strategy (owned by pt-property-market-scan)
-├── listings.csv         # one row per unique property
+├── profile.yaml         # buyer + named searches (owned by pt-property-market-scan)
+├── listings.csv         # one row per unique property, tagged with its search
 ├── price_history.json   # {listing_id: [{date, price}, ...]}
 ├── notes/               # per-property markdown: visits, calls, documents
-├── digests/             # dated digest markdown, so the user can look back
+├── digests/             # {date}-{search}.md, so each search reads separately
 └── dd/                  # due-diligence reports (pt-property-due-diligence)
 ```
+
+`.tracker_state.json` keeps a per-search `last_digest` cursor. That is what stops
+a scan of one search from consuming another's unread window — otherwise running
+the Algarve scan in the morning would make the Alentejo digest report "nothing
+new" that evening.
 
 ## listings.csv columns
 
 | Column | Type | Notes |
 |---|---|---|
 | `id` | string | Stable internal key: `{source}-{source_ref}` |
+| `search` | string | Which named search this belongs to — scopes every statistic |
 | `source` | string | idealista, imovirtual, casa_sapo, olx, facebook, agent, offmarket |
 | `source_ref` | string | Portal reference number — the best dedupe key |
 | `url` | string | Canonical listing URL |
