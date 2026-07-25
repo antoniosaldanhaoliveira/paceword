@@ -36,3 +36,7 @@ Package.resolved
 # Secrets
 *.env
 *.env.local
+
+# Python
+__pycache__/
+*.pyc
