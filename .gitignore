@@ -40,3 +40,5 @@ Package.resolved
 # Python
 __pycache__/
 *.pyc
+
+# Generated from docs/*.md by scripts/build_guide_page.py

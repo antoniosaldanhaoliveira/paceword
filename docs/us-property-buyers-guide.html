@@ -1,0 +1,1363 @@
+<title>The Property Buyer's Guide to the United States</title>
+
+<style>
+  /* ---- tokens -------------------------------------------------------- */
+  :root {
+    --paper:      #F7F8F5;   /* drafting stock, faint green-grey bias      */
+    --surface:    #FFFFFF;
+    --sunk:       #EFF2EC;
+    --ink:        #1A1F1C;
+    --ink-soft:   #45504A;
+    --muted:      #6B7370;
+    --rule:       #DCE2DB;
+    --rule-firm:  #C3CCC1;
+    --accent:     #0F6E62;   /* the water layer of a topographic sheet     */
+    --accent-dim: #0F6E6218;
+    --caution:    #9C6B14;
+    --caution-bg: #9C6B1412;
+
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua",
+             "URW Palladio L", Georgia, ui-serif, serif;
+    --mono:  ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", Menlo,
+             Consolas, "Liberation Mono", monospace;
+
+    --measure: 68ch;
+    --step-0: 1.0625rem;
+    --step-1: 1.1875rem;
+    --step-2: 1.5rem;
+    --step-3: 2rem;
+    --step-4: 2.75rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:      #101413;
+      --surface:    #161B19;
+      --sunk:       #1B211E;
+      --ink:        #E7EDE8;
+      --ink-soft:   #B6C0B8;
+      --muted:      #8A948C;
+      --rule:       #2A312D;
+      --rule-firm:  #3C453F;
+      --accent:     #58C3B1;
+      --accent-dim: #58C3B11F;
+      --caution:    #D9A441;
+      --caution-bg: #D9A4411A;
+    }
+  }
+
+  /* The viewer's own toggle must win over the OS preference, both ways. */
+  :root[data-theme="dark"] {
+    --paper:      #101413;
+    --surface:    #161B19;
+    --sunk:       #1B211E;
+    --ink:        #E7EDE8;
+    --ink-soft:   #B6C0B8;
+    --muted:      #8A948C;
+    --rule:       #2A312D;
+    --rule-firm:  #3C453F;
+    --accent:     #58C3B1;
+    --accent-dim: #58C3B11F;
+    --caution:    #D9A441;
+    --caution-bg: #D9A4411A;
+  }
+  :root[data-theme="light"] {
+    --paper:      #F7F8F5;
+    --surface:    #FFFFFF;
+    --sunk:       #EFF2EC;
+    --ink:        #1A1F1C;
+    --ink-soft:   #45504A;
+    --muted:      #6B7370;
+    --rule:       #DCE2DB;
+    --rule-firm:  #C3CCC1;
+    --accent:     #0F6E62;
+    --accent-dim: #0F6E6218;
+    --caution:    #9C6B14;
+    --caution-bg: #9C6B1412;
+  }
+
+  /* ---- frame --------------------------------------------------------- */
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation: none !important; transition: none !important; }
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: var(--step-0);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+  @media (min-width: 1060px) {
+    .shell { grid-template-columns: 15.5rem minmax(0, 1fr); gap: 4rem; }
+  }
+
+  /* ---- masthead ------------------------------------------------------ */
+  .masthead {
+    grid-column: 1 / -1;
+    padding: 4.5rem 0 2rem;
+    border-bottom: 2px solid var(--ink);
+    display: grid;
+    gap: 1.25rem 4rem;
+    align-items: start;
+  }
+  @media (min-width: 1060px) {
+    .masthead {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      column-gap: 5rem;
+    }
+    .masthead .eyebrow { grid-column: 1 / -1; }
+    .masthead h1 { grid-row: 2; grid-column: 1; margin: 0; }
+    .masthead .standfirst { grid-row: 2; grid-column: 2; align-self: end; }
+    .masthead .stamp { grid-row: 3; grid-column: 2; }
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .masthead h1 {
+    font-size: var(--step-4);
+    line-height: 1.06;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    max-width: 20ch;
+  }
+  .masthead .standfirst {
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+    max-width: 52ch;
+    text-wrap: pretty;
+  }
+  .masthead .stamp {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--muted);
+    border-left: 2px solid var(--rule-firm);
+    padding-left: 0.9rem;
+    max-width: 60ch;
+  }
+
+  /* ---- index --------------------------------------------------------- */
+  .index { display: none; }
+  @media (min-width: 1060px) {
+    .index {
+      display: block;
+      position: sticky;
+      top: 0;
+      align-self: start;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 2.25rem 0 3rem;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      line-height: 1.5;
+    }
+  }
+  .index h2 {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .index ol { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; }
+  .index a {
+    display: block;
+    padding: 0.3rem 0.5rem 0.3rem 0;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    padding-left: 0.7rem;
+  }
+  .index a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .index li.part-row a {
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.66rem;
+    margin-top: 1.1rem;
+    border-left-color: var(--rule-firm);
+  }
+
+  /* ---- article ------------------------------------------------------- */
+  .article { min-width: 0; padding-top: 2.25rem; }
+  .article > * { max-width: var(--measure); }
+
+  .article h1 {  /* part dividers */
+    max-width: none;
+    font-size: var(--step-3);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    margin: 5rem 0 2.5rem;
+    padding: 1.5rem 0 1.25rem;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    text-wrap: balance;
+  }
+  .article h1:first-child { margin-top: 0; }
+
+  .article h2 {
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 3.25rem 0 1rem;
+    text-wrap: balance;
+  }
+  .article h3 {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 2.25rem 0 0.75rem;
+  }
+  .article p { margin: 0 0 1.1rem; text-wrap: pretty; }
+  .article a { color: var(--accent); text-underline-offset: 0.18em; }
+  .article strong { font-weight: 600; }
+
+  .article ul, .article ol { margin: 0 0 1.4rem; padding-left: 1.3rem; }
+  .article li { margin-bottom: 0.5rem; padding-left: 0.2rem; }
+  .article li::marker { color: var(--muted); font-family: var(--mono); font-size: 0.85em; }
+
+  .article hr {
+    max-width: none;
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 3.5rem 0;
+  }
+
+  /* Notices — the ETJ warning and its kin */
+  .article blockquote {
+    max-width: var(--measure);
+    margin: 1.75rem 0;
+    padding: 1.15rem 1.35rem;
+    background: var(--caution-bg);
+    border-left: 3px solid var(--caution);
+    border-radius: 2px;
+  }
+  .article blockquote p { margin-bottom: 0.7rem; }
+  .article blockquote p:last-child { margin-bottom: 0; }
+  .article blockquote strong { color: var(--caution); }
+
+  .article code {
+    font-family: var(--mono);
+    font-size: 0.85em;
+    background: var(--sunk);
+    padding: 0.12em 0.38em;
+    border-radius: 3px;
+  }
+
+  /* ---- tables -------------------------------------------------------- */
+  .table-wrap {
+    max-width: none;
+    overflow-x: auto;
+    margin: 1.75rem 0 2rem;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--surface);
+  }
+  .article table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+  .article thead th {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--muted);
+    background: var(--sunk);
+    padding: 0.7rem 0.95rem;
+    border-bottom: 1px solid var(--rule-firm);
+    white-space: nowrap;
+  }
+  .article tbody td {
+    padding: 0.72rem 0.95rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .article tbody tr:last-child td { border-bottom: 0; }
+  .article tbody td:first-child { font-weight: 600; }
+  /* Figures line up: any cell that is essentially numeric gets mono digits. */
+  .article td.num, .article th.num {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  /* ---- footer -------------------------------------------------------- */
+  .colophon {
+    grid-column: 1 / -1;
+    margin-top: 5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 68ch;
+  }
+
+  :where(a, button):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+</style>
+
+<div class="shell">
+  <header class="masthead">
+    <p class="eyebrow">Field guide · United States · Texas · Austin</p>
+    <h1>The Property Buyer's Guide to the United States</h1>
+    <p class="standfirst">Three parts — the national picture, then Texas, then
+      Austin — written for a buyer who already knows how to run a Portuguese
+      search. The method transfers. The facts underneath it do not.</p>
+    <p class="stamp">Research current as of July 2026. Every rate, threshold and
+      deadline in this document changes — verify at purchase time.<br>
+      Nothing here is legal or tax advice.</p>
+  </header>
+  <nav class="index" aria-label="Contents"><h2>Contents</h2><ol><li><a href="#part-0-read-this-first">Part 0 — Read this first</a></li><li class="part-row"><a href="#part-one-the-united-states">PART ONE — THE UNITED STATES</a></li><li><a href="#1-there-is-no-us-property-market">1. There is no “US property market”</a></li><li><a href="#2-step-one-define-the-strategy">2. Step one — define the strategy</a></li><li><a href="#3-step-two-where-to-search-the-portal-landscape">3. Step two — where to search: the portal la…</a></li><li><a href="#4-step-three-study-the-market-and-the-disclosure-trap">4. Step three — study the market (and the di…</a></li><li><a href="#5-step-four-visiting">5. Step four — visiting</a></li><li><a href="#6-step-five-track-everything">6. Step five — track everything</a></li><li><a href="#7-the-agent-question-and-what-changed-in-2024">7. The agent question — and what changed in…</a></li><li><a href="#8-the-transaction">8. The transaction</a></li><li><a href="#9-money-especially-for-a-non-us-buyer">9. Money — especially for a non-US buyer</a></li><li><a href="#10-costs-the-shape-is-inverted">10. Costs — the shape is inverted</a></li><li class="part-row"><a href="#part-two-texas">PART TWO — TEXAS</a></li><li><a href="#11-why-texas-and-what-it-costs">11. Why Texas, and what it costs</a></li><li><a href="#12-the-non-disclosure-problem-concretely">12. The non-disclosure problem, concretely</a></li><li><a href="#13-sb-17-foreign-ownership-restrictions">13. SB 17 — foreign ownership restrictions</a></li><li><a href="#14-the-texas-transaction-trec-the-option-period-title">14. The Texas transaction — TREC, the option…</a></li><li><a href="#15-land-in-texas-water-septic-access">15. Land in Texas — water, septic, access</a></li><li><a href="#16-property-tax-exemptions-ag-valuation-and-the-protest">16. Property tax — exemptions, ag valuation…</a></li><li class="part-row"><a href="#part-three-austin">PART THREE — AUSTIN</a></li><li><a href="#17-what-the-austin-market-actually-is-right-now">17. What the Austin market actually is right…</a></li><li><a href="#18-the-geography-four-corridors">18. The geography — four corridors</a></li><li><a href="#19-city-limits-etj-or-county-this-determines-what-you-can-build">19. City limits, ETJ, or county — this deter…</a></li><li><a href="#20-flooding-check-two-maps-not-one">20. Flooding — check two maps, not one</a></li><li><a href="#21-muds-the-tax-line-nobody-mentions">21. MUDs — the tax line nobody mentions</a></li><li><a href="#22-water-in-the-hill-country-the-constraint-that-disqualifies-parcels">22. Water in the Hill Country — the constrai…</a></li><li><a href="#23-austin-specific-resources">23. Austin-specific resources</a></li><li><a href="#24-a-first-week-plan-for-austin">24. A first-week plan for Austin</a></li><li><a href="#appendix-a-portuguese-us-glossary">Appendix A — Portuguese → US glossary</a></li><li><a href="#appendix-b-the-essentials-condensed">Appendix B — the essentials, condensed</a></li><li><a href="#sources">Sources</a></li></ol></nav>
+  <article class="article">
+<h2 id="part-0-read-this-first">Part 0 — Read this first</h2>
+<p>If you have run a Portuguese search, you have a method: pick a narrow zone,
+watch it daily, learn what a square metre costs, and use documents to verify
+what agents tell you. That method transfers completely. The facts underneath it
+do not.</p>
+<p>Five differences reshape everything:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Portugal</th>
+<th>United States</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Listing data</strong></td>
+<td>Fragmented across portals, agencies duplicate</td>
+<td>Centralised in regional <strong>MLS</strong>, syndicated everywhere</td>
+</tr>
+<tr>
+<td><strong>Sold prices</strong></td>
+<td>Public</td>
+<td><strong>Depends on the state.</strong> In 12 or so non-disclosure states, including <strong>Texas</strong>, they are not public at all</td>
+</tr>
+<tr>
+<td><strong>Acquisition cost</strong></td>
+<td>High — IMT + stamp duty, up to ~8%</td>
+<td>Low — many states, Texas included, have <strong>no transfer tax</strong></td>
+</tr>
+<tr>
+<td><strong>Holding cost</strong></td>
+<td>Low — IMI ~0.3–0.45%/yr</td>
+<td><strong>High — 1–2.5%/yr</strong> of assessed value in much of the country</td>
+</tr>
+<tr>
+<td><strong>The hard question</strong></td>
+<td><em>Is this legally what it claims to be?</em></td>
+<td><em>What is it really worth, and what will it cost me to hold?</em></td>
+</tr>
+</tbody>
+</table></div>
+<p>In Portugal you spend your diligence budget on the <strong>caderneta predial</strong>, the
+<strong>certidão permanente</strong> and the <strong>PDM</strong> — proving the thing exists as described.
+In the US, recording is reliable and title insurance covers you. You spend your
+diligence budget instead on <strong>value discovery</strong> and <strong>carrying cost</strong>.</p>
+<p>There is one more difference that has no Portuguese equivalent at all, and it
+changed in 2024: <strong>how buyer&rsquo;s agents get paid.</strong> See §7.</p>
+<hr>
+<h1 id="part-one-the-united-states">PART ONE — THE UNITED STATES</h1>
+<h2 id="1-there-is-no-us-property-market">1. There is no &ldquo;US property market&rdquo;</h2>
+<p>The single most common mistake a foreign buyer makes is treating the US as one
+market. It is roughly 3,000 counties, each with its own tax rate, recording
+office, disclosure rules and appraisal authority; 50 states with different
+contract law; and around 500+ regional MLSs.</p>
+<p>Practical consequences:</p>
+<ul>
+<li><strong>Property tax varies by a factor of ten.</strong> Roughly 0.3% of value per year in
+  Hawaii, over 2% in parts of Texas, New Jersey and Illinois. On a $500,000
+  property that is the difference between $1,500 and $11,000 <em>per year</em>.</li>
+<li><strong>Disclosure of sold prices varies.</strong> See §4 — this determines whether you can
+  do your own comparables research at all.</li>
+<li><strong>What &ldquo;buildable&rdquo; means varies.</strong> Some jurisdictions have strict zoning;
+  Texas counties have almost none, and private deed restrictions do the work
+  instead.</li>
+<li><strong>Natural hazard exposure varies enormously</strong>, and increasingly determines
+  whether a property is insurable — which determines whether it is financeable,
+  which determines what it is worth.</li>
+</ul>
+<p>So: <strong>choose the metro first, then apply the method.</strong> Do not search &ldquo;USA.&rdquo;</p>
+<h2 id="2-step-one-define-the-strategy">2. Step one — define the strategy</h2>
+<p>Same discipline as Portugal, different variables. Write these down before you
+look at a single listing.</p>
+<ol>
+<li><strong>Purpose.</strong> Primary residence · second home · rental income · land banking ·
+   build-to-own. In the US this is not a preference, it is a tax status. The
+   homestead exemption, the mortgage products available to you, and the capital
+   gains treatment all key off it.</li>
+<li><strong>Residency and citizenship status.</strong> See §9. This determines financing,
+   withholding on eventual sale, and — in some states now — whether you may buy
+   at all.</li>
+<li><strong>Metro, then submarket, then zone.</strong> Keep the final search zone tight. The
+   Portuguese 15–20 km rule holds; in US terms, <strong>one metro and two or three
+   named submarkets</strong>, not &ldquo;Central Texas.&rdquo;</li>
+<li><strong>Property type.</strong> Existing single-family home · condo/townhome · vacant lot ·
+   acreage/ranch · multi-family (2–4 units). The diligence paths diverge sharply
+   — land is a completely different investigation from a house.</li>
+<li><strong>Budget — with holding cost included.</strong> This is the discipline the
+   Portuguese market lets you skip and the US market punishes. Compute
+   <strong>purchase price + 10 years of property tax + insurance</strong>. A cheaper property
+   in a high-tax district frequently loses to a dearer one.</li>
+<li><strong>Financing route,</strong> decided before you search. Cash, conventional mortgage,
+   foreign-national product, DSCR, or ITIN loan. Each changes the price band you
+   can act on, and sellers treat pre-approved buyers differently.</li>
+</ol>
+<h2 id="3-step-two-where-to-search-the-portal-landscape">3. Step two — where to search: the portal landscape</h2>
+<p>This is the research core of this guide. US listing infrastructure has a
+specific shape: <strong>almost everything flows from the MLS</strong>, and the consumer
+portals are windows onto it with different refresh rates, different extra data,
+and different agendas.</p>
+<h3>3.1 How the plumbing works</h3>
+<p>A listing agent enters a property into the <strong>regional MLS</strong>. That record
+syndicates outward — to Realtor.com (operated under NAR licence), to Zillow, to
+Redfin, to brokerage sites via <strong>IDX</strong> feeds. This is why the same property
+appears everywhere with the same photos.</p>
+<p>What differs between portals is <strong>latency, completeness, and what they add</strong>:</p>
+<ul>
+<li>Realtor.com refreshes from MLS roughly every 15 minutes and is generally the
+  most accurate on <strong>status</strong> (pending, contingent, sold).</li>
+<li>Redfin refreshes very fast (~5 minutes) and is a brokerage, so it carries real
+  MLS depth — including <strong>sold prices</strong>.</li>
+<li>Zillow has the largest audience and inventory (~210M monthly visits) but a
+  slower refresh (~30 minutes), so you will see &ldquo;active&rdquo; listings already under
+  contract.</li>
+</ul>
+<p><strong>Off-MLS inventory exists</strong> and is where less-competitive deals live: FSBO,
+auction, county tax sales, land specialists, pocket listings, and rural
+properties whose sellers never engaged an agent.</p>
+<h3>3.2 Tier 1 — national MLS-fed portals</h3>
+<p>Use all four. They are not redundant; they disagree, and the disagreements are
+informative.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Portal</th>
+<th>Strength</th>
+<th>Weakness</th>
+<th>Use it for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Zillow</strong></td>
+<td>Largest inventory and audience; best saved-search alerts; Zestimate</td>
+<td>Slowest status refresh; Zestimate median error ~7–8% off-market</td>
+<td>Primary alert channel; breadth</td>
+</tr>
+<tr>
+<td><strong>Realtor.com</strong></td>
+<td>Direct MLS feed, ~15-min refresh; most accurate status</td>
+<td>Weaker analytics</td>
+<td><strong>Status truth</strong> — is it actually still available</td>
+</tr>
+<tr>
+<td><strong>Redfin</strong></td>
+<td>~5-min refresh; <strong>shows sold prices</strong>; strong data; low listing fees</td>
+<td>Only where Redfin operates as a brokerage</td>
+<td><strong>Comparables</strong> — critical in non-disclosure states</td>
+</tr>
+<tr>
+<td><strong>Homes.com</strong></td>
+<td>&ldquo;Your listing, your lead&rdquo; model, agent-friendly; growing</td>
+<td>Newer, less analytic depth</td>
+<td>Cross-check; sometimes surfaces listings first</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Trulia</strong> is Zillow-owned and shares its inventory — neighbourhood-feel data,
+not a separate source. <strong>Movoto</strong>, <strong>Compass</strong>, <strong>Coldwell Banker</strong>, <strong>eXp</strong> and
+other brokerage sites run on the same IDX feeds; useful for a specific agent&rsquo;s
+pocket listings, not as a separate search.</p>
+<p><strong>On automated valuations (Zestimate, Redfin Estimate):</strong> median error is around
+7–8% for off-market homes. On a $500k property that is ±$40,000. Treat them as a
+sanity check, never as a valuation. They are worst exactly where you need them
+most — unusual properties and vacant land.</p>
+<h3>3.3 Tier 2 — land and rural specialists</h3>
+<p>Vacant land is badly served by the residential portals. Much rural inventory
+never reaches Zillow at all. If you are buying land, these are not optional.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Site</th>
+<th>Coverage</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Land.com network</strong> — LandWatch, Lands of America, Land and Farm</td>
+<td>The deepest rural inventory in the US; millions of acres</td>
+<td>Three brands, one company, overlapping listings. LandWatch syndicates Lands of America. Start here for acreage</td>
+</tr>
+<tr>
+<td><strong>LandSearch</strong></td>
+<td>10M+ acres; clean map interface, good filters</td>
+<td>Best UI of the land sites</td>
+</tr>
+<tr>
+<td><strong>AcreValue</strong></td>
+<td>Parcel maps, ownership, <strong>soil data</strong>, valuation</td>
+<td>Free tier is genuinely useful. Built for agricultural land</td>
+</tr>
+<tr>
+<td><strong>LandFlip / Landmodo / Land Century</strong></td>
+<td>Smaller inventory, owner-financed deals</td>
+<td>Owner financing is common in raw land; also where the worst listings are</td>
+</tr>
+<tr>
+<td><strong>Whitetail Properties, Mossy Oak, National Land Realty</strong></td>
+<td>Brokerage networks specialising in recreational/hunting/timber land</td>
+<td>Regional strength; agents who actually know the parcels</td>
+</tr>
+</tbody>
+</table></div>
+<p>Land listings have <strong>much worse data hygiene</strong> than house listings — missing
+acreage, wrong boundaries, no utility information, stale prices. Verify every
+figure against the county appraisal district and the parcel map.</p>
+<h3>3.4 Tier 3 — distressed, auction and government inventory</h3>
+<p>Lower competition, higher risk, and usually <strong>no inspection contingency</strong>. Not a
+beginner&rsquo;s channel, but worth knowing.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Source</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Auction.com</strong></td>
+<td>Largest online foreclosure platform; bank-owned and courthouse-step auctions. Buyer premium typically 3–5% on top of the bid</td>
+</tr>
+<tr>
+<td><strong>Xome</strong></td>
+<td>Foreclosure, REO, short sale, plus MLS listings</td>
+</tr>
+<tr>
+<td><strong>Hubzu</strong> (Altisource)</td>
+<td>REO, short sale, deed-in-lieu, CWCOT auctions</td>
+</tr>
+<tr>
+<td><strong>HUD Home Store</strong> (hudhomestore.gov)</td>
+<td>HUD-owned homes; owner-occupant priority windows</td>
+</tr>
+<tr>
+<td><strong>Fannie Mae HomePath</strong> / <strong>Freddie Mac HomeSteps</strong></td>
+<td>Government-sponsored-enterprise REO</td>
+</tr>
+<tr>
+<td><strong>County sheriff sales / tax sales</strong></td>
+<td>Cheapest and riskiest. County-by-county rules. In Texas, tax sales are first Tuesday of the month at the courthouse</td>
+</tr>
+</tbody>
+</table></div>
+<p>Rules for this tier: assume you cannot inspect the interior; assume you buy
+subject to existing liens unless you have verified otherwise; <strong>always</strong> run a
+title search first; and budget for the property being in far worse condition
+than the photographs.</p>
+<h3>3.5 Tier 4 — data and parcel tools (the real edge)</h3>
+<p>This is where a disciplined buyer separates from a browser. All of these are
+free or nearly free.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Gives you</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>County appraisal district / assessor</strong></td>
+<td>The authoritative parcel record: legal description, acreage, improvements, assessed value, exemptions, and <strong>every taxing entity on the parcel</strong>. In Texas: TCAD (Travis), HaysCAD, WilCAD, BastropCAD</td>
+</tr>
+<tr>
+<td><strong>County clerk records</strong></td>
+<td>Recorded deeds, plats, easements, restrictive covenants, liens</td>
+</tr>
+<tr>
+<td><strong>County GIS map</strong></td>
+<td>Parcel boundaries, zoning overlays, floodplain layers</td>
+</tr>
+<tr>
+<td><strong>Regrid / Landgrid</strong></td>
+<td>Nationwide parcel data from county sources; export to CSV/KML</td>
+</tr>
+<tr>
+<td><strong>LandGlide</strong> (~$10/mo)</td>
+<td><strong>Property lines on your phone by GPS</strong>, 99% parcel coverage — walk the boundary in real time. The single most useful field tool for land</td>
+</tr>
+<tr>
+<td><strong>FEMA Flood Map Service Center</strong></td>
+<td>Official federal flood zone. Note: local maps are often stricter</td>
+</tr>
+<tr>
+<td><strong>USGS / NRCS Web Soil Survey</strong></td>
+<td>Soil type, slope, septic suitability</td>
+</tr>
+<tr>
+<td><strong>NOAA / state climate offices</strong></td>
+<td>Rainfall, drought, hazard history</td>
+</tr>
+<tr>
+<td><strong>Census / BLS / local economic development</strong></td>
+<td>Population, employment, migration — the demand side</td>
+</tr>
+</tbody>
+</table></div>
+<h3>3.6 Tier 5 — off-market and private sellers</h3>
+<ul>
+<li><strong>FSBO sites</strong> — ForSaleByOwner.com, FSBO.com. Thin, but no listing agent.</li>
+<li><strong>Craigslist</strong> and <strong>Facebook Marketplace</strong> — genuinely productive for rural
+  land and mobile/manufactured homes. Zero data discipline. This is the OLX
+  equivalent.</li>
+<li><strong>Direct approach.</strong> Identify a parcel you want via GIS, find the owner in the
+  appraisal district record, write to them. Entirely legal, and how a large
+  share of rural land actually trades.</li>
+<li><strong>Local land brokers.</strong> In rural markets the inventory in a broker&rsquo;s head
+  exceeds what is online.</li>
+</ul>
+<h3>3.7 The search discipline</h3>
+<ol>
+<li>Build one saved search <strong>per portal per submarket</strong>, with email alerts on.</li>
+<li>Name each alert after the search so incoming mail self-sorts.</li>
+<li>Review daily. Ten minutes. The value is in repetition, exactly as in
+   Portugal — you are training a price instinct, and it takes roughly 60–80
+   observed listings in one zone before you have one.</li>
+<li>Record every listing you seriously consider, including the ones you reject.
+   Rejections are half the data.</li>
+<li><strong>Do not crawl the portals.</strong> Zillow, Redfin and Realtor.com all forbid
+   automated harvesting and block quickly. The email alerts are the intended and
+   reliable intake channel.</li>
+</ol>
+<h2 id="4-step-three-study-the-market-and-the-disclosure-trap">4. Step three — study the market (and the disclosure trap)</h2>
+<p><strong>In roughly 12 states, sale prices are not public record.</strong> Texas is one. So
+are Idaho, Kansas, Louisiana, Mississippi, Missouri, Montana, New Mexico, North
+Dakota, Utah and Wyoming (lists vary at the margins; some are partial).</p>
+<p>In a <strong>disclosure state</strong>, you can pull sold prices from public records and
+build your own comparables — much like Portugal.</p>
+<p>In a <strong>non-disclosure state</strong>, you cannot. The county clerk does not record the
+price and the appraisal district publishes only its own <em>assessed</em> value, which
+is an estimate, not a transaction. Only licensed agents can pull sold prices,
+from the MLS.</p>
+<p>This is the most important structural fact for a self-directed buyer in Texas,
+and it has three consequences:</p>
+<ol>
+<li><strong>Your own medians are asking-price medians.</strong> Asking prices sit above
+   closing prices — in a soft market, well above. Never read &ldquo;15% below the
+   median&rdquo; as &ldquo;15% below market value.&rdquo;</li>
+<li><strong>Redfin becomes disproportionately valuable</strong>, because as a brokerage it
+   displays sold prices from its MLS feed. It is the best free comparables
+   source you have.</li>
+<li><strong>You need one MLS-side relationship.</strong> An agent who will send you sold comps
+   is the highest-value input in the entire search. Failing that, a paid
+   appraisal or broker price opinion.</li>
+</ol>
+<p>Where price data is thin, <strong>time is the honest signal.</strong> Days on market, number
+of price cuts, and the size of those cuts tell you what the list price will not.
+A property 150 days in with two reductions is telling you its true number.</p>
+<h3>What to measure</h3>
+<ul>
+<li><strong>$/ft²</strong> for built property; <strong>$/acre</strong> for rural land; <strong>$/ft²</strong> for urban
+  infill lots. Never mix acres and square feet in one median — the numbers
+  differ by a factor of 43,560 and the pooled result is meaningless.</li>
+<li><strong>Days on market</strong>, and the <em>distribution</em>, not just the median.</li>
+<li><strong>Sold-to-list ratio</strong>, if you can get it. Above 100% is a hot market; below
+  97% means sellers are negotiating.</li>
+<li><strong>Months of inventory.</strong> Under 4 favours sellers; 4–6 is balanced; over 6
+  favours buyers. This single number should set your negotiating posture.</li>
+</ul>
+<h2 id="5-step-four-visiting">5. Step four — visiting</h2>
+<p>Everything in the Portuguese guide applies. Additions specific to the US:</p>
+<ul>
+<li><strong>Walk the boundary with LandGlide or equivalent.</strong> Fences are frequently not
+  on property lines. This is a five-minute check that has saved buyers years of
+  litigation.</li>
+<li><strong>Visit in the rain</strong>, or at least look hard at where water goes. Drainage
+  problems are invisible on a dry day and no map shows them at parcel scale.</li>
+<li><strong>Check the neighbours&rsquo; land use.</strong> Rural US zoning is often nonexistent — the
+  quiet tract next door can legally become a feedlot, a quarry or a shooting
+  range.</li>
+<li><strong>Confirm cell signal and internet.</strong> Fibre/cable availability, or Starlink
+  viability, is a genuine value factor in rural America.</li>
+<li><strong>Drive the commute at the actual hour</strong> you would drive it.</li>
+<li>Ask the seller directly: <strong>what does it cost you per year to own this?</strong> Their
+  tax bill and insurance premium are the two numbers that matter most.</li>
+</ul>
+<h2 id="6-step-five-track-everything">6. Step five — track everything</h2>
+<p>Same principle as Portugal: a listing you did not record teaches you nothing.
+Track at minimum — source, URL, ID, type, county, price, first price, area with
+its <strong>unit</strong>, $/unit, days on market, status, flags, and every price change with
+its date.</p>
+<p>The repository this guide sits in automates exactly this; see
+<code>.claude/skills/pt-property-tracker/</code>.</p>
+<h2 id="7-the-agent-question-and-what-changed-in-2024">7. The agent question — and what changed in 2024</h2>
+<p>This has no Portuguese equivalent and foreign buyers consistently get it wrong.</p>
+<p>Historically, the seller paid both agents, so a buyer&rsquo;s agent appeared free. The
+<strong>NAR settlement, effective 17 August 2024</strong>, ended that arrangement:</p>
+<ul>
+<li><strong>Buyer-agent compensation can no longer be advertised on the MLS.</strong></li>
+<li><strong>You must sign a written buyer-broker agreement before touring a home</strong>, and
+  it must state your agent&rsquo;s compensation specifically and objectively — not
+  open-ended.</li>
+<li>Sellers may still contribute to your agent&rsquo;s fee, but it is now negotiated
+  privately, deal by deal.</li>
+</ul>
+<p>What this means practically:</p>
+<ol>
+<li><strong>Negotiate your buyer-agent fee</strong>, and negotiate it before you sign. It is
+   now an explicit line item, typically 2–3% but genuinely variable.</li>
+<li><strong>Ask the seller to cover it</strong> as a term of your offer. Very common; in a
+   buyer&rsquo;s market, often granted.</li>
+<li><strong>Read the agreement&rsquo;s term and exclusivity.</strong> A 12-month exclusive across a
+   whole metro is a bad deal. Ask for a shorter term or a narrower area.</li>
+<li><strong>The listing agent is not your agent.</strong> &ldquo;Dual agency&rdquo; is legal in some
+   states and prohibited in others. A buyer&rsquo;s agent who owes you fiduciary duty
+   is worth paying for, particularly in a non-disclosure state where they are
+   also your comparables source.</li>
+</ol>
+<h2 id="8-the-transaction">8. The transaction</h2>
+<p>Broad shape; state variations are real (see Part Two for Texas).</p>
+<ol>
+<li><strong>Pre-approval</strong> from a lender, or proof of funds if cash. Sellers routinely
+   ignore offers without it.</li>
+<li><strong>Offer</strong>, on a state-promulgated or attorney-drafted contract, with
+   contingencies: inspection, financing, appraisal, title, survey.</li>
+<li><strong>Escrow opens.</strong> Earnest money — typically 1–3% — goes to a neutral third
+   party, a <strong>title company</strong> or <strong>escrow agent</strong> in most states, a <strong>closing
+   attorney</strong> in others.</li>
+<li><strong>Due diligence window.</strong> Inspection, survey, title commitment review,
+   insurance quote. This is short. Order everything on day one.</li>
+<li><strong>Appraisal</strong>, if financed. A low appraisal renegotiates or kills the deal.</li>
+<li><strong>Title commitment and insurance.</strong> Read Schedule B — the exceptions — where
+   easements, restrictions and mineral reservations appear.</li>
+<li><strong>Final walkthrough</strong>, then <strong>closing</strong>: sign, fund, record.</li>
+</ol>
+<p><strong>Closing costs</strong>, buyer side, typically 2–5% of price: lender fees, appraisal,
+title insurance, escrow, recording, prepaid tax and insurance escrows. Plus a
+transfer tax in many states — <strong>but not in Texas</strong>.</p>
+<h2 id="9-money-especially-for-a-non-us-buyer">9. Money — especially for a non-US buyer</h2>
+<p><strong>There is no restriction on non-citizens owning US real estate</strong>, and buying
+property grants <strong>no visa, residency or immigration status</strong> whatsoever. Anyone
+who tells you otherwise is selling something.</p>
+<p><em>(One important 2025 exception at state level: see Texas SB 17 in Part Two.)</em></p>
+<h3>Financing as a foreign national</h3>
+<p>You do <strong>not</strong> need a green card, a US visa, a Social Security Number, US credit
+history or US income to get a US mortgage. You need the right lender. As of
+2026 these are mature products with dozens of active lenders:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Product</th>
+<th>Qualifies on</th>
+<th>Typical down payment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Foreign national full-doc</strong></td>
+<td>Verified foreign income and assets</td>
+<td class="num">25–30%</td>
+</tr>
+<tr>
+<td><strong>DSCR loan</strong></td>
+<td>The property&rsquo;s own rental income</td>
+<td class="num">20–25%</td>
+</tr>
+<tr>
+<td><strong>ITIN loan</strong></td>
+<td>Income, using an ITIN instead of an SSN</td>
+<td class="num">15–25%</td>
+</tr>
+</tbody>
+</table></div>
+<p>Expect rates somewhat above conventional, and closing in 21–45 days. Vacant land
+is much harder to finance than housing — most raw-land purchases are cash or
+seller-financed, and land loans that exist want 30–50% down.</p>
+<h3>Tax and structure</h3>
+<ul>
+<li><strong>ITIN</strong> — an Individual Taxpayer Identification Number, from the IRS. You
+  will need one for tax filings; not required merely to own.</li>
+<li><strong>FIRPTA</strong> — on <em>sale</em> by a foreign person, the buyer must withhold a
+  percentage of the <strong>gross sale price</strong> (commonly 15%) and remit it to the IRS.
+  It is a withholding, not a tax; you reclaim the excess by filing. Plan for it
+  at purchase — it materially affects your exit liquidity.</li>
+<li><strong>LLC ownership</strong> is common for liability and privacy. It has real costs:
+  state franchise fees, filing requirements, harder financing, and possible loss
+  of homestead exemption. <strong>Take US tax advice before choosing a structure</strong> —
+  the right answer depends on your home country&rsquo;s treaty position, and getting
+  it wrong is expensive to unwind.</li>
+<li><strong>Estate tax exposure</strong> is the trap foreign buyers most often miss. Non-resident
+  aliens get a very small US estate tax exemption on US-situs assets — far below
+  the resident exemption. A US property can create a significant estate tax
+  liability for your heirs. This alone justifies professional advice.</li>
+<li><strong>FinCEN reporting</strong> on all-cash purchases through entities has expanded.
+  Your title company will handle it, but expect to disclose beneficial ownership.</li>
+</ul>
+<h2 id="10-costs-the-shape-is-inverted">10. Costs — the shape is inverted</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Portugal</th>
+<th>Typical US</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Purchase taxes</td>
+<td>IMT up to ~7.5% + 0.8% stamp</td>
+<td>0–2% transfer tax; <strong>none in Texas</strong></td>
+</tr>
+<tr>
+<td>Closing costs</td>
+<td>Notary, registration, lawyer ~2–3%</td>
+<td class="num">2–5%</td>
+</tr>
+<tr>
+<td><strong>Annual property tax</strong></td>
+<td class="num">~0.3–0.45%</td>
+<td class="num"><strong>1–2.5%</strong></td>
+</tr>
+<tr>
+<td>Insurance</td>
+<td>Modest</td>
+<td>Substantial, and rising fast in hazard-exposed markets</td>
+</tr>
+<tr>
+<td>Agent fee (buyer)</td>
+<td>Usually none</td>
+<td><strong>2–3%, now explicitly negotiated</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Insurance deserves its own line.</strong> In a growing number of US markets — Florida,
+California, Louisiana, parts of Texas — insurance availability, not price, is
+becoming the binding constraint. An uninsurable property is unfinanceable, and
+an unfinanceable property has a fraction of the buyer pool at resale. Get a
+<strong>real, bindable quote</strong> during your diligence window, never an estimate.</p>
+<hr>
+<h1 id="part-two-texas">PART TWO — TEXAS</h1>
+<h2 id="11-why-texas-and-what-it-costs">11. Why Texas, and what it costs</h2>
+<p>The pitch is real: no state income tax, strong job growth, no transfer tax, and
+a business-friendly regulatory posture. The bill arrives annually.</p>
+<p><strong>Texas funds itself through property tax.</strong> Effective rates run roughly
+1.5–2.5% of assessed value depending on the taxing entities on your parcel. On a
+$500,000 property that is $7,500–12,500 <em>every year</em>, and the appraisal district
+adjusts the taxable value toward market annually.</p>
+<p>For a buyer from Portugal, invert your mental model: <strong>buying is cheap, owning
+is expensive.</strong> Budget accordingly, and treat the tax rate as a search filter,
+not a closing detail.</p>
+<h2 id="12-the-non-disclosure-problem-concretely">12. The non-disclosure problem, concretely</h2>
+<p>Texas does not record sale prices. Not with the county clerk, not with the
+appraisal district. See §4 for why this matters; in Texas specifically:</p>
+<ul>
+<li><strong>TCAD/HaysCAD/WilCAD give you facts, not prices</strong> — legal description,
+  acreage, improvement square footage, exemptions, and the full list of taxing
+  entities. Invaluable, but the &ldquo;value&rdquo; shown is the district&rsquo;s estimate.</li>
+<li><strong>Redfin is your best free comparables source</strong>, because it shows sold prices
+  from its MLS feed.</li>
+<li><strong>Get an agent who will send you sold comps.</strong> In Texas this is not a
+  convenience, it is the missing half of your data.</li>
+</ul>
+<p>A perverse upside: because the appraisal district is estimating your value
+without knowing what you paid, <strong>its estimate is frequently wrong</strong> — which is
+why protesting is routine and often successful (§16).</p>
+<h2 id="13-sb-17-foreign-ownership-restrictions">13. SB 17 — foreign ownership restrictions</h2>
+<p><strong>Effective 1 September 2025</strong>, Texas restricts acquisition of real property by
+persons and entities tied to <strong>designated countries</strong> — currently <strong>China,
+Russia, Iran and North Korea</strong>, plus any country designated by the Governor or
+identified by the Director of National Intelligence as a national security risk.</p>
+<p>Key points:</p>
+<ul>
+<li>It covers commercial, agricultural <strong>and residential</strong> property, plus water,
+  groundwater and mineral rights, and leases of one year or longer.</li>
+<li>It reaches <strong>indirect and partial</strong> ownership through entities.</li>
+<li>There is an <strong>exception for a primary residence</strong> by an individual lawfully
+  present in the US.</li>
+<li>Enforcement lies with the Attorney General. A purchase in violation is not
+  automatically void, but a <strong>leasehold</strong> in violation is void and unenforceable.</li>
+<li>Sellers have no duty to investigate — so <strong>the compliance burden is yours</strong>.</li>
+<li>It has been challenged in federal court; at least one challenge was dismissed.
+  The list of designated countries can grow.</li>
+</ul>
+<p><strong>If you are an EU, UK, Latin American, Canadian or most other foreign nationals,
+this does not restrict you.</strong> But expect a title-company affidavit at closing,
+and if your ownership structure has any investor connected to a designated
+country, take legal advice early.</p>
+<h2 id="14-the-texas-transaction-trec-the-option-period-title">14. The Texas transaction — TREC, the option period, title</h2>
+<p><strong>Contracts are promulgated by TREC</strong> (Texas Real Estate Commission). Residential
+resales use the <em>One to Four Family Residential Contract (Resale)</em>. Agents fill
+in blanks; they do not draft terms. The form is public — read it before you
+make an offer.</p>
+<p><strong>The option period is the buyer&rsquo;s great advantage in Texas.</strong></p>
+<ul>
+<li>You pay an <strong>option fee</strong> — commonly $100–$500, paid to the seller — for an
+  <strong>unrestricted right to terminate</strong> for any reason.</li>
+<li>Typical length <strong>7–10 days</strong>, negotiable.</li>
+<li>Terminate within it and you forfeit only the option fee; <strong>earnest money is
+  returned</strong>.</li>
+<li>The option fee is normally credited toward the purchase at closing.</li>
+<li>Earnest money (typically 1–2%) and the option fee must be delivered within
+  <strong>3 days of the effective date</strong>. These deadlines are strict.</li>
+</ul>
+<p><strong>Rules:</strong> never waive the option period to win a bidding war unless every
+diligence item is already resolved — it is your only unconditional exit. And
+order the inspection and survey review on <strong>day one</strong>, not day five.</p>
+<p><strong>Texas is a title company state.</strong> A licensed title company or escrow officer
+closes the transaction; no attorney is required. They prepare documents, hold
+escrow, and record the deed. Title insurance rates in Texas are <strong>promulgated by
+the state</strong>, so the premium is the same everywhere — shop on service, not price.</p>
+<p><strong>Documents to demand:</strong> title commitment (read Schedule B exceptions and
+Schedule C requirements), <strong>survey plus T-47 affidavit</strong> from the seller — if
+they will not sign one, buy a new survey — Seller&rsquo;s Disclosure Notice, tax
+certificate, restrictive covenants, HOA resale certificate, and any statutory
+notices (<strong>MUD</strong>, PID, annexation, water district).</p>
+<p><strong>No transfer tax.</strong> Budget instead for the owner&rsquo;s title policy, survey, lender
+fees and escrows.</p>
+<h2 id="15-land-in-texas-water-septic-access">15. Land in Texas — water, septic, access</h2>
+<p>For rural land the binding constraints are physical, not regulatory.</p>
+<p><strong>Water.</strong> Texas groundwater is governed by the <strong>rule of capture</strong>, modified by
+local groundwater conservation districts. Ask: is there a well, and what does its
+log, depth, static level and current flow test say? Or is there a written
+<strong>service availability letter</strong> from a water utility for <em>this parcel</em>?
+Neighbouring wells predict nothing.</p>
+<p><strong>Wastewater.</strong> Outside sewer service you need an <strong>OSSF</strong> (septic) permit from
+the county. Get a licensed site evaluation with soil borings before you commit.
+Shallow limestone and slope defeat conventional drainfields across the Hill
+Country, pushing you to an aerobic system with ongoing maintenance obligations.</p>
+<p><strong>Access.</strong> Confirm the tract touches a public road or has a <strong>recorded,
+permanent easement</strong> to one. Historical use of a track is not legal access.
+Landlocked acreage is the classic too-cheap parcel.</p>
+<p><strong>Mineral rights.</strong> Texas routinely severs the mineral estate from the surface
+estate, and <strong>the mineral estate is dominant</strong> — its owner can use your surface
+to reach the minerals. Ask what mineral interest conveys. Often none does.
+Negotiate a surface waiver.</p>
+<p><strong>Restrictive covenants.</strong> With little county zoning, private deed restrictions
+do the regulatory work — and they run with the land. They commonly bar
+manufactured homes, short-term rentals, subdivision, livestock or business use.
+Read the recorded document, not the agent&rsquo;s summary.</p>
+<h2 id="16-property-tax-exemptions-ag-valuation-and-the-protest">16. Property tax — exemptions, ag valuation, and the protest</h2>
+<p><strong>Homestead exemption.</strong> For a <strong>primary residence</strong> only. As of the 2025 tax
+year the school-district homestead exemption is <strong>$140,000</strong> (up from $100,000),
+with a further <strong>$60,000</strong> for owners 65+ or with a qualifying disability. It
+also brings a <strong>10% annual cap</strong> on assessed value increases. You must <strong>file</strong> —
+it is not automatic.</p>
+<p>If the property is a second home, a rental or land banking, model your taxes
+with <strong>no exemption and no cap</strong>.</p>
+<p><strong>Agricultural valuation.</strong> An ag-valued tract is taxed on productivity rather
+than market value — often an order of magnitude less. Two warnings:</p>
+<ul>
+<li>A listing showing &ldquo;$400/year taxes&rdquo; on 10 acres reflects ag valuation, <strong>not</strong>
+  what you will pay once you build.</li>
+<li>Changing the use triggers a <strong>rollback</strong>: back taxes plus interest for prior
+  years. Confirm the exposure with the appraisal district before buying an ag
+  tract to develop.</li>
+</ul>
+<p><strong>Protest your appraisal — annually.</strong> The deadline is <strong>15 May</strong>, or 30 days
+after your Notice of Appraised Value, whichever is later, and it is a <em>received-by</em>
+deadline. In Travis County, informal settlement talks run May–July, formal ARB
+hearings June–August. You must file by the deadline to preserve the right to a
+formal hearing. In a non-disclosure state the district is guessing at your value;
+protesting is normal, and most owners who do it get some reduction.</p>
+<hr>
+<h1 id="part-three-austin">PART THREE — AUSTIN</h1>
+<h2 id="17-what-the-austin-market-actually-is-right-now">17. What the Austin market actually is right now</h2>
+<p>Austin is the clearest <strong>buyer&rsquo;s market</strong> among major US metros as of mid-2026,
+and understanding that should shape everything about how you bid.</p>
+<p><em>Figures as of July 2026 — re-check before acting.</em></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Indicator</th>
+<th>Value</th>
+<th>Reading</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Median sold price, metro</td>
+<td class="num"><strong>~$445,000</strong></td>
+<td>Down ~0.9% year over year</td>
+</tr>
+<tr>
+<td>Median, City of Austin proper</td>
+<td class="num"><strong>~$595,000</strong></td>
+<td>City commands a large premium</td>
+</tr>
+<tr>
+<td><strong>Change from May 2022 peak</strong></td>
+<td><strong>≈ −19%</strong></td>
+<td>A genuine multi-year correction</td>
+</tr>
+<tr>
+<td>Months of inventory</td>
+<td class="num"><strong>~5.5–6.0</strong></td>
+<td>Balanced-to-buyer-favouring</td>
+</tr>
+<tr>
+<td>Average days on market</td>
+<td class="num"><strong>~68</strong></td>
+<td>Slow by recent standards</td>
+</tr>
+<tr>
+<td><strong>Active listings with a price cut</strong></td>
+<td class="num"><strong>~55%</strong></td>
+<td>Sellers are systematically over-asking</td>
+</tr>
+<tr>
+<td>Sold-to-list ratio</td>
+<td class="num"><strong>~97.5%</strong></td>
+<td>Homes close below asking</td>
+</tr>
+</tbody>
+</table></div>
+<p>Read those last three together: <strong>more than half of sellers have already cut,
+homes sit over two months, and they still close 2.5% under ask.</strong> This is not a
+market where you pay list price. Negotiate on price, on the option period, on
+closing costs, and on the buyer-agent fee.</p>
+<p>It is also a market where <strong>days on market is your best lever.</strong> A property
+past 90 days with two cuts has a motivated seller.</p>
+<h2 id="18-the-geography-four-corridors">18. The geography — four corridors</h2>
+<p>Austin&rsquo;s metro spreads along four axes. Knowing which corridor a listing sits on
+tells you most of what you need before opening it.</p>
+<ul>
+<li><strong>North, I-35</strong> — Round Rock, <strong>Georgetown</strong>, Pflugerville. Established,
+  good value, longest-standing suburbs.</li>
+<li><strong>Northwest, US-183A</strong> — Cedar Park, Leander. Family-oriented, newer stock,
+  strong schools.</li>
+<li><strong>West, Hwy 71 / RR 620</strong> — <strong>Lakeway</strong>, Bee Cave, <strong>Dripping Springs</strong>. The
+  Hill Country and Lake Travis. <strong>The priciest corridor</strong>, and where acreage
+  lives. Water supply is a genuine constraint here.</li>
+<li><strong>South, I-35</strong> — <strong>Buda</strong>, <strong>Kyle</strong>, San Marcos, and further out <strong>Bastrop</strong>.
+  <strong>The most affordable</strong>, and the fastest-growing.</li>
+</ul>
+<h3>Submarket snapshot (early/mid 2026)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Submarket</th>
+<th>Months inventory</th>
+<th>Character</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bastrop</strong></td>
+<td class="num">~10.9</td>
+<td>Strongest buyer&rsquo;s market; front edge of the growth wave</td>
+</tr>
+<tr>
+<td><strong>Wimberley</strong></td>
+<td class="num">~9.9</td>
+<td>Hill Country, heavily buyer-favouring</td>
+</tr>
+<tr>
+<td><strong>Dripping Springs</strong></td>
+<td class="num">~7.9</td>
+<td>Acreage + Hill Country living; <strong>water supply issues</strong></td>
+</tr>
+<tr>
+<td><strong>Georgetown</strong></td>
+<td class="num">~6.3</td>
+<td>Established, good value</td>
+</tr>
+<tr>
+<td><strong>Lakeway</strong></td>
+<td class="num">~6.1</td>
+<td>Highest median (~$572,500); lake lifestyle, Lake Travis ISD</td>
+</tr>
+<tr>
+<td><strong>Buda</strong></td>
+<td class="num">~5.9</td>
+<td>Balanced; small-town character</td>
+</tr>
+<tr>
+<td><strong>Kyle</strong></td>
+<td class="num">~5.8</td>
+<td>Balanced; best value + amenities</td>
+</tr>
+</tbody>
+</table></div>
+<p>Bee Cave, Lakeway and Dripping Springs run medians above $550,000. Kyle and Buda
+sit in the low $300s to mid $400s — the best $/ft² in the metro.</p>
+<p><strong>If your Portuguese search is for land, the Austin analogue is the western and
+southern edge</strong>: Dripping Springs, Wimberley, Bastrop. That is where acreage,
+buyer-favouring inventory and Hill Country character coincide — and where the
+water and septic questions in §15 bite hardest.</p>
+<h2 id="19-city-limits-etj-or-county-this-determines-what-you-can-build">19. City limits, ETJ, or county — this determines what you can build</h2>
+<p>Three regimes, and a listing rarely tells you which applies.</p>
+<p><strong>Inside Austin city limits.</strong> Full city zoning, impervious cover limits,
+setbacks, watershed regulations, and a <strong>heritage tree ordinance</strong> protecting
+large-diameter trees — removal or building near one is a permit matter that can
+reshape a site plan. Austin has been progressively loosening single-family lot
+rules (smaller minimum lot sizes, more units per lot); if your plan involves
+adding a unit or subdividing, <strong>verify the current rule for that specific parcel
+with the city</strong>, not from an article. This area has changed repeatedly.</p>
+<p><strong>In Austin&rsquo;s ETJ (extraterritorial jurisdiction).</strong> The city has no zoning power
+but controls subdivision and some development standards.</p>
+<blockquote>
+<p><strong>This is genuinely unsettled and you must not take an agent&rsquo;s word for it.</strong>
+<strong>SB 2038</strong> (effective September 2023) created a petition process for owners to
+exit a city&rsquo;s ETJ. Austin notified roughly <strong>170 Travis County properties</strong>
+that they were released, then <strong>reversed those releases in March 2026</strong>, citing
+a statutory exception. A nonprofit formed by affected owners <strong>sued the city in
+June 2026</strong>; the matter is live.</p>
+<p>If your plan depends on being outside the ETJ, treat that as an <strong>open legal
+question</strong>, get the parcel&rsquo;s status in writing from the City of Austin, and
+re-check it at contract.</p>
+</blockquote>
+<p><strong>Outside both.</strong> County authority only — subdivision, floodplain, OSSF, road
+access. Travis County does not regulate land <em>use</em>. The binding limits are then
+private: deed restrictions and HOA rules (§15).</p>
+<h2 id="20-flooding-check-two-maps-not-one">20. Flooding — check two maps, not one</h2>
+<p>Austin&rsquo;s floodplain maps are being redrawn upward following the <strong>NOAA Atlas 14</strong>
+rainfall study, which found the region at materially higher risk. Current maps
+model ~10.2 inches of rain in 24 hours; updated maps reflect nearly <strong>13 inches</strong>
+in places, putting thousands of additional structures in higher-risk zones.</p>
+<p><strong>Austin&rsquo;s maps are stricter than FEMA&rsquo;s.</strong> A property can sit outside the FEMA
+flood zone and inside Austin&rsquo;s. <strong>Check both.</strong> Austin publishes a lookup at
+ATXFloodPro.com alongside the FEMA Map Service Center.</p>
+<p>The <strong>Onion Creek corridor</strong> (ZIPs <strong>78748</strong> and <strong>78739</strong>) is the metro&rsquo;s
+worst-known flood risk — the October 2013 flood was fatal and prompted a
+voluntary buyout that acquired and demolished <strong>over 800 properties</strong>. Homes
+remaining outside that buyout carry elevated risk. Treat anything in those ZIPs
+as flood-suspect until independently verified, and get a bindable flood
+insurance quote before waiving your option period.</p>
+<p>Flood status drives insurance, insurance drives financing, and financing drives
+resale value. It is not a lifestyle question.</p>
+<h2 id="21-muds-the-tax-line-nobody-mentions">21. MUDs — the tax line nobody mentions</h2>
+<p>Travis County contains roughly <strong>127 taxing entities</strong>, including about <strong>54
+MUDs</strong> (Municipal Utility Districts) and 16 emergency services districts.</p>
+<p>A MUD funds water, sewer and drainage infrastructure in newer subdivisions
+outside city limits, and adds <strong>$0.25–$1.00+ per $100</strong> of value on top of
+everything else. On a $500,000 home a $0.75 MUD is roughly <strong>$3,750 per year</strong>,
+for decades.</p>
+<p>The combined rate inside Austin city limits in Travis County is approximately
+<strong>$2.05 per $100</strong> (~2.046%) for 2025–26, of which the City of Austin portion is
+about $0.574. Add a MUD and you approach 2.8%.</p>
+<p><strong>Consequence:</strong> a cheaper home in an outlying MUD district can cost more to own
+than a dearer one inside the city. Always pull the parcel on <strong>TCAD</strong>, list every
+taxing entity, and sum the rates before you tour. Sellers must provide a
+statutory <strong>MUD notice</strong> before contract — read it; it discloses the district&rsquo;s
+rate and outstanding debt.</p>
+<h2 id="22-water-in-the-hill-country-the-constraint-that-disqualifies-parcels">22. Water in the Hill Country — the constraint that disqualifies parcels</h2>
+<p>West and south-west of Austin, water availability decides whether land is
+buildable. Travis County regulates groundwater availability, and for the
+<strong>Trinity Aquifer</strong> the rules are hard:</p>
+<ul>
+<li><strong>Individual wells require lots of at least 5 acres.</strong></li>
+<li>A centralised groundwater system allows <strong>3-acre</strong> lots.</li>
+<li>Or the lot count cannot exceed <strong>acreage ÷ 4</strong>.</li>
+</ul>
+<p><strong>A 3-acre tract you intended to put a private well on may simply not qualify.</strong>
+Subdivisions relying on wells must additionally prove supply through aquifer
+testing and provide a <strong>Groundwater Availability Certification</strong> from a licensed
+P.E. or P.G.</p>
+<p>Over the <strong>Edwards Aquifer recharge zone</strong>, add water-quality rules, impervious
+cover limits and a required water pollution abatement plan — all of which slow
+and constrain development.</p>
+<p>Budget <strong>3–8 weeks</strong> for septic site evaluation, design and permitting in Travis,
+Hays, Comal or Kendall counties, and longer over the recharge zones.</p>
+<p>Note the market signal: <strong>Dripping Springs has known water supply challenges</strong>,
+and it is also one of the most buyer-favouring submarkets. Those two facts are
+related. Cheap Hill Country acreage is frequently cheap for a reason that a site
+visit will not reveal but a hydrogeologist will.</p>
+<h2 id="23-austin-specific-resources">23. Austin-specific resources</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Resource</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TCAD</strong> (traviscad.org), <strong>HaysCAD</strong>, <strong>WilCAD</strong>, <strong>BastropCAD</strong></td>
+<td>Parcel facts, exemptions, taxing entities, protest filing</td>
+</tr>
+<tr>
+<td><strong>Travis County Clerk</strong></td>
+<td>Deeds, plats, easements, restrictive covenants</td>
+</tr>
+<tr>
+<td><strong>City of Austin property profile / zoning map</strong></td>
+<td>Zoning, city-limits vs ETJ, impervious cover, watershed</td>
+</tr>
+<tr>
+<td><strong>ATXFloodPro.com</strong> + <strong>FEMA MSC</strong></td>
+<td>The two flood maps you must both check</td>
+</tr>
+<tr>
+<td><strong>Travis County TNR</strong></td>
+<td>OSSF/septic permits, groundwater availability, subdivision</td>
+</tr>
+<tr>
+<td><strong>Unlock MLS</strong></td>
+<td>The Austin-area MLS; market reports</td>
+</tr>
+<tr>
+<td><strong>Team Price / local market reports</strong></td>
+<td>Weekly Austin data — inventory, DOM, price cuts</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="24-a-first-week-plan-for-austin">24. A first-week plan for Austin</h2>
+<ol>
+<li><strong>Pick two submarkets</strong>, not six. If land: Dripping Springs and Wimberley, or
+   Bastrop. If a house: Kyle/Buda for value, Georgetown for establishment.</li>
+<li><strong>Build saved searches</strong> on Zillow, Redfin, Realtor.com and — for land —
+   LandWatch and LandSearch. Email alerts on, one alert per submarket.</li>
+<li><strong>Pull ten parcels on TCAD</strong> and compute the full combined tax rate for each,
+   MUD included. This exercise alone will change your budget.</li>
+<li><strong>Check every one against both flood maps.</strong></li>
+<li><strong>Record all of them</strong>, including rejects. You need roughly 60–80 before your
+   instinct is worth anything.</li>
+<li><strong>Find one buyer&rsquo;s agent</strong> who will send sold comps, and negotiate their fee
+   in writing before touring — remembering you can ask the seller to cover it.</li>
+<li><strong>Do not offer for at least 30 days.</strong> In a market with six months of
+   inventory and 55% of listings already cut, patience is the cheapest leverage
+   you will ever have.</li>
+</ol>
+<hr>
+<h2 id="appendix-a-portuguese-us-glossary">Appendix A — Portuguese → US glossary</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Portugal</th>
+<th>United States</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Caderneta Predial</td>
+<td>County appraisal district property record</td>
+</tr>
+<tr>
+<td>Certidão Permanente</td>
+<td>Title commitment / county deed records</td>
+</tr>
+<tr>
+<td>Licença de Utilização</td>
+<td>Certificate of Occupancy</td>
+</tr>
+<tr>
+<td>PDM</td>
+<td>Zoning ordinance (city) — often <em>nothing</em> at county level</td>
+</tr>
+<tr>
+<td>RAN / REN</td>
+<td>Floodplain, aquifer recharge zone, conservation easement</td>
+</tr>
+<tr>
+<td>CPCV</td>
+<td>Purchase contract (TREC form in Texas)</td>
+</tr>
+<tr>
+<td>Escritura</td>
+<td>Deed + closing at a title company</td>
+</tr>
+<tr>
+<td>IMT / Imposto do Selo</td>
+<td>Transfer tax — <strong>none in Texas</strong></td>
+</tr>
+<tr>
+<td>IMI</td>
+<td>Property tax — <strong>much higher</strong></td>
+</tr>
+<tr>
+<td>Notário</td>
+<td>Title company / escrow officer (or closing attorney)</td>
+</tr>
+<tr>
+<td>Concelho</td>
+<td>County</td>
+</tr>
+<tr>
+<td>Freguesia</td>
+<td>City / municipality / unincorporated area</td>
+</tr>
+<tr>
+<td>m²</td>
+<td>ft² (built) · acre (land) — 1 acre = 43,560 ft²</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="appendix-b-the-essentials-condensed">Appendix B — the essentials, condensed</h2>
+<ol>
+<li>Choose a metro and two submarkets. Never search &ldquo;the USA.&rdquo;</li>
+<li>Use all four national portals; they disagree, and that is useful.</li>
+<li>For land, the Land.com network and LandSearch are not optional.</li>
+<li>Learn whether your state discloses sold prices. Texas does not.</li>
+<li>Get one agent who will send you sold comps.</li>
+<li>Negotiate your buyer-agent fee in writing, before touring. Ask the seller to pay it.</li>
+<li>Compute price <strong>plus ten years of property tax</strong> before comparing anything.</li>
+<li>Pull every parcel on the county appraisal district. Every taxing entity. Every time.</li>
+<li>Check two flood maps, not one.</li>
+<li>For land: water, septic, legal access, minerals. In that order. Any one kills the deal.</li>
+<li>Walk the boundary with a GPS parcel app.</li>
+<li>Never waive the Texas option period.</li>
+<li>Read Schedule B of the title commitment.</li>
+<li>Get a bindable insurance quote, not an estimate.</li>
+<li>File your homestead exemption. Protest your appraisal every year by 15 May.</li>
+<li>Buying property gives you no US immigration status. Take tax advice on structure and estate exposure before you buy, not after.</li>
+<li>Record every listing, including rejections. Sixty to eighty before you trust your instinct.</li>
+</ol>
+<hr>
+<h2 id="sources">Sources</h2>
+<p>Market and regulatory research, July 2026.</p>
+<p><strong>Portals and market data:</strong> <a href="https://www.zillow.com/">Zillow</a>, <a href="https://www.realtor.com/">Realtor.com</a>, <a href="https://www.redfin.com/">Redfin</a>, <a href="https://www.landwatch.com/">LandWatch</a>, <a href="https://www.landsearch.com/">LandSearch</a>, <a href="https://www.acrevalue.com/">AcreValue</a>, <a href="https://regrid.com/">Regrid</a>, <a href="https://www.landglide.com/">LandGlide</a>, <a href="https://www.auction.com/">Auction.com</a>, <a href="https://www.xome.com/auctions">Xome</a>, <a href="https://www.hubzu.com/">Hubzu</a>, <a href="https://www.hudhomestore.gov/">HUD Home Store</a>, <a href="https://www.fanniemae.com/homepath">Fannie Mae HomePath</a></p>
+<p><strong>Comparisons:</strong> <a href="https://www.realtordavid.com/mls-search-vs-zillow-vs-redfin-which-property-search-tool-is-best-for-buyers-in-2026">MLS vs Zillow vs Redfin for buyers 2026</a> · <a href="https://theclose.com/redfin-vs-zillow/">Redfin vs Zillow accuracy</a> · <a href="https://www.askbamland.com/post/best-websites-buy">Best land websites</a> · <a href="https://realestatebees.com/guides/software/listing-sites/foreclosure-auctions/">Foreclosure auction sites</a></p>
+<p><strong>Non-disclosure states:</strong> <a href="https://www.redfin.com/blog/non-disclosure-states-real-estate/">Redfin</a> · <a href="https://www.texastaxprotest.com/blog/non-disclosure-states-real-estate/">Texas Tax Protest</a> · <a href="https://ntpts.com/non-disclosure-states/">NTPTS</a></p>
+<p><strong>NAR settlement:</strong> <a href="https://www.nar.realtor/the-facts/what-the-nar-settlement-means-for-home-buyers-and-sellers">NAR</a> · <a href="https://armls.com/settlement">ARMLS</a></p>
+<p><strong>Foreign buyers:</strong> <a href="https://www.americamortgages.com/2026-foreign-national-mortgage-handbook/">America Mortgages 2026 handbook</a> · <a href="https://www.americamortgages.com/itin-mortgage-loan-usa/">ITIN mortgages</a> · <a href="https://crosscountrymortgage.com/mortgage/resources/can-i-buy-home-non-us-citizen/">CrossCountry Mortgage</a></p>
+<p><strong>Texas SB 17:</strong> <a href="https://www.gtlaw.com/en/insights/2025/7/texas-senate-bill-17-restricts-foreign-ownership-of-real-property-in-texas">Greenberg Traurig</a> · <a href="https://www.nortonrosefulbright.com/en/knowledge/publications/56d2c827/texas-law-limits-foreign-ownership-of-real-property">Norton Rose Fulbright</a> · <a href="https://www.jw.com/news/insights-texas-foreign-ownership-real-property-law/">Jackson Walker</a> · <a href="https://www.morganlewis.com/pubs/2025/07/us-federal-government-expands-cfius-texas-joins-states-limiting-foreign-control-of-real-property">Morgan Lewis</a></p>
+<p><strong>Texas transaction:</strong> <a href="https://www.trec.texas.gov/sites/default/files/pdf-forms/20-15_3.pdf">TREC 1-4 Family Contract</a> · <a href="https://lrgrealty.com/lrg-blog/texas-option-period-explained/">Option period explained</a> · <a href="https://lrgrealty.com/lrg-blog/closing-timeline-after-offer-acceptance-texas/">Closing timeline</a> · <a href="https://www.freedom-res.com/post/earnest-money-in-texas/">Earnest money rules</a></p>
+<p><strong>Texas property tax:</strong> <a href="https://www.jvmlending.com/blog/travis-county-property-tax-guide-for-homeowners/">Travis County guide</a> · <a href="https://www.ballardpropertytaxprotest.com/post/austin-property-tax-rate">Austin rates by entity</a> · <a href="https://neuhausre.com/austin-property-tax-guide-2026/">Austin 2026 guide</a> · <a href="https://hometaxshield.com/posts/travis-county-property-tax-protest-guide-2026/">Travis protest guide</a> · <a href="https://www.alamoadvalorem.com/texas-tax-protest-deadline-2026-may-15-rule/">Protest deadlines</a></p>
+<p><strong>Austin market:</strong> <a href="https://teamprice.com/market-update">Team Price weekly update</a> · <a href="https://www.noradarealestate.com/blog/austin-real-estate-market/">Norada forecast</a> · <a href="https://www.kxan.com/news/housing/austin-housing-market-data/">KXAN housing data</a> · <a href="https://neuhausre.com/austin-area-real-estate-market-updates-march-2026/">Suburb comparison</a> · <a href="https://thekeenangroup.com/the-source/best-suburbs-austin-2026">Best suburbs 2026</a></p>
+<p><strong>Austin land, water, flood, ETJ:</strong> <a href="https://www.traviscountytx.gov/tnr/permits/water-availability-regulation">Travis County groundwater regulation</a> · <a href="https://www.traviscountytx.gov/tnr/development-services/apply-for-a-permit/residential-ossf-septic-system-permit">Travis County OSSF permits</a> · <a href="https://neuhausre.com/hill-country-well-water-septic-homebuyer-guide/">Hill Country well &amp; septic guide</a> · <a href="https://www.austintexas.gov/floodplains">City of Austin floodplains</a> · <a href="https://communityimpact.com/southwest-austin/new-atlas-14-data-shows-thousands-more-structures-at-risk-of-flooding-in-austin/">Atlas 14 impact</a> · <a href="https://grewalregroup.com/blog/austin-flood-zone-guide-2026">Austin flood zone guide</a> · <a href="https://www.austintexas.gov/services/petition-extraterritorial-jurisdiction-etj-release">City of Austin ETJ release</a> · <a href="https://therealdeal.com/texas/2026/06/22/austin-sued-by-property-owners-over-etj-status/">ETJ lawsuit, June 2026</a> · <a href="https://aquiferalliance.org/wp-content/uploads/2024/05/Report-on-the-Impacts-of-SB-2038-in-Central-Texas-5.21.24.pdf">SB 2038 impacts report</a></p>
+  </article>
+  <footer class="colophon">
+    Compiled from primary sources and market data, July 2026. Full source list
+    at the end of the guide. Figures for the Austin market move weekly; the
+    structural facts — non-disclosure, the option period, ETJ status, aquifer
+    lot minimums — move on their own schedule and are worth re-checking before
+    you act on any of them.
+  </footer>
+</div>
