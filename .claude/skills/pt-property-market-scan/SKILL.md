@@ -1,9 +1,9 @@
 ---
 name: pt-property-market-scan
-description: Run the daily/weekly Portuguese property market sweep for a buyer — define the search strategy (property type, 15–20 km zone, purpose), build and refresh saved-search URLs across Idealista, Imovirtual, Casa Sapo, OLX and Facebook Marketplace, harvest new listings and price drops, and study €/m² patterns for an area. Use this skill whenever the user mentions searching, monitoring, scanning or "checking alerts" for property, land, plots, terrenos, quintas, ruins or houses in Portugal, asks what a zone costs per square meter, asks to set up or tune property alerts, or asks for today's/this week's new listings — even if they don't name a portal. Also use it when starting a new property search and no buyer profile exists yet.
+description: Run the daily/weekly property market sweep for a buyer, in Portugal or the United States — define the search strategy (property type, tight zone, purpose), build and refresh saved-search URLs across Idealista, Imovirtual, Casa Sapo and OLX for Portugal and Zillow, Redfin, Realtor.com and LandWatch for the US, harvest new listings and price drops, and study price-per-area patterns for an area. Use this skill whenever the user mentions searching, monitoring, scanning or "checking alerts" for property, land, plots, lots, acreage, terrenos, quintas, ruins or houses in Portugal or in Texas, asks what a zone costs per square meter or per acre, asks to set up or tune property alerts, or asks for today's/this week's new listings — even if they don't name a portal. Also use it when starting a new property search and no buyer profile exists yet.
 ---
 
-# Portuguese Property Market Scan
+# Property Market Scan — Portugal and the United States
 
 This skill runs the research loop that separates buyers who spot underpriced
 property from buyers who scroll aimlessly: a narrow, fixed search zone, watched
@@ -76,10 +76,12 @@ Tell the user to name each portal alert after its search. With two or three
 searches running, unlabelled alert mail becomes an undifferentiated stream and
 the sorting cost is what makes people stop reading it.
 
-Portal-specific slugs, filter parameters and quirks are documented in
-`references/portals.md` — read it before hand-editing any URL, because each site
-encodes location differently (Idealista uses geographic slugs, Casa Sapo uses
-district paths, OLX uses category + region IDs).
+Portal-specific slugs, filter parameters and quirks are documented per country:
+`references/portals.md` (Portugal) and `references/portals-us.md` (United
+States). Read the right one before hand-editing any URL — every site encodes
+location differently (Idealista uses geographic slugs, Casa Sapo uses district
+paths, OLX uses category + region IDs, Redfin needs a ZIP or an opaque numeric
+city id, Zillow hides its filters in a JSON blob).
 
 **Set up the email alerts.** This is the intake channel the guide recommends and
 it is also the intake channel that keeps you on the right side of the portals'
@@ -88,10 +90,33 @@ search + daily email alert on each portal while logged in. Automated bulk
 scraping of Idealista is against its terms and gets IP-blocked quickly; the alert
 emails and the listing pages the user actually opens are the reliable path.
 
-Cross-check portals in this order of yield: Idealista (broadest), Imovirtual,
-Casa Sapo, then OLX and Facebook Marketplace — the last two are where private
-owners with no agent post, which is exactly where rural bargains hide and where
-listing quality is worst.
+Cross-check portals in this order of yield.
+
+**Portugal:** Idealista (broadest), Imovirtual, Casa Sapo, then OLX and Facebook
+Marketplace — the last two are where private owners with no agent post, which is
+exactly where rural bargains hide and where listing quality is worst.
+
+**United States:** Zillow (broadest), Redfin, Realtor.com, then LandWatch and
+Facebook Marketplace. LandWatch plays OLX's role for rural acreage: better
+prices, worse data, more private sellers.
+
+### The US search has a hole Portugal does not
+
+**Texas is a non-disclosure state — sale prices are not public record.** Only
+licensed agents can pull sold comparables from the MLS. So for any `country: US`
+search, every median the tracker produces is an **asking-price** median.
+
+Say this plainly whenever you report a US statistic. "12% below the zone median"
+means below what sellers are *asking*, which in a soft market sits above what
+properties actually close at. Do not let it read as market value.
+
+Two things partly close the gap, and both are worth pushing the user toward:
+Redfin shows sold prices from its MLS feed, and an agent willing to send sold
+comps is the single highest-value input in a US search. Record that source in
+the profile's `sold_comps_source`.
+
+Days-on-market carries more weight in the US for the same reason — when price
+history is scarce, time on market is the honest signal.
 
 ### 3. Harvest new listings
 
@@ -190,6 +215,7 @@ off-market deals come through those relationships later.
 
 ## Reference files
 
-- `references/portals.md` — per-portal URL structure, filters, quirks, yield
+- `references/portals.md` — Portuguese portals: URL structure, filters, quirks
+- `references/portals-us.md` — US portals, plus how reliable each generated URL is
 - `references/profile-template.yaml` — the buyer profile schema, commented
 - `references/listing-fields.md` — the fields to extract from every listing

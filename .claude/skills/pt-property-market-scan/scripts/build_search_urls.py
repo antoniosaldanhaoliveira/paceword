@@ -25,7 +25,7 @@ import unicodedata
 from pathlib import Path
 from urllib.parse import quote
 
-PORTALS = ("idealista", "imovirtual", "casa_sapo", "olx")
+DEFAULT_COUNTRY = "PT"
 
 # Portal-specific vocabulary for each profile property_type.
 IDEALISTA_OP = {
@@ -64,7 +64,30 @@ SAPO_TYPE = {
     "quinta": "quinta",
 }
 
-LAND_TYPES = {"urban_land", "rustic_land", "tourism_land", "modular", "mobile_home"}
+LAND_TYPES = {
+    "urban_land", "rustic_land", "tourism_land", "modular", "mobile_home",
+    "lot", "acreage", "ranch",
+}
+
+# US portal vocabulary.
+ZILLOW_TYPE = {
+    "lot": "land", "acreage": "land", "ranch": "land",
+    "house": "houses", "condo": "condos", "townhouse": "townhomes",
+}
+
+REDFIN_TYPE = {
+    "lot": "land", "acreage": "land", "ranch": "land",
+    "house": "house", "condo": "condo", "townhouse": "townhouse",
+}
+
+# LandWatch paths spell the state out. Only the states actually searched are
+# listed; an unlisted state skips LandWatch rather than emitting a broken slug.
+US_STATE_NAMES = {"TX": "texas"}
+
+REALTOR_TYPE = {
+    "lot": "land", "acreage": "land", "ranch": "farm",
+    "house": "single-family-home", "condo": "condo", "townhouse": "townhome",
+}
 
 
 def slugify(value: str) -> str:
@@ -183,12 +206,42 @@ def searches(profile: dict, only: str | None = None) -> list[dict]:
     return result
 
 
+def country_of(search: dict) -> str:
+    return (search.get("country") or DEFAULT_COUNTRY).upper()
+
+
 def _locations(search: dict) -> list[str]:
+    """The place names a portal path is built from.
+
+    `concelhos` (Portugal) and `counties`/`cities` (US) are the same idea wearing
+    local clothes, so both feed the same list.
+    """
     zone = search.get("zone") or {}
     locs = [c for c in (zone.get("concelhos") or []) if c]
+    locs += [c for c in (zone.get("cities") or []) if c]
+    locs += [c for c in (zone.get("counties") or []) if c]
     if not locs and zone.get("anchor"):
         locs = [zone["anchor"]]
     return locs
+
+
+def _cities(search: dict) -> list[str]:
+    zone = search.get("zone") or {}
+    cities = [c for c in (zone.get("cities") or []) if c]
+    return cities or ([zone["anchor"]] if zone.get("anchor") else [])
+
+
+def _state(search: dict) -> str:
+    return ((search.get("zone") or {}).get("state") or "TX").upper()
+
+
+def _usd(value) -> str:
+    """Redfin and Realtor take price shorthand: 450000 -> 450k, 1200000 -> 1.2M."""
+    n = int(value)
+    if n >= 1_000_000:
+        text = f"{n / 1_000_000:.2f}".rstrip("0").rstrip(".")
+        return f"{text}M"
+    return f"{n // 1000}k" if n % 1000 == 0 else str(n)
 
 
 def idealista_urls(search: dict) -> list[str]:
@@ -296,20 +349,155 @@ def facebook_queries(search: dict) -> list[str]:
     return out
 
 
+
+
+# --- United States -----------------------------------------------------------
+#
+# Zillow, Redfin and Realtor.com all forbid automated harvesting and block it
+# quickly, exactly like Idealista. These URLs exist to be opened once by the
+# logged-in user, checked, and saved with an email alert — that alert is the
+# intake channel, not a crawler.
+
+
+def zillow_urls(search: dict) -> list[str]:
+    """Zillow region pages.
+
+    Zillow's real filter grammar is a JSON `searchQueryState` blob that it
+    rewrites without notice, so only the region and property type go in the
+    path. Price and acreage are set once in the UI before saving — see
+    references/portals-us.md.
+    """
+    urls = []
+    for ptype in search.get("property_types") or []:
+        kind = ZILLOW_TYPE.get(ptype, "houses")
+        for city in _cities(search):
+            urls.append(
+                f"https://www.zillow.com/{slugify(city)}-{_state(search).lower()}/{kind}/"
+            )
+    return urls
+
+
+def redfin_urls(search: dict) -> list[str]:
+    """Redfin filter URLs.
+
+    Redfin's `/filter/` grammar is comma-separated and stable, so the whole
+    search deep-links. It is keyed by ZIP here on purpose: the city form needs
+    an opaque numeric region id that cannot be derived from the name.
+    """
+    zone = search.get("zone") or {}
+    budget = search.get("budget") or {}
+    req = search.get("requirements") or {}
+    zips = [str(z) for z in (zone.get("zips") or []) if z]
+    if not zips:
+        return []
+
+    urls = []
+    for ptype in search.get("property_types") or []:
+        filters = [f"property-type={REDFIN_TYPE.get(ptype, 'house')}"]
+        if budget.get("min"):
+            filters.append(f"min-price={_usd(budget['min'])}")
+        if budget.get("max"):
+            filters.append(f"max-price={_usd(budget['max'])}")
+        if ptype in LAND_TYPES and req.get("land_acres_min"):
+            filters.append(f"min-lot-size={req['land_acres_min']}-acre")
+        if ptype not in LAND_TYPES:
+            if req.get("built_sqft_min"):
+                filters.append(f"min-sqft={int(req['built_sqft_min'])}-sqft")
+            if req.get("bedrooms_min"):
+                filters.append(f"min-beds={int(req['bedrooms_min'])}")
+        filters.append("sort=newest")
+        for zipcode in zips:
+            urls.append(
+                f"https://www.redfin.com/zipcode/{zipcode}/filter/" + ",".join(filters)
+            )
+    return urls
+
+
+def realtor_urls(search: dict) -> list[str]:
+    """Realtor.com search paths — MLS-fed, and the least hostile of the three."""
+    budget = search.get("budget") or {}
+    req = search.get("requirements") or {}
+    urls = []
+    for ptype in search.get("property_types") or []:
+        segments = [f"type-{REALTOR_TYPE.get(ptype, 'single-family-home')}"]
+        lo, hi = int(budget.get("min") or 0), int(budget.get("max") or 0)
+        if hi:
+            segments.append(f"price-{lo}-{hi}" if lo else f"price-na-{hi}")
+        if ptype in LAND_TYPES and req.get("land_acres_min"):
+            segments.append(f"lot-sqft-{int(float(req['land_acres_min']) * 43560)}")
+        if ptype not in LAND_TYPES and req.get("bedrooms_min"):
+            segments.append(f"beds-{int(req['bedrooms_min'])}")
+        segments.append("sby-6")  # newest first
+        for city in _cities(search):
+            place = f"{slugify(city).replace('-', '-').title()}_{_state(search)}"
+            urls.append(
+                "https://www.realtor.com/realestateandhomes-search/"
+                + place + "/" + "/".join(segments)
+            )
+    return urls
+
+
+def landwatch_urls(search: dict) -> list[str]:
+    """LandWatch — rural acreage, where Hill Country tracts surface first."""
+    budget = search.get("budget") or {}
+    req = search.get("requirements") or {}
+    state = _state(search)
+    urls = []
+    if not any(t in LAND_TYPES for t in (search.get("property_types") or [])):
+        return []
+    if state not in US_STATE_NAMES:
+        print(f"LandWatch skipped: no path slug known for state {state!r}. "
+              f"Add it to US_STATE_NAMES.", file=sys.stderr)
+        return []
+    for county in ((search.get("zone") or {}).get("counties") or _cities(search)):
+        parts = [f"https://www.landwatch.com/{slugify(county)}-county-"
+                 f"{slugify(US_STATE_NAMES.get(state, state))}-land-for-sale"]
+        if budget.get("max"):
+            parts.append(f"price-{int(budget.get('min') or 0)}-{int(budget['max'])}")
+        if req.get("land_acres_min"):
+            parts.append(f"acres-over-{int(float(req['land_acres_min']))}")
+        parts.append("sort-recent")
+        urls.append("/".join(parts))
+    return urls
+
+
+def facebook_us_queries(search: dict) -> list[str]:
+    terms = {"lot": "vacant lot", "acreage": "acreage land",
+             "ranch": "ranch land", "house": "house"}
+    out = []
+    for ptype in search.get("property_types") or []:
+        term = terms.get(ptype, "land")
+        for city in _cities(search):
+            out.append("https://www.facebook.com/marketplace/search/?query="
+                       + quote(f"{term} {city} {_state(search)}"))
+    return out
+
+
 BUILDERS = {
-    "idealista": idealista_urls,
-    "imovirtual": imovirtual_urls,
-    "casa_sapo": casa_sapo_urls,
-    "olx": olx_urls,
-    "facebook": facebook_queries,
+    "PT": {
+        "idealista": idealista_urls,
+        "imovirtual": imovirtual_urls,
+        "casa_sapo": casa_sapo_urls,
+        "olx": olx_urls,
+        "facebook": facebook_queries,
+    },
+    "US": {
+        "zillow": zillow_urls,
+        "redfin": redfin_urls,
+        "realtor": realtor_urls,
+        "landwatch": landwatch_urls,
+        "facebook": facebook_us_queries,
+    },
 }
+
+ALL_PORTALS = sorted({p for country in BUILDERS.values() for p in country})
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--profile", required=True, type=Path)
     ap.add_argument("--search", help="build only this named search")
-    ap.add_argument("--portal", choices=list(BUILDERS), help="limit to one portal")
+    ap.add_argument("--portal", choices=ALL_PORTALS, help="limit to one portal")
     ap.add_argument("--format", choices=("markdown", "json", "plain"), default="markdown")
     ap.add_argument("--list", action="store_true", help="list the searches and exit")
     args = ap.parse_args()
@@ -329,7 +517,8 @@ def main() -> int:
             return 0
         for s in every:
             zone = s.get("zone") or {}
-            print(f"{s['name']:24} {', '.join(s.get('property_types') or []) or '?':28} "
+            print(f"{s['name']:20} {country_of(s):3} "
+                  f"{', '.join(s.get('property_types') or []) or '?':26} "
                   f"{zone.get('anchor', '?')} ({zone.get('radius_km', '?')} km)")
         return 0
 
@@ -342,14 +531,23 @@ def main() -> int:
             print("No active searches in the profile — nothing to build.", file=sys.stderr)
         return 1
 
-    portals = [args.portal] if args.portal else list(BUILDERS)
     result: dict[str, dict[str, list[str]]] = {}
     for search in active:
         if not (search.get("property_types") and _locations(search)):
             print(f"Search {search['name']!r} has no property_types or no zone — skipped.",
                   file=sys.stderr)
             continue
-        result[search["name"]] = {p: BUILDERS[p](search) for p in portals}
+        country = country_of(search)
+        builders = BUILDERS.get(country)
+        if not builders:
+            print(f"Search {search['name']!r} has country {country!r}, which has no "
+                  f"portals defined. Known: {', '.join(sorted(BUILDERS))}.",
+                  file=sys.stderr)
+            continue
+        if args.portal and args.portal not in builders:
+            continue  # portal belongs to another country
+        chosen = [args.portal] if args.portal else list(builders)
+        result[search["name"]] = {p: builders[p](search) for p in chosen}
 
     if not result:
         return 1
@@ -378,7 +576,9 @@ def main() -> int:
                   f"({zone.get('radius_km', '?')} km) · "
                   f"{', '.join(search.get('property_types') or [])}")
         if budget.get("max"):
-            header += f" · €{int(budget.get('min') or 0):,}–{int(budget['max']):,}"
+            symbol = "$" if country_of(search) == "US" else "€"
+            header += (f" · {symbol}{int(budget.get('min') or 0):,}"
+                       f"–{symbol}{int(budget['max']):,}")
         print(header + "\n")
         for portal, urls in result[name].items():
             if not urls:

@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""Track Portuguese property listings over time.
+"""Track property listings over time, in any country the profile defines.
 
 Keeps one CSV of unique properties plus an append-only price history, and
 answers the questions that only accumulate with time: what is new, what dropped,
-what disappeared, and what a square metre actually costs in this zone.
+what disappeared, and what a unit of area actually costs in this zone.
 
-Several named searches can run in parallel. Every statistic is scoped to one
-search, because a search is the unit that has a coherent €/m² baseline — pooling
-two zones produces a median that describes neither.
+Several named searches can run in parallel — Algarve plots and Austin lots side
+by side. Every statistic is scoped to one search, because a search is the unit
+that has a coherent price-per-area baseline; pooling two zones produces a median
+that describes neither. Cohorts are split by unit as well, so acres and square
+feet never land in the same median.
 
 Standard library only, except `export --xlsx` which uses openpyxl if present.
 
@@ -15,7 +17,7 @@ Commands:
     ingest   record listings from a JSON array
     sweep    mark which listings are still live; flag the rest as disappeared
     digest   what changed since the last run
-    stats    €/m² medians, days on market, outliers
+    stats    price-per-area medians, days on market, outliers
     searches overview of every search being tracked
     note     attach a note or log a visit
     set      change status / rating / dd_status on a listing
@@ -34,17 +36,90 @@ from datetime import date, datetime
 from pathlib import Path
 
 COLUMNS = [
-    "id", "search", "source", "source_ref", "url", "title", "property_type",
-    "concelho", "freguesia", "lat", "lon",
-    "price", "first_price", "land_m2", "built_m2",
-    "eur_per_land_m2", "eur_per_built_m2", "bedrooms",
+    "id", "search", "country", "source", "source_ref", "url", "title",
+    "property_type", "region", "subregion", "lat", "lon",
+    "price", "currency", "first_price",
+    "land_area", "land_unit", "built_area", "built_unit",
+    "price_per_land_unit", "price_per_built_unit", "bedrooms",
     "agency", "agent_phone",
     "first_seen", "last_seen", "listed_date", "days_on_market",
     "status", "rating", "dd_status", "flags", "notes",
 ]
 
-LAND_TYPES = {"urban_land", "rustic_land", "tourism_land", "modular", "mobile_home"}
+# Columns renamed when the tracker stopped being Portugal-only. Old CSVs are
+# migrated on read, so a file written before the rename still loads.
+RENAMED = {
+    "concelho": "region",
+    "freguesia": "subregion",
+    "land_m2": "land_area",
+    "built_m2": "built_area",
+    "eur_per_land_m2": "price_per_land_unit",
+    "eur_per_built_m2": "price_per_built_unit",
+}
+
+LAND_TYPES = {
+    # Portugal
+    "urban_land", "rustic_land", "tourism_land", "modular", "mobile_home",
+    # United States
+    "lot", "acreage", "ranch",
+}
 TERMINAL = {"sold", "rejected"}
+
+# Per-country display and measurement defaults. `land_unit` differs by country
+# for a real reason: Portugal quotes land in m², the US quotes rural land in
+# acres and city lots in square feet. Areas are therefore stored with the unit
+# they were quoted in, and never silently converted.
+LOCALES = {
+    "PT": {
+        "currency": "EUR", "symbol": "€", "symbol_first": True,
+        "land_unit": "m2", "built_unit": "m2", "region_label": "concelho",
+    },
+    "US": {
+        "currency": "USD", "symbol": "$", "symbol_first": True,
+        "land_unit": "acre", "built_unit": "sqft", "region_label": "county",
+    },
+}
+DEFAULT_COUNTRY = "PT"
+
+UNIT_LABELS = {"m2": "m²", "sqft": "ft²", "acre": "acre"}
+
+
+def locale_for(country: str | None) -> dict:
+    return LOCALES.get((country or DEFAULT_COUNTRY).upper(), LOCALES[DEFAULT_COUNTRY])
+
+
+def money(value, loc: dict) -> str:
+    """Format a price in the locale's currency."""
+    if value in (None, "", "None"):
+        return "-"
+    try:
+        n = float(value)
+    except (TypeError, ValueError):
+        return str(value)
+    text = f"{int(n):,}" if n.is_integer() else f"{n:,.2f}"
+    return f"{loc['symbol']}{text}" if loc["symbol_first"] else f"{text} {loc['symbol']}"
+
+
+def unit_label(unit: str | None) -> str:
+    return UNIT_LABELS.get(unit or "", unit or "unit")
+
+
+def area_unit_of(row: dict) -> str:
+    """The unit this row's headline rate is quoted in.
+
+    Land is priced on its land area, everything else on its built area, so the
+    relevant unit depends on the property type.
+    """
+    loc = locale_for(row.get("country"))
+    if (row.get("property_type") or "") in LAND_TYPES:
+        return row.get("land_unit") or loc["land_unit"]
+    return row.get("built_unit") or loc["built_unit"]
+
+
+def row_locale(rows: list[dict]) -> dict:
+    """The locale a group of rows shares, falling back to the default."""
+    countries = {(r.get("country") or "").upper() for r in rows} - {""}
+    return locale_for(next(iter(countries)) if len(countries) == 1 else None)
 
 
 def workspace() -> Path:
@@ -70,7 +145,28 @@ def load(ws: Path) -> list[dict]:
     if not p.exists():
         return []
     with p.open(newline="", encoding="utf-8") as fh:
-        return [dict(row) for row in csv.DictReader(fh)]
+        return [migrate(dict(row)) for row in csv.DictReader(fh)]
+
+
+def migrate(row: dict) -> dict:
+    """Bring a row written by an older, Portugal-only tracker up to date.
+
+    Anything recorded before the rename was Portuguese and measured in metres,
+    so the units and country it never stored can be filled in safely.
+    """
+    for old, new in RENAMED.items():
+        value = row.pop(old, "")
+        if value and not row.get(new):
+            row[new] = value
+    if not row.get("country"):
+        row["country"] = DEFAULT_COUNTRY
+    if row.get("land_area") and not row.get("land_unit"):
+        row["land_unit"] = "m2"
+    if row.get("built_area") and not row.get("built_unit"):
+        row["built_unit"] = "m2"
+    if row.get("price") and not row.get("currency"):
+        row["currency"] = locale_for(row.get("country"))["currency"]
+    return row
 
 
 def save(ws: Path, rows: list[dict]) -> None:
@@ -144,11 +240,21 @@ def make_id(item: dict) -> str:
 
 
 def derive(row: dict) -> dict:
+    loc = locale_for(row.get("country"))
+    if not row.get("country"):
+        row["country"] = DEFAULT_COUNTRY
+    if not row.get("currency"):
+        row["currency"] = loc["currency"]
+    if num(row.get("land_area")) and not row.get("land_unit"):
+        row["land_unit"] = loc["land_unit"]
+    if num(row.get("built_area")) and not row.get("built_unit"):
+        row["built_unit"] = loc["built_unit"]
+
     price = num(row.get("price"))
-    land = num(row.get("land_m2"))
-    built = num(row.get("built_m2"))
-    row["eur_per_land_m2"] = round(price / land, 2) if price and land else ""
-    row["eur_per_built_m2"] = round(price / built, 2) if price and built else ""
+    land = num(row.get("land_area"))
+    built = num(row.get("built_area"))
+    row["price_per_land_unit"] = round(price / land, 2) if price and land else ""
+    row["price_per_built_unit"] = round(price / built, 2) if price and built else ""
 
     anchor = row.get("listed_date") or row.get("first_seen")
     if anchor:
@@ -180,6 +286,14 @@ def cmd_ingest(args, ws: Path) -> int:
     stamp = today()
     new, dropped, raised, unchanged = [], [], [], 0
 
+    # A search that already holds rows knows what country it is in. Inheriting
+    # that means a forgotten --country cannot quietly file Austin listings as
+    # Portuguese and price them per square metre.
+    target_search = args.search or ""
+    inherited = {r.get("country") for r in scoped(rows, target_search)
+                 if r.get("country")} if target_search else set()
+    default_country = args.country or (inherited.pop() if len(inherited) == 1 else "")
+
     for item in items:
         lid = item.get("id") or make_id(item)
         price = num(item.get("price"), int)
@@ -198,6 +312,7 @@ def cmd_ingest(args, ws: Path) -> int:
                 "rating": item.get("rating", 0),
                 "dd_status": "none",
                 "search": item.get("search") or args.search or "",
+                "country": (item.get("country") or default_country or "").upper(),
                 "flags": ";".join(item.get("description_flags", []))
                          or item.get("flags", ""),
             })
@@ -249,12 +364,15 @@ def cmd_ingest(args, ws: Path) -> int:
     print(f"Ingested {len(items)} listing(s): {len(new)} new, {len(dropped)} price drop(s), "
           f"{len(raised)} price rise(s), {unchanged} unchanged. Total tracked: {len(rows)}.")
     for row in new:
-        print(f"  + {row['id']}  {row.get('title', '')[:60]}  €{row.get('price')}")
+        loc = locale_for(row.get("country"))
+        print(f"  + {row['id']}  {row.get('title', '')[:60]}  {money(row.get('price'), loc)}")
     for row, old, cur in dropped:
+        loc = locale_for(row.get("country"))
         pct = round((cur - old) / old * 100, 1) if old else 0
-        print(f"  ↓ {row['id']}  €{old} → €{cur} ({pct}%)")
+        print(f"  ↓ {row['id']}  {money(old, loc)} → {money(cur, loc)} ({pct}%)")
     for row, old, cur in raised:
-        print(f"  ↑ {row['id']}  €{old} → €{cur}")
+        loc = locale_for(row.get("country"))
+        print(f"  ↑ {row['id']}  {money(old, loc)} → {money(cur, loc)}")
     return 0
 
 
@@ -290,7 +408,8 @@ def cmd_sweep(args, ws: Path) -> int:
 
     print(f"{len(gone)} listing(s) no longer visible:")
     for row in gone:
-        print(f"  - {row['id']}  {row.get('title','')[:50]}  €{row.get('price')} "
+        print(f"  - {row['id']}  {row.get('title','')[:50]}  "
+              f"{money(row.get('price'), locale_for(row.get('country')))} "
               f"after {row.get('days_on_market','?')} days")
     if gone:
         print("\nCheck whether any of these reappear under a new reference before "
@@ -313,52 +432,68 @@ def _fmt(value):
 
 def cmd_stats(args, ws: Path) -> int:
     rows = scoped([r for r in load(ws) if r.get("status") != "rejected"], args.search)
-    if args.concelho:
-        rows = [r for r in rows if r.get("concelho", "").lower() == args.concelho.lower()]
+    if args.region:
+        rows = [r for r in rows if r.get("region", "").lower() == args.region.lower()]
     if args.type:
         rows = [r for r in rows if r.get("property_type") == args.type]
     if not rows:
         print("No listings match that filter yet.")
         return 0
 
-    by_type: dict[str, list[dict]] = {}
+    # Cohorts are keyed by unit as well as type. A median that pooled acres with
+    # square feet would be arithmetically fine and completely meaningless, so
+    # differing units split into separate cohorts rather than averaging.
+    by_cohort: dict[tuple[str, str], list[dict]] = {}
     for row in rows:
-        by_type.setdefault(row.get("property_type") or "unknown", []).append(row)
+        ptype = row.get("property_type") or "unknown"
+        unit = area_unit_of(row)
+        by_cohort.setdefault((ptype, unit), []).append(row)
 
     print(f"Zone statistics — {len(rows)} listing(s)"
           + (f" in search '{args.search}'" if args.search else "")
-          + (f" in {args.concelho}" if args.concelho else "") + "\n")
+          + (f" in {args.region}" if args.region else "") + "\n")
 
-    for ptype, group in sorted(by_type.items(), key=lambda kv: -len(kv[1])):
+    for (ptype, unit), group in sorted(by_cohort.items(), key=lambda kv: -len(kv[1])):
+        loc = row_locale(group)
         land_type = ptype in LAND_TYPES
-        key = "eur_per_land_m2" if land_type else "eur_per_built_m2"
+        key = "price_per_land_unit" if land_type else "price_per_built_unit"
         rates = [num(r.get(key)) for r in group]
         priced = [num(r.get("price")) for r in group]
         ages = [num(r.get("days_on_market"), int) for r in group]
         med = _median(rates)
-        unit = "land m²" if land_type else "built m²"
+        label = f"{'land' if land_type else 'built'} {unit_label(unit)}"
+        per = f"{loc['symbol']}/{label}"
 
         known_prices = [p for p in priced if p]
-        print(f"## {ptype}  (n={len(group)})")
-        print(f"   price:       median €{_fmt(_median(priced))}   "
-              f"range €{_fmt(min(known_prices, default=None))}–"
-              f"€{_fmt(max(known_prices, default=None))}")
+        heading = f"## {ptype}  (n={len(group)})"
+        if len({area_unit_of(r) for r in rows if
+                (r.get("property_type") or "unknown") == ptype}) > 1:
+            heading += f"  — quoted in {unit_label(unit)}"
+        print(heading)
+        print(f"   price:       median {money(_median(priced), loc)}   "
+              f"range {money(min(known_prices, default=None), loc)}–"
+              f"{money(max(known_prices, default=None), loc)}")
         if med:
             known = [r for r in rates if r]
-            print(f"   €/{unit}:   median €{med}   "
-                  f"p25 €{round(statistics.quantiles(known, n=4)[0], 2) if len(known) > 3 else '-'}   "
-                  f"p75 €{round(statistics.quantiles(known, n=4)[2], 2) if len(known) > 3 else '-'}   "
+            print(f"   {per}:   median {money(med, loc)}   "
+                  f"p25 {money(round(statistics.quantiles(known, n=4)[0], 2), loc) if len(known) > 3 else '-'}   "
+                  f"p75 {money(round(statistics.quantiles(known, n=4)[2], 2), loc) if len(known) > 3 else '-'}   "
                   f"(n={len(known)})")
         else:
-            print(f"   €/{unit}:   not computable — no areas recorded")
+            print(f"   {per}:   not computable — no areas recorded")
 
-        # Ruins and quintas are land with a building on it; pricing them on one
-        # area alone is how buyers talk themselves into overpaying.
-        other_key = "eur_per_land_m2" if not land_type else "eur_per_built_m2"
+        # Ruins, quintas and Hill Country places with a house on them are land
+        # with a building on it; pricing them on one area alone is how buyers
+        # talk themselves into overpaying.
+        other_key = "price_per_land_unit" if not land_type else "price_per_built_unit"
         other_med = _median([num(r.get(other_key)) for r in group])
         if other_med:
-            other_unit = "built m²" if land_type else "land m²"
-            print(f"   €/{other_unit}:   median €{other_med}   (secondary view)")
+            other_field = "built_unit" if land_type else "land_unit"
+            other_units = {r.get(other_field) for r in group if r.get(other_field)}
+            if len(other_units) == 1:
+                other_label = f"{'built' if land_type else 'land'} {unit_label(other_units.pop())}"
+                print(f"   {loc['symbol']}/{other_label}:   "
+                      f"median {money(other_med, loc)}   (secondary view)")
         print(f"   days listed: median {_median(ages)}   "
               f"over 120 days: {sum(1 for a in ages if a and a > 120)}")
 
@@ -370,22 +505,24 @@ def cmd_stats(args, ws: Path) -> int:
             if cheap:
                 print("   ⚠ more than 25% below median — opportunity or hidden problem:")
                 for row in cheap[:5]:
-                    print(f"      {row['id']}  €{row.get('price')}  "
-                          f"€{row.get(key)}/{'m² land' if land_type else 'm² built'}  "
+                    print(f"      {row['id']}  {money(row.get('price'), loc)}  "
+                          f"{money(row.get(key), loc)}/{label}  "
                           f"{row.get('title','')[:45]}")
                     print(f"        {row.get('url','')}")
         missing = [r for r in group
-                   if not num(r.get("land_m2")) and not num(r.get("built_m2"))]
+                   if not num(r.get("land_area")) and not num(r.get("built_area"))]
         if missing:
             print(f"   {len(missing)} listing(s) have no area recorded and are "
-                  f"excluded from the €/m² figures.")
+                  f"excluded from the {per} figures.")
         print()
 
     dupes = _duplicates(rows)
     if dupes:
-        print("Possible duplicates (same area and concelho, price within 10%):")
+        print("Possible duplicates (same area and region, price within 10%):")
         for a, b in dupes[:10]:
-            print(f"  {a['id']} €{a.get('price')}  ≈  {b['id']} €{b.get('price')}  "
+            loc = locale_for(a.get("country"))
+            print(f"  {a['id']} {money(a.get('price'), loc)}  ≈  "
+                  f"{b['id']} {money(b.get('price'), loc)}  "
                   f"— {a.get('title','')[:40]}")
         print("  Compare the photographs before merging; duplicates skew every median.")
     return 0
@@ -395,10 +532,12 @@ def _duplicates(rows: list[dict]) -> list[tuple[dict, dict]]:
     pairs = []
     for i, a in enumerate(rows):
         for b in rows[i + 1:]:
-            if a.get("concelho") != b.get("concelho") or not a.get("concelho"):
+            if a.get("region") != b.get("region") or not a.get("region"):
                 continue
-            area_a = num(a.get("land_m2")) or num(a.get("built_m2"))
-            area_b = num(b.get("land_m2")) or num(b.get("built_m2"))
+            if area_unit_of(a) != area_unit_of(b):
+                continue
+            area_a = num(a.get("land_area")) or num(a.get("built_area"))
+            area_b = num(b.get("land_area")) or num(b.get("built_area"))
             pa, pb = num(a.get("price")), num(b.get("price"))
             if not (area_a and area_b and pa and pb):
                 continue
@@ -446,10 +585,10 @@ def cmd_digest(args, ws: Path) -> int:
     cohorts: dict[str, list[float]] = {}
     for row in rows:
         ptype = row.get("property_type") or "unknown"
-        key = "eur_per_land_m2" if ptype in LAND_TYPES else "eur_per_built_m2"
+        key = "price_per_land_unit" if ptype in LAND_TYPES else "price_per_built_unit"
         value = num(row.get(key))
         if value:
-            cohorts.setdefault(ptype, []).append(value)
+            cohorts.setdefault((ptype, area_unit_of(row)), []).append(value)
     # A "median" over one or two listings is not a market reading, so only
     # compare against cohorts big enough to mean something.
     medians = {k: statistics.median(v) for k, v in cohorts.items() if len(v) >= 4}
@@ -458,8 +597,10 @@ def cmd_digest(args, ws: Path) -> int:
         lines.append("### New")
         for row in sorted(new, key=lambda r: num(r.get("price")) or 0):
             ptype = row.get("property_type") or "unknown"
-            key = "eur_per_land_m2" if ptype in LAND_TYPES else "eur_per_built_m2"
-            rate, med = num(row.get(key)), medians.get(ptype)
+            key = "price_per_land_unit" if ptype in LAND_TYPES else "price_per_built_unit"
+            unit = area_unit_of(row)
+            loc = locale_for(row.get("country"))
+            rate, med = num(row.get(key)), medians.get((ptype, unit))
             verdict = ""
             if rate and med:
                 delta = round((rate - med) / med * 100)
@@ -467,9 +608,10 @@ def cmd_digest(args, ws: Path) -> int:
                            f" — {abs(delta)}% {'below' if delta < 0 else 'above'} zone median")
             elif rate:
                 verdict = f" — too few comparables in {ptype} to place it yet"
-            lines.append(f"- **{row.get('title','(untitled)')}** — €{row.get('price')} · "
-                         f"{row.get('land_m2') or row.get('built_m2') or '?'} m² · "
-                         f"€{rate or '?'}/m²{verdict}")
+            area = row.get("land_area") or row.get("built_area") or "?"
+            lines.append(f"- **{row.get('title','(untitled)')}** — "
+                         f"{money(row.get('price'), loc)} · {area} {unit_label(unit)} · "
+                         f"{money(rate, loc) if rate else '?'}/{unit_label(unit)}{verdict}")
             lines.append(f"  {row.get('url','')}")
             if row.get("flags"):
                 lines.append(f"  ⚠ {row['flags'].replace(';', ' · ')}")
@@ -487,7 +629,9 @@ def cmd_digest(args, ws: Path) -> int:
                         if days > 90 and abs(pct) < 10 else
                         "large early cut — the original price was probably fiction"
                         if days < 45 and abs(pct) >= 15 else "")
-                lines.append(f"- **{row.get('title','')}** €{old} → €{cur} ({pct}%) "
+                loc = locale_for(row.get("country"))
+                lines.append(f"- **{row.get('title','')}** {money(old, loc)} → "
+                             f"{money(cur, loc)} ({pct}%) "
                              f"after {days} days" + (f" · {read}" if read else ""))
                 lines.append(f"  {row.get('url','')}")
         lines.append("")
@@ -495,21 +639,25 @@ def cmd_digest(args, ws: Path) -> int:
     if gone:
         lines.append("### No longer listed")
         for row in gone:
-            lines.append(f"- {row.get('title','')} — €{row.get('price')} after "
+            lines.append(f"- {row.get('title','')} — "
+                         f"{money(row.get('price'), locale_for(row.get('country')))} after "
                          f"{row.get('days_on_market','?')} days · cause unconfirmed")
         lines.append("")
 
     if stale:
         lines.append(f"### Sitting over 120 days ({len(stale)}) — negotiation leverage")
         for row in sorted(stale, key=lambda r: -(num(r.get("days_on_market"), int) or 0))[:8]:
-            lines.append(f"- {row.get('title','')} — €{row.get('price')} · "
+            loc = locale_for(row.get("country"))
+            lines.append(f"- {row.get('title','')} — {money(row.get('price'), loc)} · "
                          f"{row.get('days_on_market')} days · "
-                         f"€{row.get('first_price')} originally")
+                         f"{money(row.get('first_price'), loc)} originally")
         lines.append("")
 
     if medians:
         lines.append("**Zone medians:** " + " · ".join(
-            f"€{round(v)}/m² {k} (n={len(cohorts[k])})" for k, v in sorted(medians.items())))
+            f"{money(round(v), row_locale(rows))}/{unit_label(unit)} {ptype} "
+            f"(n={len(cohorts[(ptype, unit)])})"
+            for (ptype, unit), v in sorted(medians.items())))
     elif cohorts:
         lines.append("_Not enough listings in any one type yet for a reliable "
                      "median — keep going._")
@@ -552,21 +700,27 @@ def cmd_searches(args, ws: Path) -> int:
         drops = [r for r in group if r.get("status") == "price_drop"]
         favs = [r for r in group if r.get("status") == "favourite"]
         stale = [r for r in active if (num(r.get("days_on_market"), int) or 0) > 120]
-        concelhos = sorted({r.get("concelho") for r in group if r.get("concelho")})
+        loc = row_locale(group)
+        regions = sorted({r.get("region") for r in group if r.get("region")})
+        countries = sorted({(r.get("country") or "").upper() for r in group} - {""})
 
         rates = {}
         for row in group:
             ptype = row.get("property_type") or "unknown"
-            key = "eur_per_land_m2" if ptype in LAND_TYPES else "eur_per_built_m2"
+            key = "price_per_land_unit" if ptype in LAND_TYPES else "price_per_built_unit"
             value = num(row.get(key))
             if value:
-                rates.setdefault(ptype, []).append(value)
+                rates.setdefault((ptype, area_unit_of(row)), []).append(value)
 
+        where = ", ".join(regions) or "unset"
+        if countries:
+            where += f"  [{'/'.join(countries)}]"
         print(f"## {name}  —  {len(group)} tracked, {len(active)} active")
-        print(f"   zone: {', '.join(concelhos) or 'unset'}")
-        for ptype, values in sorted(rates.items()):
+        print(f"   zone: {where}")
+        for (ptype, unit), values in sorted(rates.items()):
             note = "" if len(values) >= 4 else "  (too few to be reliable)"
-            print(f"   {ptype}: median €{round(statistics.median(values), 2)}/m² "
+            print(f"   {ptype}: median "
+                  f"{money(round(statistics.median(values), 2), loc)}/{unit_label(unit)} "
                   f"(n={len(values)}){note}")
         flags = []
         if drops:
@@ -681,6 +835,9 @@ def main() -> int:
     p = sub.add_parser("ingest", help="record listings from a JSON array")
     p.add_argument("--file", help="JSON file; omit to read stdin")
     p.add_argument("--search", help="assign these listings to a named search")
+    p.add_argument("--country", help="ISO country of these listings (PT, US). "
+                                     "Inferred from the search when it already "
+                                     "holds rows; sets currency and area units.")
     p.set_defaults(func=cmd_ingest)
 
     p = sub.add_parser("sweep", help="mark listings still live; flag the rest as gone")
@@ -698,7 +855,8 @@ def main() -> int:
 
     p = sub.add_parser("stats", help="zone medians, ages and outliers")
     p.add_argument("--type", help="filter by property_type")
-    p.add_argument("--concelho", help="filter by municipality")
+    p.add_argument("--region", "--concelho", "--county", dest="region",
+                   help="filter by municipality / concelho / county")
     p.add_argument("--search", help="scope the statistics to one search")
     p.set_defaults(func=cmd_stats)
 

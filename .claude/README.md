@@ -1,8 +1,14 @@
-# Portuguese property buyer agent
+# Property buyer agent — Portugal and Texas
 
 An agent and skill set that automate the workflow in *The Ultimate Guide for
 Property Buyers in Portugal* (Find a Land) — the daily market research loop and
-the per-property due-diligence gate.
+the per-property due-diligence gate — generalised to run several searches in
+parallel, in more than one country.
+
+The mechanism is shared: one tracker, one URL builder, one daily loop. The
+*knowledge* is not — Portuguese and Texan property law have nothing in common,
+so each country has its own due-diligence skill and the agent routes by the
+`country` field on each search.
 
 ## What's here
 
@@ -16,8 +22,45 @@ the per-property due-diligence gate.
 └── skills/
     ├── pt-property-market-scan/      guide steps 1–4, 6: strategy, alerts, study, visits
     ├── pt-property-tracker/          guide step 5: save, track, price history, digest
-    └── pt-property-due-diligence/    property types, legal documents, red flags
+    ├── pt-property-due-diligence/    Portugal: property types, legal documents, red flags
+    └── us-property-due-diligence/    Texas: land, houses, documents, carrying costs
 ```
+
+The two scan/tracker skills keep their `pt-` prefix for now but are
+country-aware; the due-diligence skills are genuinely separate bodies of
+knowledge.
+
+## Running two countries at once
+
+Each search in `profile.yaml` declares a `country`, which decides four things:
+the portals the URL builder targets, the currency, the area units, and which
+due-diligence skill applies.
+
+```yaml
+searches:
+  - name: algarve-plots
+    country: PT
+    zone: {anchor: "São Brás de Alportel", concelhos: [...]}
+  - name: austin-land
+    country: US
+    zone: {anchor: "Austin", state: TX, counties: [Travis, Hays], zips: [...]}
+```
+
+| | Portugal | Texas |
+|---|---|---|
+| Portals | Idealista, Imovirtual, Casa Sapo, OLX | Zillow, Redfin, Realtor.com, LandWatch |
+| Priced per | m² | acre (rural) / ft² (built, city lots) |
+| Acquisition cost | IMT + stamp duty, up to ~8% | No transfer tax |
+| Annual holding cost | IMI, ~0.3–0.45% | **~2.0–2.2%**, plus MUDs |
+| Sold prices public? | Yes | **No** — non-disclosure state |
+
+That last row is the one that changes how you read the output. In Texas, sold
+prices are not public record, so every median a US search produces is an
+**asking-price** median. The skills say so wherever they report one.
+
+Statistics never pool across searches, and never pool across units — a median
+mixing acres with square feet is arithmetically valid and completely
+meaningless, so cohorts split by unit as well as by search.
 
 ## How the guide maps onto it
 
@@ -25,11 +68,11 @@ the per-property due-diligence gate.
 |---|---|
 | 1. Define your strategy | `profile.yaml` — one or more named searches, each with type, anchor town + 15–20 km, purpose, budget |
 | 2. Set up property alerts | `build_search_urls.py` generates saved-search URLs per search across 5 portals |
-| 3. Study the market | `tracker.py stats --search X` — €/m² medians, quartiles, outliers |
+| 3. Study the market | `tracker.py stats --search X` — price-per-area medians, quartiles, outliers |
 | 4. Visit properties | `tracker.py note --visit` — visit log per property, agent network captured |
 | 5. Save & track listings | `tracker.py ingest` / `sweep` — price history, days on market, disappearances |
 | 6. Be consistent | `/property-scan` daily; the digest tracks the streak and milestones |
-| Property type evaluation | `pt-property-due-diligence` — one reference file per type |
+| Property type evaluation | `pt-property-due-diligence` (PT) / `us-property-due-diligence` (TX) |
 | Legal document checklist | `references/documents.md` — what each proves, what to cross-check |
 | The 15 essentials tips | Folded into the skills where each one applies |
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install the Portuguese property buyer skills, agent and commands into
+# Install the property buyer skills, agent and commands into
 # ~/.claude so they are available in every session, not only inside this repo.
 #
 # Symlinks by default so edits here stay live; pass --copy for standalone copies.
@@ -29,7 +29,8 @@ install_one() {
 }
 
 echo "Installing into $DEST ($MODE)"
-for skill in pt-property-market-scan pt-property-tracker pt-property-due-diligence; do
+for skill in pt-property-market-scan pt-property-tracker \
+             pt-property-due-diligence us-property-due-diligence; do
   install_one skills "$skill"
 done
 install_one agents property-scout-pt.md

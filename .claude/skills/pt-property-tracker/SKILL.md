@@ -1,6 +1,6 @@
 ---
 name: pt-property-tracker
-description: Maintain the running record of Portuguese properties a buyer is watching — ingest listings, detect price drops, listing age and disappearances, compute €/m² statistics for a zone, log visits, and produce the daily or weekly digest. Use this skill whenever the user asks to save, track, log, compare or update properties or land they are considering, asks what changed since last time, asks how long something has been on the market, asks for price history or negotiation leverage on a listing, or wants their property shortlist as a spreadsheet. Also use it after any market scan, to record what the scan found.
+description: Maintain the running record of properties a buyer is watching in Portugal or the United States — ingest listings, detect price drops, listing age and disappearances, compute price-per-area statistics for a zone, log visits, and produce the daily or weekly digest. Use this skill whenever the user asks to save, track, log, compare or update properties, land, plots or acreage they are considering, asks what changed since last time, asks how long something has been on the market, asks for price history or negotiation leverage on a listing, or wants their property shortlist as a spreadsheet. Also use it after any market scan, to record what the scan found.
 ---
 
 # Portuguese Property Tracker
