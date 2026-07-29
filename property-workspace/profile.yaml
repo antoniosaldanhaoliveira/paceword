@@ -152,9 +152,12 @@ searches:
 
     budget:
       currency: USD
-      min: 2000000
-      max: 20000000        # ← placeholder. Set from the capital stack, not from
-      includes_costs: false #   a comp. Land is a fraction of total project cost.
+      min: 0
+      max: 0               # 0 = no cap. Capital is not the binding constraint
+      includes_costs: false # here; impervious cover is. Rank candidates on
+                            # buildable envelope, then price the shortlist.
+                            # Revisit once a capital stack is fixed — at that
+                            # point this becomes a real filter again.
 
     requirements:
       land_acres_min: 5

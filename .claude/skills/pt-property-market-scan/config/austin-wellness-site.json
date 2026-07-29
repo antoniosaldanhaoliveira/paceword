@@ -8,23 +8,25 @@
     "real layer URLs into `layers` below. Discovery is the first step, not an",
     "optional one.",
     "",
-    "Everything else here — caps, rules, programme — is derived and documented",
+    "Everything else here \u2014 caps, rules, programme \u2014 is derived and documented",
     "in docs/austin-wellness-hotel-site-brief.md."
   ],
-
   "discover_roots": [
     "https://services.arcgis.com/0L95CJ0VTaxqcmjU/arcgis/rest/services",
     "https://maps.austintexas.gov/arcgis/rest/services",
     "https://gis.traviscountytx.gov/arcgis/rest/services",
     "https://services1.arcgis.com/gGHDlz6USftL5Pau/arcgis/rest/services"
   ],
-
   "extent": {
     "_comment": "West Austin bounding box: roughly Lake Austin south to Oak Hill, downtown west to Bee Cave. WGS84.",
-    "xmin": -98.10, "ymin": 30.19, "xmax": -97.72, "ymax": 30.42,
-    "spatialReference": {"wkid": 4326}
+    "xmin": -98.1,
+    "ymin": 30.19,
+    "xmax": -97.72,
+    "ymax": 30.42,
+    "spatialReference": {
+      "wkid": 4326
+    }
   },
-
   "layers": {
     "parcels": {
       "_verify": "Travis County / TCAD parcel layer. Field names below MUST be checked against the layer's own field list before the first real run.",
@@ -36,54 +38,80 @@
         "owner": "OWNER_NAME",
         "acres": "GIS_ACRES",
         "improvement_sf": "IMP_SQFT",
-        "zoning": "ZONING"
+        "zoning": "ZONING",
+        "last_sale_year": "SALE_DATE",
+        "owner_mail_state": "OWNER_STATE",
+        "ag_valuation": "AG_USE",
+        "land_value": "LAND_VAL",
+        "improvement_value": "IMP_VAL"
       }
     },
     "overlay": {
-      "_verify": "Austin watershed regulation areas — the layer carrying Barton Springs Zone / Water Supply Suburban / Urban classifications.",
+      "_verify": "Austin watershed regulation areas \u2014 the layer carrying Barton Springs Zone / Water Supply Suburban / Urban classifications.",
       "url": "https://services.arcgis.com/0L95CJ0VTaxqcmjU/arcgis/rest/services/WATERSHED_REGULATION_AREAS/FeatureServer/0",
       "name_field": "WATERSHED_CLASS",
       "where": "1=1"
     }
   },
-
   "ic_caps": {
     "_comment": "Impervious cover caps by overlay classification. Keys are matched case-insensitively against the overlay layer's name_field, so they must be edited to match that layer's actual values after discovery.",
     "barton springs zone": 0.15,
     "barton springs zone - recharge": 0.15,
-    "barton creek": 0.20,
+    "barton creek": 0.2,
     "barton springs zone - contributing": 0.25,
-    "water supply rural": 0.20,
-    "water supply suburban": 0.30,
-    "urban": 0.40,
-    "lake austin": 0.40
+    "water supply rural": 0.2,
+    "water supply suburban": 0.3,
+    "urban": 0.4,
+    "lake austin": 0.4
   },
-  "default_ic_cap": 0.20,
-
+  "default_ic_cap": 0.2,
   "improvement_to_impervious": 2.2,
-  "_improvement_note": "Building area x this factor estimates SITE impervious cover (building + parking + drives). A screening heuristic only — the real figure comes from a survey, and it is the asset you would be buying.",
-
+  "_improvement_note": "Building area x this factor estimates SITE impervious cover (building + parking + drives). A screening heuristic only \u2014 the real figure comes from a survey, and it is the asset you would be buying.",
   "rules": {
     "min_acres": 3.0,
-    "max_acres": 40.0,
+    "max_acres": 60.0,
     "allow_grandfathered": true,
     "headroom": 1.0,
-    "_note": "min_acres is 3 rather than 5 deliberately: a small parcel with high grandfathered cover is exactly the target, and the envelope test does the real filtering."
+    "_note": "min_acres is 3 rather than 5 deliberately: a small parcel with high grandfathered cover is exactly the target, and the envelope test does the real filtering.",
+    "_capital": "No price filter. Budget is not the binding constraint on this search; impervious cover is. Rank on envelope and signals, price the shortlist afterwards."
   },
-
   "programme": {
     "_comment": "50-key membership hotel-spa. Parking dominates, because a membership spa parks far more cars than 50 rooms do.",
     "program": [
-      {"name": "guestrooms (50 keys)", "sf_low": 20000, "sf_high": 25000},
-      {"name": "spa", "sf_low": 10000, "sf_high": 15000},
-      {"name": "f&b, lobby, back of house", "sf_low": 10000, "sf_high": 15000}
+      {
+        "name": "guestrooms (50 keys)",
+        "sf_low": 20000,
+        "sf_high": 25000
+      },
+      {
+        "name": "spa",
+        "sf_low": 10000,
+        "sf_high": 15000
+      },
+      {
+        "name": "f&b, lobby, back of house",
+        "sf_low": 10000,
+        "sf_high": 15000
+      }
     ],
     "storeys": 3,
-    "parking_spaces": [120, 170],
+    "parking_spaces": [
+      120,
+      170
+    ],
     "sf_per_surface_space": 340,
-    "other_impervious_sf": [15000, 25000],
+    "other_impervious_sf": [
+      15000,
+      25000
+    ],
     "structured_parking": false,
     "deck_footprint_sf": 12000,
     "_parking_note": "Set structured_parking true to re-run against a deck. The trade is resolved in the brief: a deck pays for itself inside the Barton Springs Zone. Running it both ways shows how many more parcels qualify."
+  },
+  "owner_signals": {
+    "_comment": "Flags that order outreach. None is evidence of intent to sell \u2014 they identify owners for whom a call is more likely to be welcome.",
+    "current_year": 2026,
+    "long_hold_years": 20,
+    "tired_building_ratio": 0.35
   }
 }

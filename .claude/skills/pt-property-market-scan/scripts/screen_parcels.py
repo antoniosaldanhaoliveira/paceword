@@ -245,8 +245,55 @@ def screen_parcel(parcel: dict, cap: float, req: tuple[float, float],
     return parcel
 
 
+def owner_signals(parcel: dict, attrs: dict, fields: dict, cfg: dict) -> list[str]:
+    """Flags suggesting an owner might sell though nothing is listed.
+
+    None of these are evidence of intent. They are a way to order outreach so
+    the first calls are the ones most likely to be welcome.
+    """
+    sig = []
+
+    years = cfg.get("long_hold_years", 20)
+    sale_field = fields.get("last_sale_year")
+    if sale_field and attrs.get(sale_field):
+        try:
+            yr = int(str(attrs[sale_field])[:4])
+            if yr and cfg.get("current_year", 2026) - yr >= years:
+                sig.append(f"held-{cfg.get('current_year', 2026) - yr}yr")
+        except (TypeError, ValueError):
+            pass
+
+    # An owner who does not live near the asset is easier to reach and often
+    # readier to trade it.
+    mail = fields.get("owner_mail_state")
+    if mail and attrs.get(mail) and str(attrs[mail]).strip().upper() not in ("TX", ""):
+        sig.append(f"out-of-state:{str(attrs[mail]).strip().upper()}")
+
+    # Agricultural valuation on land this close in is usually a holding
+    # strategy, not a farm — and it carries rollback exposure on development.
+    ag = fields.get("ag_valuation")
+    if ag and str(attrs.get(ag, "")).strip().lower() in ("y", "yes", "true", "1"):
+        sig.append("ag-valued")
+
+    # A building worth little against its land is a redevelopment candidate:
+    # you are buying the cover and the dirt, not the structure.
+    lv, iv = fields.get("land_value"), fields.get("improvement_value")
+    if lv and iv:
+        try:
+            land, imp = float(attrs.get(lv) or 0), float(attrs.get(iv) or 0)
+            if land > 0 and imp > 0 and imp / land < cfg.get("tired_building_ratio", 0.35):
+                sig.append("improvement-worth-little")
+        except (TypeError, ValueError):
+            pass
+
+    return sig
+
+
 def rank_key(p: dict) -> tuple:
-    return (not p["fits_high_program"], -(p.get("headroom_ratio") or 0), -p["acres"])
+    return (not p["fits_high_program"],
+            -(p.get("signal_count") or 0),
+            -(p.get("headroom_ratio") or 0),
+            -p["acres"])
 
 
 # --------------------------------------------------------------------------
@@ -321,6 +368,9 @@ def run_screen(cfg: dict, max_records: int | None) -> list[dict]:
         }
         scored = screen_parcel(parcel, cap, req, rules)
         if scored:
+            sig = owner_signals(scored, attrs, pf, cfg.get("owner_signals", {}))
+            scored["owner_signals"] = ";".join(sig)
+            scored["signal_count"] = len(sig)
             results.append(scored)
 
     results.sort(key=rank_key)
@@ -351,14 +401,15 @@ def report(rows: list[dict], cfg: dict, req: tuple[float, float]) -> str:
         "a built site. Every existing-cover figure here is **estimated from",
         "improvement area and must be replaced by a survey** before it means anything.",
         "",
-        "| Parcel | Address | Acres | Overlay | Cap | Envelope ft² | Grandfathered | Headroom |",
-        "|---|---|---|---|---|---|---|---|",
+        "| Parcel | Address | Acres | Overlay | Cap | Envelope ft² | Grandfathered | Headroom | Owner signals |",
+        "|---|---|---|---|---|---|---|---|---|",
     ]
     for r in rows[:60]:
         lines.append(
             f"| {r['parcel_id']} | {r['address'][:38]} | {r['acres']} | "
             f"{r['overlay'][:22]} | {r['ic_cap']:.0%} | {r['envelope_sf']:,} | "
-            f"{'yes' if r['grandfathered'] else '—'} | {r['headroom_ratio']}× |"
+            f"{'yes' if r['grandfathered'] else '—'} | {r['headroom_ratio']}× | "
+            f"{r.get('owner_signals', '') or '—'} |"
         )
     if len(rows) > 60:
         lines.append(f"\n_{len(rows) - 60} further parcels in the CSV._")

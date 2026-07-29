@@ -338,7 +338,7 @@
     <p class="standfirst">Candidates screened against the impervious-cover math, plus the structured-parking decision, the city inquiry to send, and the broker brief. Read the provenance note first.</p>
     <p class="stamp">Compiled July 2026 from search-engine indexes of listing pages — the platforms themselves block automated access. Prices, acreage and availability are unconfirmed.<br>A screening list to hand a broker, not a buy list.</p>
   </header>
-  <nav class="index" aria-label="Contents"><h2>Contents</h2><ol><li><a href="#provenance-read-this-first">Provenance — read this first</a></li><li><a href="#priority-1-the-grandfathered-cover-play">Priority 1 — the grandfathered-cover play</a></li><li><a href="#priority-2-sized-land-viable-jurisdiction">Priority 2 — sized land, viable jurisdiction</a></li><li><a href="#ruled-out-and-why">Ruled out, and why</a></li><li><a href="#land-pricing-what-the-indexed-comps-imply">Land pricing — what the indexed comps imply</a></li><li><a href="#the-structured-parking-decision-resolved">The structured-parking decision — resolved</a></li><li><a href="#next-actions-in-order">Next actions, in order</a></li><li><a href="#what-i-could-not-do-and-what-it-would-take">What I could not do, and what it would take</a></li></ol></nav>
+  <nav class="index" aria-label="Contents"><h2>Contents</h2><ol><li><a href="#provenance-read-this-first">Provenance — read this first</a></li><li><a href="#priority-1-the-grandfathered-cover-play">Priority 1 — the grandfathered-cover play</a></li><li><a href="#priority-2-sized-land-viable-jurisdiction">Priority 2 — sized land, viable jurisdiction</a></li><li><a href="#ruled-out-and-why">Ruled out, and why</a></li><li><a href="#land-pricing-what-the-indexed-comps-imply">Land pricing — what the indexed comps imply</a></li><li><a href="#the-structured-parking-decision-resolved">The structured-parking decision — resolved</a></li><li><a href="#next-actions-in-order">Next actions, in order</a></li><li class="part-row"><a href="#operating-playbook">Operating playbook</a></li><li><a href="#a-getting-listed-inventory-two-routes-run-both">A. Getting listed inventory — two routes, ru…</a></li><li><a href="#b-finding-the-owner-of-an-unlisted-parcel-you-can-do-this-yourself">B. Finding the owner of an unlisted parcel…</a></li><li><a href="#c-owner-side-signals-how-the-ranking-works">C. Owner-side signals — how the ranking works</a></li><li><a href="#d-sequence">D. Sequence</a></li><li><a href="#what-i-could-not-do-and-what-it-would-take">What I could not do, and what it would take</a></li></ol></nav>
   <article class="article">
 <h2 id="provenance-read-this-first">Provenance — read this first</h2>
 <p><strong>I could not access live listing data.</strong> LoopNet, Crexi, Realtor.com and
@@ -644,6 +644,125 @@ an annual US hotel development cost survey worth pulling for the vertical side.<
 the difference between a $6M and a $15M site budget changes which of the four
 target zones are even in play.</p>
 <hr>
+<hr>
+<h1 id="operating-playbook">Operating playbook</h1>
+<p>Everything below is a thing to do, in order, with the actual steps.</p>
+<h2 id="a-getting-listed-inventory-two-routes-run-both">A. Getting listed inventory — two routes, run both</h2>
+<h3>Route 1 — a broker runs CoStar for you</h3>
+<p>CoStar is the institutional dataset; LoopNet is its public shop window. A broker
+already pays for it, so this costs you nothing and returns better data than any
+portal.</p>
+<ol>
+<li><strong>Contact three firms.</strong> Hospitality: <strong>Marcus &amp; Millichap Austin</strong> (9600 N
+   MoPac Expy — active hospitality division with Austin hotel transaction
+   history), <strong>JLL Hotels &amp; Hospitality</strong> Austin, <strong>CBRE Hotels</strong> Austin. Add
+   one West Austin land/development specialist — AQUILA, Endeavor and Stream
+   Realty all have Austin land practices.</li>
+<li><strong>Send the broker brief</strong> in the section above, verbatim. Do not soften the
+   impervious-cover paragraph; it is what separates you from a tyre-kicker.</li>
+<li><strong>Ask for one specific thing:</strong> <em>&ldquo;Can you run a CoStar search on these
+   parameters and send me the export?&rdquo;</em> Naming CoStar tells them you know what
+   they have.</li>
+<li><strong>Specify the export columns</strong> — address, APN/parcel ID, acreage, zoning,
+   existing building ft², year built, asking price, days on market, owner of
+   record, listing broker. Ask for <strong>CSV</strong>, and send it to me: it drops straight
+   into the tracker.</li>
+<li><strong>Expect to sign a representation agreement.</strong> Negotiate the term, the
+   geography and the fee before signing, and keep the term short.</li>
+<li><strong>Note on commissions:</strong> the 2024 NAR settlement (guide §7) governs
+   <em>residential</em> MLS practice. <strong>Commercial brokerage was not covered</strong>, and
+   seller-paid buy-side fees remain normal in CRE. Ask directly how your broker
+   is compensated on each deal — do not assume either model.</li>
+</ol>
+<h3>Route 2 — you browse, I screen</h3>
+<p>Works today, needs no permissions, complements Route 1 rather than duplicating
+it.</p>
+<ol>
+<li>Create free accounts on <strong>LoopNet</strong> and <strong>Crexi</strong>.</li>
+<li>Open the saved-search URLs generated by <code>build_search_urls.py --search
+   austin-wellness-site</code>, adjust filters in the UI until the results look right,
+   and <strong>save each search</strong>.</li>
+<li>Turn on <strong>email alerts</strong> on every saved search. That is the intake channel.</li>
+<li>When something looks plausible, send me the URL plus whatever the listing
+   shows: <strong>address, acreage, price, existing building ft², zoning</strong>. A copy-paste
+   of the listing detail is fine — I do not need it tidy.</li>
+<li>I run it against the impervious-cover math, flag the deal-breakers, and file
+   it in the tracker so price changes and days-on-market accumulate.</li>
+</ol>
+<p><strong>Do not</strong> install scrapers or automation against these sites. Their terms
+prohibit it, and a scraper that silently breaks mid-search is worse than no
+scraper — you would be deciding on a search that stopped working without saying
+so.</p>
+<h2 id="b-finding-the-owner-of-an-unlisted-parcel-you-can-do-this-yourself">B. Finding the owner of an unlisted parcel — you can do this yourself</h2>
+<p>For any single parcel, this is a ten-minute job and needs no broker:</p>
+<ol>
+<li><strong>Travis Central Appraisal District</strong> (traviscad.org) — search by address or
+   map. Gives the <strong>owner of record</strong>, mailing address, legal description,
+   acreage, improvement ft², assessed land and improvement values, exemptions,
+   and every taxing entity on the parcel.</li>
+<li><strong>City of Austin property profile</strong> — watershed and regulatory zone, zoning,
+   city limits vs ETJ, impervious-cover limit, floodplain.</li>
+<li><strong>Travis County Clerk</strong> — recorded deeds, plats, easements, restrictive
+   covenants. Confirms how long the owner has held it and what encumbers it.</li>
+<li><strong>Write to the owner</strong> at the TCAD mailing address. Short, specific, no
+   pressure: what you are building, why this parcel, and that you are asking
+   whether they would consider a sale. Entirely legal and routine — a large
+   share of development land trades this way.</li>
+</ol>
+<p><strong>The reason to automate it</strong> is volume. Doing this for one parcel is easy;
+doing it for the several hundred in West Austin that might qualify is not.
+That is what the screener is for — it does the bulk pass, you do the deep dive
+on the top ten or twenty it returns.</p>
+<h2 id="c-owner-side-signals-how-the-ranking-works">C. Owner-side signals — how the ranking works</h2>
+<p>The screener flags owners for whom an approach is more likely to land. None of
+these is evidence anyone wants to sell; they are a way to order your calls.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>What it reads</th>
+<th>Why it matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>held-NNyr</code></td>
+<td>Last recorded sale 20+ years ago</td>
+<td>Long holds often sit with owners who have never been asked</td>
+</tr>
+<tr>
+<td><code>out-of-state:XX</code></td>
+<td>Owner mailing address outside Texas</td>
+<td>Less attached to the asset, easier to reach, readier to trade</td>
+</tr>
+<tr>
+<td><code>ag-valued</code></td>
+<td>Agricultural valuation on close-in land</td>
+<td>Usually a holding strategy rather than a farm — and it carries rollback exposure you must price</td>
+</tr>
+<tr>
+<td><code>improvement-worth-little</code></td>
+<td>Building value under ~35% of land value</td>
+<td>You are buying the cover and the dirt; the structure is not the asset</td>
+</tr>
+</tbody>
+</table></div>
+<p>Signals <strong>break ties, they never promote an unfit parcel</strong>. A parcel that fails
+the envelope test stays out no matter how motivated its owner might be.</p>
+<h2 id="d-sequence">D. Sequence</h2>
+<ol>
+<li><strong>Network opened</strong> → run <code>discover</code>, confirm the layer URLs and field names,
+   paste them to me.</li>
+<li><strong>I run the screen</strong> across West Austin and return a ranked target list with
+   envelope, cap, grandfathering and owner signals.</li>
+<li><strong>You send the § 25-8-26 inquiry</strong> (Next actions, above). Free, and the
+   grandfathered-cover strategy depends on the answer.</li>
+<li><strong>You brief the brokers</strong> (Route 1). Parallel track.</li>
+<li><strong>We deep-dive the top ten</strong> — watershed, wastewater, access, floodplain,
+   CWQZ — before anyone tours anything.</li>
+<li><strong>Owner outreach</strong> on the unlisted candidates that survive.</li>
+</ol>
+<p>Steps 3 and 4 need nothing from me and are worth starting today.</p>
 <h2 id="what-i-could-not-do-and-what-it-would-take">What I could not do, and what it would take</h2>
 <div class="table-wrap"><table>
 <thead>
