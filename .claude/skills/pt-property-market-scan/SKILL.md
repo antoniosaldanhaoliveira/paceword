@@ -215,6 +215,33 @@ off-market deals come through those relationships later.
 
 ## Reference files
 
+### Screening by characteristic, not by listing
+
+`scripts/screen_parcels.py` answers a different question from any portal: not
+*what is for sale*, but *which parcels could hold this project* — whoever owns
+them, listed or not. It joins a public parcel layer to a regulatory overlay
+(watershed, impervious-cover cap, zoning) and scores every parcel against a
+programme's actual footprint requirement.
+
+Use it whenever the binding constraint is regulatory rather than financial, and
+whenever the good inventory is off-market. Both are true of development sites.
+
+```
+python screen_parcels.py discover --config config/austin-wellness-site.json
+python screen_parcels.py screen   --config config/austin-wellness-site.json --out targets.csv
+python screen_parcels.py selftest      # verifies the scoring with no network
+```
+
+**Run `discover` first.** The layer URLs and field names in a config are
+guesses until confirmed against the publishing authority's own service
+directory; discovery is how you replace them with real ones.
+
+The screen understands grandfathered cover: where a parcel's existing
+impervious cover exceeds today's cap, the envelope is the existing cover, not
+the cap. That single rule is why a small built site can beat a large empty one.
+Existing cover is *estimated* from improvement area — a screening heuristic
+that a survey must replace, because it is the asset being bought.
+
 - `references/portals.md` — Portuguese portals: URL structure, filters, quirks
 - `references/portals-us.md` — US portals, plus how reliable each generated URL is
 - `references/profile-template.yaml` — the buyer profile schema, commented
