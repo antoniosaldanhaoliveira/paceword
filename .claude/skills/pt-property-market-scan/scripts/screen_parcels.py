@@ -192,12 +192,22 @@ def discover(base: str) -> list[str]:
 # The screen
 # --------------------------------------------------------------------------
 
-def required_impervious(prog: dict) -> tuple[float, float]:
-    """Impervious footprint the programme needs, low and high, in ft²."""
+def required_impervious(prog: dict, existing_keys: int = 0) -> tuple[float, float]:
+    """Impervious footprint the programme needs, low and high, in ft².
+
+    `existing_keys` nets the guestroom component down against rooms that already
+    stand. A tired 40-key lodge needs ten more rooms, not fifty — which is the
+    whole reason that category is worth searching.
+    """
+    target = prog.get("target_keys", 0)
     gfa_lo = gfa_hi = 0.0
     for part in prog["program"]:
-        gfa_lo += part["sf_low"]
-        gfa_hi += part["sf_high"]
+        lo, hi = part["sf_low"], part["sf_high"]
+        if existing_keys and target and part.get("scales_with_keys"):
+            remaining = max(target - existing_keys, 0) / target
+            lo, hi = lo * remaining, hi * remaining
+        gfa_lo += lo
+        gfa_hi += hi
     storeys = prog.get("storeys", 2)
     foot_lo, foot_hi = gfa_lo / max(storeys, 1), gfa_hi / max(storeys - 1, 1)
 
@@ -289,6 +299,47 @@ def owner_signals(parcel: dict, attrs: dict, fields: dict, cfg: dict) -> list[st
     return sig
 
 
+def lodging_signals(attrs: dict, fields: dict, cfg: dict) -> list[str]:
+    """Flags marking a lodging asset as under-invested.
+
+    The thesis: a tired hotel is priced on what it earns, and what it earns has
+    nothing to do with what its land is worth. These identify that gap.
+    """
+    sig = []
+    year_f, keys_f, iv_f = (fields.get("year_built"), fields.get("room_count"),
+                            fields.get("improvement_value"))
+
+    year = None
+    if year_f and attrs.get(year_f):
+        try:
+            year = int(str(attrs[year_f])[:4])
+        except (TypeError, ValueError):
+            year = None
+    if year and cfg.get("current_year", 2026) - year >= cfg.get("dated_build_years", 35):
+        sig.append(f"built-{year}")
+
+    keys = None
+    if keys_f and attrs.get(keys_f):
+        try:
+            keys = int(float(attrs[keys_f]))
+        except (TypeError, ValueError):
+            keys = None
+
+    # Improvement value per key is the cleanest public proxy for how starved of
+    # capital a lodging asset is.
+    if keys and iv_f and attrs.get(iv_f):
+        try:
+            per_key = float(attrs[iv_f]) / keys
+            if per_key < cfg.get("under_invested_per_key", 60000):
+                sig.append(f"${per_key/1000:.0f}k/key")
+        except (TypeError, ValueError, ZeroDivisionError):
+            pass
+
+    if keys:
+        sig.append(f"{keys}-keys")
+    return sig
+
+
 def rank_key(p: dict) -> tuple:
     return (not p["fits_high_program"],
             -(p.get("signal_count") or 0),
@@ -366,9 +417,21 @@ def run_screen(cfg: dict, max_records: int | None) -> list[dict]:
             "overlay": zone_name,
             "lon": round(c[0], 6), "lat": round(c[1], 6),
         }
-        scored = screen_parcel(parcel, cap, req, rules)
+        # A parcel already carrying keys needs a smaller programme.
+        keys_f = pf.get("room_count")
+        existing_keys = 0
+        if keys_f and attrs.get(keys_f):
+            try:
+                existing_keys = int(float(attrs[keys_f]))
+            except (TypeError, ValueError):
+                existing_keys = 0
+        parcel["existing_keys"] = existing_keys
+        req_here = required_impervious(cfg["programme"], existing_keys) if existing_keys else req
+
+        scored = screen_parcel(parcel, cap, req_here, rules)
         if scored:
             sig = owner_signals(scored, attrs, pf, cfg.get("owner_signals", {}))
+            sig += lodging_signals(attrs, pf, cfg.get("lodging_signals", {}))
             scored["owner_signals"] = ";".join(sig)
             scored["signal_count"] = len(sig)
             results.append(scored)
@@ -461,6 +524,34 @@ def selftest() -> int:
     prog_struct = dict(prog, structured_parking=True, deck_footprint_sf=12000)
     slo, shi = required_impervious(prog_struct)
     check("structured is smaller", shi < hi, True)
+
+    print("\nlodging")
+    prog_keys = dict(prog, target_keys=50, program=[
+        {"name": "rooms", "sf_low": 20000, "sf_high": 25000, "scales_with_keys": True},
+        {"name": "spa", "sf_low": 10000, "sf_high": 15000},
+        {"name": "f&b/boh", "sf_low": 10000, "sf_high": 15000},
+    ])
+    full = required_impervious(prog_keys, existing_keys=0)
+    forty = required_impervious(prog_keys, existing_keys=40)
+    check("40 existing keys shrinks the build", forty[1] < full[1], True)
+    # Footprint is GFA over storeys, so 40 of 50 keys removes 80% of the room
+    # GFA (25,000) spread over the high case's 2 storeys = 10,000 ft² of cover.
+    check("40 of 50 keys removes 80% of the room footprint",
+          round(full[1] - forty[1]), 10000)
+    check("50 existing keys removes the whole room footprint",
+          round(required_impervious(prog_keys, existing_keys=50)[1]),
+          round(full[1] - 25000 / 2))
+    check("more keys than target does not go negative",
+          required_impervious(prog_keys, existing_keys=80)[1] >= 0, True)
+
+    lf = {"year_built": "YR", "room_count": "KEYS", "improvement_value": "IV"}
+    lcfg = {"current_year": 2026, "dated_build_years": 35, "under_invested_per_key": 60000}
+    check("tired lodge flagged",
+          lodging_signals({"YR": "1985", "KEYS": 40, "IV": 1_400_000}, lf, lcfg),
+          ["built-1985", "$35k/key", "40-keys"])
+    check("well-capitalised lodge not flagged as starved",
+          [x for x in lodging_signals({"YR": "2019", "KEYS": 40, "IV": 9_000_000}, lf, lcfg)
+           if "/key" in x or x.startswith("built")], [])
 
     print("\nscreen")
     rules = {"min_acres": 5, "allow_grandfathered": True}

@@ -43,7 +43,9 @@
         "owner_mail_state": "OWNER_STATE",
         "ag_valuation": "AG_USE",
         "land_value": "LAND_VAL",
-        "improvement_value": "IMP_VAL"
+        "improvement_value": "IMP_VAL",
+        "year_built": "YR_BUILT",
+        "room_count": "ROOM_CT"
       }
     },
     "overlay": {
@@ -81,7 +83,8 @@
       {
         "name": "guestrooms (50 keys)",
         "sf_low": 20000,
-        "sf_high": 25000
+        "sf_high": 25000,
+        "scales_with_keys": true
       },
       {
         "name": "spa",
@@ -106,12 +109,20 @@
     ],
     "structured_parking": false,
     "deck_footprint_sf": 12000,
-    "_parking_note": "Set structured_parking true to re-run against a deck. The trade is resolved in the brief: a deck pays for itself inside the Barton Springs Zone. Running it both ways shows how many more parcels qualify."
+    "_parking_note": "Set structured_parking true to re-run against a deck. The trade is resolved in the brief: a deck pays for itself inside the Barton Springs Zone. Running it both ways shows how many more parcels qualify.",
+    "target_keys": 50,
+    "_keys_note": "target_keys plus scales_with_keys lets the screen net the room build down against keys already standing. A tired 40-key lodge needs ten more rooms, not fifty \u2014 which is the entire reason to search that category."
   },
   "owner_signals": {
     "_comment": "Flags that order outreach. None is evidence of intent to sell \u2014 they identify owners for whom a call is more likely to be welcome.",
     "current_year": 2026,
     "long_hold_years": 20,
     "tired_building_ratio": 0.35
+  },
+  "lodging_signals": {
+    "_comment": "A tired lodging asset is priced on what it earns; what it earns has nothing to do with what its land is worth. These flag that gap.",
+    "current_year": 2026,
+    "dated_build_years": 35,
+    "under_invested_per_key": 60000
   }
 }

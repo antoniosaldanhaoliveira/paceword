@@ -481,6 +481,74 @@ The category to search next is the one Lakeway Resort was in before it sold:
 tired asset undervalues its real estate.
 
 
+## Tired lodging assets — the Lakeway Resort category
+
+The category the Lakeway Resort buyers were shopping in. **These trade on
+operating performance, and a starved asset's operations say nothing about what
+its land is worth.** That gap is the opportunity.
+
+Three things make this the most efficient category on the list:
+
+1. **Entitlements exist.** Hotel use is established. No rezoning, no SUP, no
+   council.
+2. **Utilities and access exist.** Water, wastewater capacity and a permitted
+   curb cut are already in place — the three things that kill land deals.
+3. **Keys already standing net down the build.** The screener now models this:
+
+| Existing keys | Still to build | Required cover |
+|---|---|---|
+| 0 (raw land) | 50 keys | 69,133 – 110,300 ft² |
+| 20 | 30 keys | 66,467 – 105,300 ft² |
+| **40** | **10 keys** | **63,800 – 100,300 ft²** |
+| 50+ | 0 | 62,467 – 97,800 ft² |
+
+### Mountain Star Lodge — 3573 Ranch Road 620 S, Bee Cave 78738
+
+**The closest thing on this list to a ready-made project.**
+
+| | |
+|---|---|
+| Keys | **40, including 4 suites** |
+| Existing | Meeting facilities, pool, breakfast service |
+| Location | RM 620 south corridor, **between Lakeway and Bee Cave** |
+| Condition | Guest reviews describe it as "showing a need for a little care," with reviewers hoping a new owner would refresh it |
+| Status | **Operating. Not listed.** |
+
+Forty keys against a fifty-key target means **ten rooms of new build**, on a
+site where lodging use, parking, access and utilities are already permitted and
+working. Guest reviews openly describing an under-maintained property are the
+public form of the signal the screener looks for — an owner who has stopped
+investing.
+
+**Verify first:** acreage and existing impervious cover on TCAD; jurisdiction
+(Bee Cave city, Lakeway, or unincorporated Travis County — the RM 620 corridor
+crosses all three); ownership entity and how long it has been held; and whether
+40 keys can physically become 50 within the existing cover.
+
+### Others in the category
+
+| Property | What it is | Why it is on the list |
+|---|---|---|
+| **Resort Ranch Marina** (Baker family) | **235 contiguous waterfront acres**, Lake Travis | Scale, water frontage, existing recreational use. Far more land than the programme needs — which means a phased or partial acquisition |
+| **The Island on Lake Travis** | 14-acre island; marina, 3 pools, fitness, **day spa, saunas**, tennis, restaurant | Spa infrastructure already built. But a condo regime means fragmented ownership — check whether the common elements can be acquired whole |
+| **Cypress Creek Ranch**, Spicewood | 104 acres, event venue, amphitheatre, pavilion | **Actually for sale** — $12M whole, 22 acres at $1.95M. Assembly use established |
+| **Peaceful Waters Retreat Center** | 53 acres, spring-fed private lake | Setting is the product. Capacity of 40 is small, but the land carries more |
+| **Spicewood Retreat** (Republic Ranches) | 23 mi west of downtown | Marketed as **unrestricted for development** |
+
+**Where to hunt this category.** These sell as *going concerns through business
+brokers*, not as real estate through CRE brokers — which is why they never
+appear on LoopNet. `build_search_urls.py --portal bizbuysell` now generates the
+right channel. Add the hospitality desks at Marcus & Millichap, and ask them
+specifically for **under-performing independent lodging in western Travis
+County**, which is a phrase that will get you their off-market list.
+
+**The screening question for anything in this category** is the one Lakeway
+Resort answers: what does it earn, what does the land underneath it cost per
+acre, and how far apart are those two numbers? The wider the gap, the better the
+buy — and a tired operator will usually tell you the first number without
+realising it prices the second.
+
+
 ---
 
 # Operating playbook

@@ -140,6 +140,9 @@ searches:
     active: true
     purpose: tourism
     property_types: [hotel, office, commercial_land]
+                           # 'hotel' covers the tired-lodging category:
+                           # older under-invested lodging on good land,
+                           # priced on operations rather than dirt.
     timeline: ""
 
     zone:
@@ -166,6 +169,8 @@ searches:
       land_acres_min: 5
       must_have:
         - "hotel use permitted by right, or a credible path to it"
+        # For existing lodging: keys already standing net down the build, and an
+        # operating history means entitlements and utilities are already solved.
         - "wastewater capacity — city sewer, or WCID/MUD with written capacity"
         - "impervious cover headroom for the full program (see brief)"
         - "outdoor activation possible — usable, non-floodplain, non-CWQZ land"

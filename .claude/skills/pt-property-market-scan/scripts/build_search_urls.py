@@ -486,6 +486,25 @@ def landwatch_urls(search: dict) -> list[str]:
     return urls
 
 
+def bizbuysell_urls(search: dict) -> list[str]:
+    """Operating lodging businesses, listed as businesses rather than as land.
+
+    A tired hotel is usually sold as a going concern by a business broker, not
+    as real estate by a CRE broker — so it never appears on LoopNet at all.
+    This is the channel where that category actually surfaces.
+    """
+    if not any(t in ("hotel", "resort") for t in (search.get("property_types") or [])):
+        return []
+    state = US_STATE_NAMES.get(_state(search), _state(search)).lower()
+    urls = [f"https://www.bizbuysell.com/{state}/hotels-for-sale/",
+            f"https://www.bizbuysell.com/{state}/motels-for-sale/",
+            f"https://www.bizbuysell.com/{state}/bed-and-breakfasts-for-sale/"]
+    for county in ((search.get("zone") or {}).get("counties") or []):
+        urls.append(f"https://www.bizbuysell.com/{state}/{slugify(county)}-county/"
+                    "hotels-for-sale/")
+    return urls
+
+
 def facebook_us_queries(search: dict) -> list[str]:
     terms = {"lot": "vacant lot", "acreage": "acreage land",
              "ranch": "ranch land", "house": "house"}
@@ -574,6 +593,7 @@ BUILDERS = {
         "loopnet": loopnet_urls,
         "crexi": crexi_urls,
         "commercialcafe": commercialcafe_urls,
+        "bizbuysell": bizbuysell_urls,
     },
 }
 
