@@ -40,9 +40,9 @@ changed in 2024: **how buyer's agents get paid.** See §7.
 ## 1. There is no "US property market"
 
 The most common mistake, and one that survives even long familiarity with the
-country, is treating the US as one market. It is roughly 3,000 counties, each with its own tax rate, recording
-office, disclosure rules and appraisal authority; 50 states with different
-contract law; and around 500+ regional MLSs.
+country, is treating the US as one market. It is roughly 3,000 counties, each
+with its own tax rate, recording office, disclosure rules and appraisal
+authority; 50 states with different contract law; and 500+ regional MLSs.
 
 Practical consequences:
 

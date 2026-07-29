@@ -66,7 +66,24 @@ SAPO_TYPE = {
 
 LAND_TYPES = {
     "urban_land", "rustic_land", "tourism_land", "modular", "mobile_home",
-    "lot", "acreage", "ranch",
+    "lot", "acreage", "ranch", "commercial_land",
+}
+
+# Commercial types route to the CRE portals instead of the residential ones —
+# a 50-key hotel site never appears on Zillow.
+COMMERCIAL_TYPES = {"hotel", "office", "industrial", "commercial_land", "retail"}
+
+LOOPNET_TYPE = {
+    "hotel": "hotels", "office": "office-buildings", "industrial": "industrial",
+    "commercial_land": "land", "retail": "retail",
+}
+CREXI_TYPE = {
+    "hotel": "hospitality", "office": "office", "industrial": "industrial",
+    "commercial_land": "land", "retail": "retail",
+}
+CCAFE_TYPE = {
+    "hotel": "hotel", "office": "office", "industrial": "industrial",
+    "commercial_land": "land", "retail": "retail",
 }
 
 # US portal vocabulary.
@@ -369,6 +386,8 @@ def zillow_urls(search: dict) -> list[str]:
     """
     urls = []
     for ptype in search.get("property_types") or []:
+        if ptype in COMMERCIAL_TYPES:
+            continue
         kind = ZILLOW_TYPE.get(ptype, "houses")
         for city in _cities(search):
             urls.append(
@@ -393,6 +412,8 @@ def redfin_urls(search: dict) -> list[str]:
 
     urls = []
     for ptype in search.get("property_types") or []:
+        if ptype in COMMERCIAL_TYPES:
+            continue
         filters = [f"property-type={REDFIN_TYPE.get(ptype, 'house')}"]
         if budget.get("min"):
             filters.append(f"min-price={_usd(budget['min'])}")
@@ -419,6 +440,8 @@ def realtor_urls(search: dict) -> list[str]:
     req = search.get("requirements") or {}
     urls = []
     for ptype in search.get("property_types") or []:
+        if ptype in COMMERCIAL_TYPES:
+            continue
         segments = [f"type-{REALTOR_TYPE.get(ptype, 'single-family-home')}"]
         lo, hi = int(budget.get("min") or 0), int(budget.get("max") or 0)
         if hi:
@@ -443,7 +466,9 @@ def landwatch_urls(search: dict) -> list[str]:
     req = search.get("requirements") or {}
     state = _state(search)
     urls = []
-    if not any(t in LAND_TYPES for t in (search.get("property_types") or [])):
+    types = [t for t in (search.get("property_types") or [])
+             if t in LAND_TYPES and t != "commercial_land"]
+    if not types:
         return []
     if state not in US_STATE_NAMES:
         print(f"LandWatch skipped: no path slug known for state {state!r}. "
@@ -466,11 +491,70 @@ def facebook_us_queries(search: dict) -> list[str]:
              "ranch": "ranch land", "house": "house"}
     out = []
     for ptype in search.get("property_types") or []:
+        # Marketplace is a private-seller channel for land and houses. It is not
+        # where a multi-million-dollar hotel site trades.
+        if ptype in COMMERCIAL_TYPES:
+            continue
         term = terms.get(ptype, "land")
         for city in _cities(search):
             out.append("https://www.facebook.com/marketplace/search/?query="
                        + quote(f"{term} {city} {_state(search)}"))
     return out
+
+
+
+# --- United States, commercial ----------------------------------------------
+#
+# Hotel sites, office buildings and commercial land trade on entirely different
+# platforms from houses. LoopNet (CoStar-owned) has the deepest on-market
+# inventory and the strongest SEO; Crexi is the main competitor and runs the
+# better auction channel. Both gate detail behind a login and block automated
+# access, so these URLs are for a logged-in human to open and save.
+
+
+def loopnet_urls(search: dict) -> list[str]:
+    """LoopNet search paths, one per commercial type per city."""
+    urls = []
+    for ptype in search.get("property_types") or []:
+        if ptype not in COMMERCIAL_TYPES:
+            continue
+        kind = LOOPNET_TYPE.get(ptype, "commercial-real-estate")
+        for city in _cities(search):
+            urls.append(
+                f"https://www.loopnet.com/search/{kind}/"
+                f"{slugify(city)}-{_state(search).lower()}/for-sale/"
+            )
+    return urls
+
+
+def crexi_urls(search: dict) -> list[str]:
+    urls = []
+    state = _state(search)
+    for ptype in search.get("property_types") or []:
+        if ptype not in COMMERCIAL_TYPES:
+            continue
+        kind = CREXI_TYPE.get(ptype, "")
+        for city in _cities(search):
+            urls.append(
+                f"https://www.crexi.com/properties/{state}/{slugify(city)}"
+                + (f"/{kind}" if kind else "")
+            )
+    return urls
+
+
+def commercialcafe_urls(search: dict) -> list[str]:
+    urls = []
+    for ptype in search.get("property_types") or []:
+        if ptype not in COMMERCIAL_TYPES:
+            continue
+        kind = CCAFE_TYPE.get(ptype, "")
+        for city in _cities(search):
+            urls.append(
+                "https://www.commercialcafe.com/commercial-real-estate/us/"
+                f"{_state(search).lower()}/{slugify(city)}/"
+                + (f"{kind}/" if kind else "") + "for-sale/"
+            )
+    return urls
 
 
 BUILDERS = {
@@ -487,6 +571,9 @@ BUILDERS = {
         "realtor": realtor_urls,
         "landwatch": landwatch_urls,
         "facebook": facebook_us_queries,
+        "loopnet": loopnet_urls,
+        "crexi": crexi_urls,
+        "commercialcafe": commercialcafe_urls,
     },
 }
 

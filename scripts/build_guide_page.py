@@ -17,8 +17,32 @@ from pathlib import Path
 import markdown
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "docs" / "us-property-buyers-guide.md"
-OUTPUT = ROOT / "docs" / "us-property-buyers-guide.html"
+DOCS = {
+    "guide": (
+        ROOT / "docs" / "us-property-buyers-guide.md",
+        ROOT / "docs" / "us-property-buyers-guide.html",
+        "Field guide · United States · Texas · Austin",
+        "The Property Buyer's Guide to the United States",
+        "Three parts — the national picture, then Texas, then Austin — written "
+        "for a buyer who already knows how to run a Portuguese search. The "
+        "method transfers. The facts underneath it do not.",
+        "Research current as of July 2026. Every rate, threshold and deadline in "
+        "this document changes — verify at purchase time.<br>Nothing here is "
+        "legal or tax advice.",
+    ),
+    "hotel": (
+        ROOT / "docs" / "austin-wellness-hotel-site-brief.md",
+        ROOT / "docs" / "austin-wellness-hotel-site-brief.html",
+        "Site brief · Boutique wellness hotel · West Austin",
+        "West Austin wellness hotel — site search brief",
+        "A ~50-key membership hotel-spa at $500+ ADR, within 25 minutes of "
+        "downtown. The binding constraint is not price or availability. It is "
+        "impervious cover.",
+        "Research current as of July 2026. Verify every regulatory figure with "
+        "the City of Austin before committing capital — these rules are "
+        "site-specific and change.",
+    ),
+}
 
 STYLE = """
 <style>
@@ -423,13 +447,13 @@ def build_index(html_text: str) -> tuple[str, str]:
     return article, index
 
 
-def main() -> int:
-    text = SOURCE.read_text(encoding="utf-8")
+def render(key: str) -> None:
+    source, output, eyebrow, title, standfirst, stamp = DOCS[key]
+    text = source.read_text(encoding="utf-8")
 
-    # The masthead is composed by hand from the front matter, so drop the
-    # source's title block and let the styled header carry it.
-    body_md = text.split("---", 1)[1].lstrip() if text.startswith("#") else text
-    body_md = re.sub(r"^# The Property Buyer's Guide.*?\n", "", text, count=1, flags=re.S)
+    # The masthead is composed from the front matter, so drop the source's own
+    # title block and let the styled header carry it.
+    body_md = re.sub(r"^#[^\n]*\n", "", text, count=1)
     body_md = body_md.split("---", 1)[1].lstrip()
 
     rendered = markdown.markdown(
@@ -441,18 +465,14 @@ def main() -> int:
     rendered = wrap_tables(rendered)
     article, index = build_index(rendered)
 
-    page = f"""<title>The Property Buyer's Guide to the United States</title>
+    page = f"""<title>{html.escape(title)}</title>
 {STYLE}
 <div class="shell">
   <header class="masthead">
-    <p class="eyebrow">Field guide · United States · Texas · Austin</p>
-    <h1>The Property Buyer's Guide to the United States</h1>
-    <p class="standfirst">Three parts — the national picture, then Texas, then
-      Austin — written for a buyer who already knows how to run a Portuguese
-      search. The method transfers. The facts underneath it do not.</p>
-    <p class="stamp">Research current as of July 2026. Every rate, threshold and
-      deadline in this document changes — verify at purchase time.<br>
-      Nothing here is legal or tax advice.</p>
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{html.escape(title)}</h1>
+    <p class="standfirst">{standfirst}</p>
+    <p class="stamp">{stamp}</p>
   </header>
   {index}
   <article class="article">
@@ -460,15 +480,19 @@ def main() -> int:
   </article>
   <footer class="colophon">
     Compiled from primary sources and market data, July 2026. Full source list
-    at the end of the guide. Figures for the Austin market move weekly; the
-    structural facts — non-disclosure, the option period, ETJ status, aquifer
-    lot minimums — move on their own schedule and are worth re-checking before
-    you act on any of them.
+    at the end. Market figures move weekly; the structural facts — impervious
+    cover caps, non-disclosure, the option period, ETJ status — move on their
+    own schedule and are worth re-checking before you act on any of them.
   </footer>
 </div>
 """
-    OUTPUT.write_text(page, encoding="utf-8")
-    print(f"wrote {OUTPUT.relative_to(ROOT)}  ({len(page):,} bytes)")
+    output.write_text(page, encoding="utf-8")
+    print(f"wrote {output.relative_to(ROOT)}  ({len(page):,} bytes)")
+
+
+def main() -> int:
+    for key in DOCS:
+        render(key)
     return 0
 
 

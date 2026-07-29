@@ -121,6 +121,61 @@ searches:
       facebook:   {groups: []}
 
   # ===========================================================================
+  # AUSTIN — WELLNESS HOTEL SITE  (commercial development search)
+  #
+  # Different portals, different diligence, different everything. A 50-key hotel
+  # site never appears on Zillow, and the binding constraint is not price — it
+  # is IMPERVIOUS COVER. See docs/austin-wellness-hotel-site-brief.md.
+  #
+  # Minimum viable acreage, derived not guessed (surface parking):
+  #   Barton Springs Zone recharge  15% IC  ->  11-17 acres
+  #   Barton Creek watershed        20% IC  ->   8-13 acres
+  #   BSZ contributing zone         25% IC  ->   6-10 acres
+  #   Water Supply / Lake Austin    40% IC  ->   4-6  acres
+  #   Existing commercial, grandfathered    ->   3-4  acres
+  # The last row is why an existing office building beats raw land here.
+  # ===========================================================================
+  - name: austin-wellness-site
+    country: US
+    active: true
+    purpose: tourism
+    property_types: [hotel, office, commercial_land]
+    timeline: ""
+
+    zone:
+      anchor: "Austin"
+      state: TX
+      radius_km: 30
+      cities: ["Austin", "West Lake Hills", "Rollingwood", "Bee Cave", "Lakeway"]
+      counties: ["Travis"]
+      zips: []
+
+    budget:
+      currency: USD
+      min: 2000000
+      max: 20000000        # ← placeholder. Set from the capital stack, not from
+      includes_costs: false #   a comp. Land is a fraction of total project cost.
+
+    requirements:
+      land_acres_min: 5
+      must_have:
+        - "hotel use permitted by right, or a credible path to it"
+        - "wastewater capacity — city sewer, or WCID/MUD with written capacity"
+        - "impervious cover headroom for the full program (see brief)"
+        - "outdoor activation possible — usable, non-floodplain, non-CWQZ land"
+      deal_breakers:
+        - "Barton Springs Zone recharge at under 10 acres with no grandfathered cover"
+        - "inside West Lake Hills or Rollingwood city limits — no hotel use"
+        - "Critical Water Quality Zone across the developable area"
+        - "no wastewater path"
+        - "heritage trees through the building envelope"
+
+    alerts:
+      loopnet:        {saved_search: false, email_alert: false}
+      crexi:          {saved_search: false, email_alert: false}
+      commercialcafe: {saved_search: false, email_alert: false}
+
+  # ===========================================================================
   # PORTUGAL — paused until you give me the zone and budget.
   # Set active: true and fill in the zone to bring it back.
   # ===========================================================================
