@@ -486,14 +486,22 @@ def landwatch_urls(search: dict) -> list[str]:
     return urls
 
 
+def _is_lodging(search: dict) -> bool:
+    return any(t in ("hotel", "resort") for t in (search.get("property_types") or []))
+
+
 def bizbuysell_urls(search: dict) -> list[str]:
     """Operating lodging businesses, listed as businesses rather than as land.
 
     A tired hotel is usually sold as a going concern by a business broker, not
     as real estate by a CRE broker — so it never appears on LoopNet at all.
-    This is the channel where that category actually surfaces.
+
+    Tier caveat: BizBuySell's median closed sale is around $350,000, which is
+    Main Street territory. It will surface a small independent lodge and will
+    not surface a $20M resort. Use it for the small end and specialist hotel
+    brokers for everything above — see references/portals-us.md.
     """
-    if not any(t in ("hotel", "resort") for t in (search.get("property_types") or [])):
+    if not _is_lodging(search):
         return []
     state = US_STATE_NAMES.get(_state(search), _state(search)).lower()
     urls = [f"https://www.bizbuysell.com/{state}/hotels-for-sale/",
@@ -503,6 +511,47 @@ def bizbuysell_urls(search: dict) -> list[str]:
         urls.append(f"https://www.bizbuysell.com/{state}/{slugify(county)}-county/"
                     "hotels-for-sale/")
     return urls
+
+
+def bizquest_urls(search: dict) -> list[str]:
+    """BizQuest — same owner as BizBuySell, but only 65-75% overlapping stock.
+
+    That gap is the whole reason to run both: a quarter of the listings appear
+    on one and not the other.
+    """
+    if not _is_lodging(search):
+        return []
+    state = US_STATE_NAMES.get(_state(search), _state(search)).lower()
+    return [
+        f"https://www.bizquest.com/hotels-and-motels-for-sale-in-{state}/",
+        f"https://www.bizquest.com/bed-and-breakfasts-for-sale-in-{state}/",
+    ]
+
+
+def businessbroker_urls(search: dict) -> list[str]:
+    """BusinessBroker.net — independent of the CoStar pair, plus a broker directory."""
+    if not _is_lodging(search):
+        return []
+    state = US_STATE_NAMES.get(_state(search), _state(search)).lower()
+    return [f"https://www.businessbroker.net/businesses-for-sale/{state}/",
+            f"https://www.businessbroker.net/brokers/{state}.aspx"]
+
+
+def businessesforsale_urls(search: dict) -> list[str]:
+    if not _is_lodging(search):
+        return []
+    state = US_STATE_NAMES.get(_state(search), _state(search)).lower()
+    return [f"https://us.businessesforsale.com/us/search/hotels-for-sale/{state}",
+            f"https://us.businessesforsale.com/us/search/bed-and-breakfasts-for-sale/{state}"]
+
+
+def dealstream_urls(search: dict) -> list[str]:
+    """DealStream — skews larger than the Main Street marketplaces."""
+    if not _is_lodging(search):
+        return []
+    state = US_STATE_NAMES.get(_state(search), _state(search)).lower()
+    return [f"https://dealstream.com/hotels-for-sale/{state}",
+            f"https://dealstream.com/businesses-for-sale/{state}"]
 
 
 def facebook_us_queries(search: dict) -> list[str]:
@@ -594,6 +643,10 @@ BUILDERS = {
         "crexi": crexi_urls,
         "commercialcafe": commercialcafe_urls,
         "bizbuysell": bizbuysell_urls,
+        "bizquest": bizquest_urls,
+        "businessbroker": businessbroker_urls,
+        "businessesforsale": businessesforsale_urls,
+        "dealstream": dealstream_urls,
     },
 }
 
