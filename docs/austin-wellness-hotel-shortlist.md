@@ -1,6 +1,7 @@
 # Target list — West Austin wellness hotel site
 
-*Compiled July 2026. Read the provenance note before acting on anything here.*
+*Compiled July 2026. Search radius is 30 minutes' drive from downtown Austin.*
+*Read the provenance note before acting on anything here.*
 
 ---
 
@@ -384,6 +385,101 @@ the difference between a $6M and a $15M site budget changes which of the four
 target zones are even in play.
 
 ---
+
+---
+
+# Off-market targets
+
+**None of these is for sale.** That is the point — they are properties whose
+*characteristics* fit, identified by what they are rather than by whether
+someone has decided to sell. Approach is via the ownership entity in TCAD.
+
+The screen is unchanged: does the parcel's existing impervious cover carry the
+programme, given that all of these sit in the Barton Springs Zone where raw
+land is capped at 15%?
+
+## Screened — West Austin office parks
+
+| Property | Address | Acres | Building | Est. cover | % site | Surface pkg | With deck |
+|---|---|---|---|---|---|---|---|
+| **Westlake Oaks Executive Park** | 1001 S Capital of Texas | **15.12** | 137,000 ft², 13 bldgs, 548 spaces | ~284,800 ft² | 43% | **2.58×** | **4.42×** |
+| **Los Arboles at Barton Creek** | 7004 Bee Caves Rd | 4.93 | 52,140 ft², 1985, 223 spaces | ~113,900 ft² | 53% | 1.03× | **1.77×** |
+| **Crystal Mountain Office Park** | 9433 Bee Cave Rd | 4.87 | 56,507 ft², 1997, 187 spaces | ~103,800 ft² | 49% | 0.94× | **1.61×** |
+| **Westway Office Park** | 925 S Capital of Texas | 3.50 | 31,714 ft², 2 bldgs, 126 spaces | ~66,700 ft² | 44% | fail | 1.03× |
+
+**What the grandfathering is worth here.** On raw land at the 15% cap, these
+sites would allow 98,794 / 32,213 / 31,821 / 22,869 ft² respectively. Los
+Arboles carries an estimated **113,900 ft² — three and a half times what its
+acreage would permit today.** That differential is the asset. It cannot be
+bought on vacant land at any price.
+
+**Three of the four work with a parking deck.** Only Westlake Oaks works
+without one. This is the parking trade from the brief becoming decisive rather
+than merely favourable: build the deck and your candidate pool triples.
+
+Notes on each:
+
+- **Westlake Oaks** — dominant on every measure, and thirteen buildings in a
+  wooded park is close to a pavilion resort's bone structure already. Jurisdiction
+  (Austin vs West Lake Hills) still unresolved and still the first question.
+- **Los Arboles at Barton Creek** — 1985, Class B, Rob Roy neighbourhood, high
+  cover ratio at 53%. Best of the mid-sized options. ~10 min from downtown.
+- **Crystal Mountain** — 1997, so newer and likely more expensive to buy out;
+  "tranquil Hill Country setting" on Bee Cave Rd is the right character.
+- **Westway** — 3.5 acres is tight even with a deck (1.03×), leaving no room for
+  outdoor programme. Include only in an assemblage.
+
+**Also worth pulling records on**, not yet sized: *The Overlook at Barton Creek*
+(ECR), *Eagle Center* (4611 Bee Caves Rd), *Westlake Village Office Park*
+(3939 Bee Cave Rd), *The Hills Office Park*, *Westland Office Park*.
+
+## Retreat, camp and event properties — the closest existing use
+
+These already do something close to what you intend, which usually means
+assembly use, utilities and access are already solved.
+
+| Property | Where | Size | Note |
+|---|---|---|---|
+| **Cypress Creek Ranch** | Spicewood | **104 acres** — event venue, amphitheatre, pavilion | **Actually for sale**: $12M whole, or 22 unimproved acres at $1.95M |
+| **Peaceful Waters Retreat Center** | Austin area | 53 acres, spring-fed private lake | Hosts groups to 40 — small, but the setting is the product |
+| **Spicewood Retreat** | 23 mi west of downtown | — | Marketed by Republic Ranches as **unrestricted for development** |
+| **Highland Lakes Camp & Conference Center** | Spicewood, Lake Travis | Serves up to 900, founded 1954 | **~35 miles west — outside the 30-minute rule.** Listed for completeness |
+
+Cypress Creek Ranch is the interesting one: an existing event venue with an
+amphitheatre and pavilion on 104 acres, already for sale, with a
+buy-part-or-whole structure. Check the drive time honestly — Spicewood is at or
+past the 30-minute edge.
+
+## The comparable that should change how you think about this
+
+**Lakeway Resort & Spa sold in May 2026 for $37.8 million.** 168 rooms on an
+**11-acre peninsula** on Lake Travis, built 1963. The buyers — Trestle Studio
+with Sopris Capital — are repositioning it as "a boutique destination
+experience," having done the same at The Hotel Chalet in Chattanooga.
+
+That is roughly **$225,000 per key** for a waterfront resort with entitlements,
+utilities and 60+ years of operating history already in place.
+
+Three things follow.
+
+1. **Your thesis is validated by capital that just moved.** Someone with
+   institutional backing reached the same conclusion about Lake Travis boutique
+   wellness three months ago.
+2. **It is also now a competitor**, and it will open before anything you start
+   from land. Understand its positioning before you set yours — a membership
+   model is a genuine differentiator against a repositioned 168-key resort, and
+   worth leaning into rather than away from.
+3. **It reprices your alternatives.** $37.8M bought 168 keys, a peninsula and a
+   working business. Against that, $4.7M for 9.44 raw acres on RM 620 opposite a
+   car dealership looks less like a bargain and more like the beginning of a
+   much longer and costlier road. **The acquisition-versus-development question
+   deserves an explicit answer before you go further.**
+
+The category to search next is the one Lakeway Resort was in before it sold:
+**older, under-invested lodging and resort assets on good land** within the
+30-minute ring. Those trade on operating performance, which is exactly where a
+tired asset undervalues its real estate.
+
 
 ---
 

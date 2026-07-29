@@ -145,8 +145,11 @@ searches:
     zone:
       anchor: "Austin"
       state: TX
-      radius_km: 30
-      cities: ["Austin", "West Lake Hills", "Rollingwood", "Bee Cave", "Lakeway"]
+      radius_km: 40          # ~30 minutes' drive, not 30 km. The rule is time,
+                             # and RM 620 and Hwy 71 differ by 15 minutes over
+                             # the same distance — check the route, not the map.
+      cities: ["Austin", "West Lake Hills", "Rollingwood", "Bee Cave",
+               "Lakeway", "Spicewood", "Steiner Ranch"]
       counties: ["Travis"]
       zips: []
 
@@ -166,6 +169,8 @@ searches:
         - "wastewater capacity — city sewer, or WCID/MUD with written capacity"
         - "impervious cover headroom for the full program (see brief)"
         - "outdoor activation possible — usable, non-floodplain, non-CWQZ land"
+        # 30 minutes to downtown, verified on the actual route at the actual
+        # hour. Hwy 71 runs ~15 min faster than RM 620 over the same distance.
       deal_breakers:
         - "Barton Springs Zone recharge at under 10 acres with no grandfathered cover"
         - "inside West Lake Hills or Rollingwood city limits — no hotel use"

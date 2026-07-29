@@ -18,11 +18,11 @@
     "https://services1.arcgis.com/gGHDlz6USftL5Pau/arcgis/rest/services"
   ],
   "extent": {
-    "_comment": "West Austin bounding box: roughly Lake Austin south to Oak Hill, downtown west to Bee Cave. WGS84.",
-    "xmin": -98.1,
-    "ymin": 30.19,
-    "xmax": -97.72,
-    "ymax": 30.42,
+    "_comment": "West Austin within ~30 minutes of downtown. Widened from the 25-minute box to take in Lakeway, Bee Cave, Steiner Ranch and the eastern edge of Spicewood. WGS84.",
+    "xmin": -98.22,
+    "ymin": 30.14,
+    "xmax": -97.7,
+    "ymax": 30.52,
     "spatialReference": {
       "wkid": 4326
     }
