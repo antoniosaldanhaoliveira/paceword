@@ -39,8 +39,8 @@ changed in 2024: **how buyer's agents get paid.** See §7.
 
 ## 1. There is no "US property market"
 
-The single most common mistake a foreign buyer makes is treating the US as one
-market. It is roughly 3,000 counties, each with its own tax rate, recording
+The most common mistake, and one that survives even long familiarity with the
+country, is treating the US as one market. It is roughly 3,000 counties, each with its own tax rate, recording
 office, disclosure rules and appraisal authority; 50 states with different
 contract law; and around 500+ regional MLSs.
 
@@ -69,9 +69,9 @@ look at a single listing.
    build-to-own. In the US this is not a preference, it is a tax status. The
    homestead exemption, the mortgage products available to you, and the capital
    gains treatment all key off it.
-2. **Residency and citizenship status.** See §9. This determines financing,
-   withholding on eventual sale, and — in some states now — whether you may buy
-   at all.
+2. **Residency and tax status.** See §9. As a US person your financing options
+   are the full menu and the homestead exemption is available to you — but only
+   on a primary residence, which makes this a decision, not a formality.
 3. **Metro, then submarket, then zone.** Keep the final search zone tight. The
    Portuguese 15–20 km rule holds; in US terms, **one metro and two or three
    named submarkets**, not "Central Texas."
@@ -82,9 +82,11 @@ look at a single listing.
    Portuguese market lets you skip and the US market punishes. Compute
    **purchase price + 10 years of property tax + insurance**. A cheaper property
    in a high-tax district frequently loses to a dearer one.
-6. **Financing route,** decided before you search. Cash, conventional mortgage,
-   foreign-national product, DSCR, or ITIN loan. Each changes the price band you
-   can act on, and sellers treat pre-approved buyers differently.
+6. **Financing route,** decided before you search. Cash, conventional, FHA/VA,
+   jumbo, or — for land — a local bank, Farm Credit lender or seller financing.
+   Each changes the price band you can act on, and sellers treat pre-approved
+   buyers very differently. Note that land and houses are financed on completely
+   different terms (§9).
 
 ## 3. Step two — where to search: the portal landscape
 
@@ -333,49 +335,72 @@ Broad shape; state variations are real (see Part Two for Texas).
 title insurance, escrow, recording, prepaid tax and insurance escrows. Plus a
 transfer tax in many states — **but not in Texas**.
 
-## 9. Money — especially for a non-US buyer
+## 9. Money and financing
 
-**There is no restriction on non-citizens owning US real estate**, and buying
-property grants **no visa, residency or immigration status** whatsoever. Anyone
-who tells you otherwise is selling something.
+As a **US person**, this is the part of the transaction that looks most like
+what you would expect and least like the Portuguese process. Your leverage is
+better than a foreign buyer's, and materially better than a cash-only buyer's
+in a market with six months of inventory.
 
-*(One important 2025 exception at state level: see Texas SB 17 in Part Two.)*
+### Financing a house
 
-### Financing as a foreign national
-
-You do **not** need a green card, a US visa, a Social Security Number, US credit
-history or US income to get a US mortgage. You need the right lender. As of
-2026 these are mature products with dozens of active lenders:
-
-| Product | Qualifies on | Typical down payment |
+| Product | Down payment | Notes |
 |---|---|---|
-| **Foreign national full-doc** | Verified foreign income and assets | 25–30% |
-| **DSCR loan** | The property's own rental income | 20–25% |
-| **ITIN loan** | Income, using an ITIN instead of an SSN | 15–25% |
+| **Conventional** | 3–20% | Under 20% triggers PMI until you reach ~20% equity. The default path |
+| **FHA** | 3.5% | Easier credit thresholds; mortgage insurance for the life of most loans |
+| **VA** | 0% | If eligible, the best terms available in the US. No PMI |
+| **Jumbo** | 10–20% | Above the conforming limit — relevant inside Austin city limits, where the median is ~$595,000 |
 
-Expect rates somewhat above conventional, and closing in 21–45 days. Vacant land
-is much harder to finance than housing — most raw-land purchases are cash or
-seller-financed, and land loans that exist want 30–50% down.
+Get **pre-approved, not pre-qualified**, before you search. Pre-qualification is
+an opinion; pre-approval is underwritten and sellers treat the two very
+differently. In Austin's current market a clean pre-approval plus flexibility on
+closing date is worth real money off the price.
 
-### Tax and structure
+### Financing land — the part that surprises people
 
-- **ITIN** — an Individual Taxpayer Identification Number, from the IRS. You
-  will need one for tax filings; not required merely to own.
-- **FIRPTA** — on *sale* by a foreign person, the buyer must withhold a
-  percentage of the **gross sale price** (commonly 15%) and remit it to the IRS.
-  It is a withholding, not a tax; you reclaim the excess by filing. Plan for it
-  at purchase — it materially affects your exit liquidity.
-- **LLC ownership** is common for liability and privacy. It has real costs:
-  state franchise fees, filing requirements, harder financing, and possible loss
-  of homestead exemption. **Take US tax advice before choosing a structure** —
-  the right answer depends on your home country's treaty position, and getting
-  it wrong is expensive to unwind.
-- **Estate tax exposure** is the trap foreign buyers most often miss. Non-resident
-  aliens get a very small US estate tax exemption on US-situs assets — far below
-  the resident exemption. A US property can create a significant estate tax
-  liability for your heirs. This alone justifies professional advice.
-- **FinCEN reporting** on all-cash purchases through entities has expanded.
-  Your title company will handle it, but expect to disclose beneficial ownership.
+**Vacant land is much harder to finance than a house**, and this is the single
+biggest practical difference between your two searches.
+
+- Most residential lenders will not touch raw land at all.
+- Land loans that exist typically want **20–50% down**, run shorter terms
+  (often 10–20 years, sometimes with a balloon), and carry higher rates.
+- **Local and regional banks, Farm Credit lenders, and credit unions** are the
+  realistic sources — not the national mortgage brands.
+- **Seller financing is common** in rural land and often the best terms
+  available. Always ask whether the seller will carry paper.
+- A **construction-to-permanent loan** can wrap the land and the build into one
+  facility if you intend to build reasonably soon. Usually better than buying
+  the land on a land loan and refinancing later.
+
+Budget accordingly: a $400,000 tract may need $120,000–200,000 in cash, where a
+$400,000 house needs $12,000–80,000.
+
+### Tax position
+
+- **Homestead exemption applies to you** on a primary residence — file for it,
+  it is not automatic, and it brings the 10% annual appraisal cap with it
+  (§16). If you buy both a house and land, only the residence gets it.
+- **No FIRPTA withholding** on your eventual sale, and no ITIN complications.
+- **Texas SB 17 does not restrict you** (§13).
+- **Mortgage interest and property tax** may be deductible depending on your
+  overall position and whether you itemise — worth a conversation with a CPA
+  before you choose between cash and financing.
+- **Capital gains**: the primary-residence exclusion (currently $250k single /
+  $500k married, with a two-of-five-years occupancy test) is one of the better
+  deals in the US tax code, and it does not apply to land you never live on.
+- **LLC ownership** for the land, if you want liability separation, is worth
+  discussing — but note it can **forfeit the homestead exemption** and
+  complicate financing. Do not put a primary residence in an LLC casually.
+
+### If you later buy as a non-US entity or with foreign partners
+
+Not your situation, but worth knowing it exists: foreign nationals can buy US
+property with no visa or residency, using foreign-national full-doc, DSCR or
+ITIN mortgage products (typically 15–30% down). They face **FIRPTA withholding
+on sale**, a very small US estate tax exemption on US-situs assets, and — in
+Texas — the SB 17 restrictions if connected to a designated country. If any
+future purchase involves foreign partners or entities, take advice before
+structuring it.
 
 ## 10. Costs — the shape is inverted
 
@@ -448,10 +473,11 @@ Key points:
 - It has been challenged in federal court; at least one challenge was dismissed.
   The list of designated countries can grow.
 
-**If you are an EU, UK, Latin American, Canadian or most other foreign nationals,
-this does not restrict you.** But expect a title-company affidavit at closing,
-and if your ownership structure has any investor connected to a designated
-country, take legal advice early.
+**As a US person, this does not restrict you.** You will still likely sign a
+title-company affidavit at closing confirming it. It matters in two situations:
+if you ever take on foreign partners or investors in an entity that holds Texas
+property, and if you sell — a restricted buyer pool is a smaller buyer pool.
+The list of designated countries can grow.
 
 ## 14. The Texas transaction — TREC, the option period, title
 
@@ -526,8 +552,11 @@ with a further **$60,000** for owners 65+ or with a qualifying disability. It
 also brings a **10% annual cap** on assessed value increases. You must **file** —
 it is not automatic.
 
-If the property is a second home, a rental or land banking, model your taxes
-with **no exemption and no cap**.
+**This is directly actionable for you, and it is one of the better deals in
+Texas.** But it attaches to *one* property — your primary residence. If you buy
+both a house and a tract of land, the land gets **no exemption and no 10% cap**,
+and should be modelled at full market value rising annually. That asymmetry is
+large enough to affect which of the two you buy first.
 
 **Agricultural valuation.** An ag-valued tract is taxed on productivity rather
 than market value — often an order of magnitude less. Two warnings:

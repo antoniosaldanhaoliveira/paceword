@@ -1,89 +1,145 @@
 # Buyer profile — drives every search, score and due-diligence path.
 # Lives at $PROPERTY_WORKSPACE/profile.yaml
 #
-# You can run several searches in parallel, in more than one country. Each keeps
-# its own zone, property types, currency, area units and price-per-area baseline
-# — that separation is the point. A plot in Tavira, a ruin in Alentejo and an
-# acreage tract outside Austin do not belong in the same median, and pooling them
-# produces a number that describes none of the three.
+# Several searches run in parallel, in more than one country. Each keeps its own
+# zone, property types, currency, area units and price-per-area baseline — that
+# separation is the point. Austin acreage and an Austin house do not belong in
+# the same median, and pooling them produces a number that describes neither.
 #
-# Keep each individual search narrow (one or two types, one anchor town, 15–20 km).
-# Several narrow searches work. One wide search does not.
+# Keep each search narrow. Several narrow searches work. One wide search does not.
 
 buyer:
-  name: ""
-  residency: ""          # pt | eu | non-eu — decides visa/NIF path, not buying rights
-  nif: false             # Portuguese tax number obtained? Mandatory before any deed
-  pt_bank_account: false # Needed to pay IMT/stamp duty and utilities
-  lawyer: ""             # independent lawyer, not the agent's recommendation
+  name: "Antonio"
+  residency: "us"        # US person — full financing menu, homestead exemption
+                         # available on a primary residence, no FIRPTA on sale,
+                         # Texas SB 17 does not restrict you.
+  lawyer: ""             # not required in Texas (a title company closes), but
+                         # worth having for land with easements or access issues
+  sold_comps_source: ""  # ← the highest-value thing you can add to a US search.
+                         # Texas does not publish sale prices. Until an agent is
+                         # feeding you sold comps, every median below is an
+                         # ASKING-price median. Record the source here.
 
 searches:
-  # ---------------------------------------------------------------------------
-  # Copy this block once per search. `name` is the key used everywhere:
-  #   /property-scan algarve-plots
-  #   python tracker.py stats --search algarve-plots
-  # ---------------------------------------------------------------------------
-  - name: ""             # short slug, e.g. "algarve-plots", "austin-land"
-    country: PT          # PT | US — picks the portals, the currency, the area
-                         # units and which due-diligence skill applies. Getting
-                         # this wrong prices Austin acreage per square metre.
-    active: true         # set false to pause a search without deleting its history
-    purpose: ""          # living | renting | tourism | building | land-banking
-    property_types:      # 1–2 per search. More than that and the due-diligence
-      - ""               # paths diverge too far to learn any of them properly.
-    timeline: ""         # e.g. "buy within 12 months", "learning the market first"
+  # ===========================================================================
+  # AUSTIN — LAND
+  # Hill Country and the eastern growth edge: the most buyer-favouring
+  # submarkets in the metro. Financed completely differently from a house —
+  # expect 20–50% down, local or Farm Credit lenders, or seller financing.
+  # Land gets no homestead exemption and no 10% appraisal cap.
+  # ===========================================================================
+  - name: austin-land
+    country: US
+    active: true
+    purpose: building        # building | land-banking
+    property_types: [acreage]
+    timeline: ""
 
     zone:
-      anchor: ""         # the town you centre on, e.g. "São Brás de Alportel"
-      radius_km: 20      # the guide's 15–20 km rule — resist widening this
-      # Portugal:
-      concelhos: []      # explicit municipalities inside the radius (for Idealista)
-      freguesias: []     # optional narrower parishes
-      # United States:
-      state: ""          # two-letter, e.g. TX
-      cities: []         # e.g. ["Austin", "Dripping Springs"] — Zillow, Realtor
-      counties: []       # e.g. ["Travis", "Hays"] — LandWatch, and the tracker's region
-      zips: []           # e.g. ["78737", "78620"] — Redfin needs these, see below
+      anchor: "Dripping Springs"
+      state: TX
+      radius_km: 45
+      cities: ["Dripping Springs", "Wimberley", "Bastrop"]
+      counties: ["Hays", "Travis", "Bastrop"]
+      # Redfin needs ZIPs — it has no derivable city id. These cover the
+      # Dripping Springs / Wimberley / Bastrop corridors.
+      zips: ["78620", "78737", "78676", "78602", "78612"]
 
     budget:
-      currency: EUR      # EUR for PT, USD for US
-      min: 0
-      max: 0
-      includes_costs: false  # true if max already covers IMT + stamp duty + works
-      # Rough acquisition costs on top of price: IMT (sliding, ~0–7.5%; 5% flat on
-      # rustic land), stamp duty 0.8%, notary + registration ~1,000–1,500 €,
-      # lawyer ~1–1.5%. Verify current rates at purchase time — they change.
+      currency: USD
+      min: 150000
+      max: 600000           # ← adjust. Set this from cash available rather than
+      includes_costs: false #   from a mortgage: land lending is far tighter
+                            #   than housing and wants 20–50% down.
 
     requirements:
-      # Portugal (metric):
-      land_m2_min: 0
-      built_m2_min: 0
-      # United States (imperial):
-      land_acres_min: 0    # note: Travis County requires 5+ acres for a lot on
-                           # an individual Trinity-aquifer well
-      built_sqft_min: 0
-      bedrooms_min: 0
-      must_have: []      # e.g. ["road access", "electricity within 100m", "south facing"]
-      deal_breakers: []  # e.g. ["north facing", "RAN/REN", "no legal ruin registration",
-                         #       "slope > 15%", "high-voltage lines"]
+      land_acres_min: 5    # NOT arbitrary. Travis County requires 5+ acres for a
+                           # lot served by an individual well on the Trinity
+                           # aquifer. Below this, many tracts are unbuildable.
+      must_have:
+        - "legal road access — recorded easement or public frontage"
+        - "water — existing well with flow test, or written utility will-serve"
+      deal_breakers:
+        - "no septic/OSSF feasibility"
+        - "in FEMA or Austin Atlas 14 floodplain"
+        - "ETJ status unresolved"
+        - "ag rollback exposure if building"
+        - "no mineral rights disclosure"
+        - "pipeline or transmission easement through the building envelope"
 
-    alerts:              # where saved searches exist, so you know what is covered
-      # Portugal:
-      idealista:  {saved_search: false, email_alert: false}
-      imovirtual: {saved_search: false, email_alert: false}
-      casa_sapo:  {saved_search: false, email_alert: false}
-      olx:        {saved_search: false, email_alert: false}
-      # United States:
+    alerts:
       zillow:     {saved_search: false, email_alert: false}
       redfin:     {saved_search: false, email_alert: false}
       realtor:    {saved_search: false, email_alert: false}
       landwatch:  {saved_search: false, email_alert: false}
       facebook:   {groups: []}
 
-    # US only. Texas does not publish sale prices, so the tracker's medians are
-    # asking-price medians until you have an MLS-side source for sold comps.
-    # Record it here once you do — it is the highest-value input in a US search.
-    sold_comps_source: ""   # e.g. "agent: Jane Doe, Unlock MLS" 
+  # ===========================================================================
+  # AUSTIN — HOUSES
+  # Value corridors south (Kyle/Buda), city stock (78704/78745), and the
+  # established north (Georgetown). If one of these becomes your primary
+  # residence, it — and only it — gets the homestead exemption and the 10% cap.
+  # ===========================================================================
+  - name: austin-homes
+    country: US
+    active: true
+    purpose: living
+    property_types: [house]
+    timeline: ""
+
+    zone:
+      anchor: "Austin"
+      state: TX
+      radius_km: 40
+      cities: ["Austin", "Kyle", "Buda", "Georgetown"]
+      counties: ["Travis", "Hays", "Williamson"]
+      zips: ["78745", "78704", "78640", "78610", "78626"]
+      # 78748 and 78739 deliberately excluded — Onion Creek corridor, the
+      # metro's worst flood history. Add them back only with a flood quote.
+
+    budget:
+      currency: USD
+      min: 300000
+      max: 650000           # ← adjust. Metro median ~$445k; City of Austin
+      includes_costs: false #   proper ~$595k. Above ~$800k you are into jumbo.
+
+    requirements:
+      built_sqft_min: 1400
+      bedrooms_min: 3
+      must_have: []
+      deal_breakers:
+        - "in FEMA or Austin Atlas 14 floodplain"
+        - "combined tax rate over 2.5% — usually means a MUD"
+        - "unpermitted square footage — TCAD disagrees with the listing"
+        - "active HOA litigation or pending special assessment"
+        - "foundation movement without an engineer's report"
+
+    alerts:
+      zillow:     {saved_search: false, email_alert: false}
+      redfin:     {saved_search: false, email_alert: false}
+      realtor:    {saved_search: false, email_alert: false}
+      facebook:   {groups: []}
+
+  # ===========================================================================
+  # PORTUGAL — paused until you give me the zone and budget.
+  # Set active: true and fill in the zone to bring it back.
+  # ===========================================================================
+  - name: portugal
+    country: PT
+    active: false
+    purpose: ""
+    property_types: []
+    zone:
+      anchor: ""
+      radius_km: 20
+      concelhos: []
+    budget: {currency: EUR, min: 0, max: 0}
+    requirements: {land_m2_min: 0}
+    alerts:
+      idealista:  {saved_search: false, email_alert: false}
+      imovirtual: {saved_search: false, email_alert: false}
+      casa_sapo:  {saved_search: false, email_alert: false}
+      olx:        {saved_search: false, email_alert: false}
 
 # Updated by the tracker — do not hand-edit.
 progress: {}
