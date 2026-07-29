@@ -109,15 +109,122 @@ contentious and can involve TxDOT.
 covenants (retail/medical/office are cited; **hotel is not**), the watershed,
 and the wastewater arrangement.
 
-### 4. Lakeway 78734 — 9.47 acres, $4,700,000 (~$496k/acre)
+### 4. 108 S Ranch Road 620, Lakeway 78734 — 9.44 acres, $4,700,000
 
-The **only indexed tract that clears the Barton Springs Zone minimum** on
-acreage alone. At 9.47 acres it works at 20–25% cover with surface parking, or
-at 15% with a parking deck.
+**On the regulatory math this is the strongest site on the list. On character
+and distance it is the weakest. Both statements are true and the tension is the
+whole decision.**
 
-**Confirm:** jurisdiction (Lakeway city vs Travis County), watershed, whether
-hotel use is permitted, wastewater. ~25–30 min downtown — verify the drive at
-the hour that matters.
+| | |
+|---|---|
+| Site | **9.44 acres** (some listings say 9.47) |
+| Price | **$4,700,000** — ~$498,000/acre, **$11.43/ft²** |
+| Location | SW corner of RM 620 and Clara Van, **opposite the Lakeway Lexus dealership** |
+| Jurisdiction | **City of Lakeway** — its own municipality, not Austin, not Austin ETJ |
+| Available | Site-approved plan and topographical survey; listed via Horizon Realty |
+| On market | LoopNet entries from **May 2024 and October 2024** — roughly **1.5–2 years** |
+
+#### The cover math is not close
+
+Lakeway sets its own impervious cover limits, and they bear no relation to
+Austin's watershed regime:
+
+- **60%** of net site area for development other than single-family/duplex
+- **50%** single-family/duplex
+- **40%** in certain districts
+- Transfer of impervious cover credit is possible at the city's discretion
+  (Code art. 28.10)
+
+| Cap | Allowed cover | vs full programme | |
+|---|---|---|---|
+| **Lakeway, 60%** | **246,724 ft²** | **2.24×** | passes with room to spare |
+| Lakeway, 40% | 164,483 ft² | 1.49× | still passes |
+| *Barton Springs Zone, 15%* | *61,681 ft²* | *0.56×* | *would fail outright* |
+
+**At 60% the programme uses 110,300 ft² and leaves roughly 136,000 ft² — about
+3.1 acres — for pool decks, terraces and hard landscape.** The outdoor
+activation that is the actual product stops being a constraint and becomes a
+design opportunity. Nothing in the Barton Springs Zone offers that at this
+acreage.
+
+#### Zoning is a real path, not a fight
+
+Lakeway has a **Hotel/Motel (HM) district**, written for "hotels, motels, motor
+courts, lodges, and inns to provide accommodations for visitors to the city."
+Hotels are contemplated in the code — the opposite of West Lake Hills.
+
+The posture is favourable too: in **April and May 2026 the City Council moved to
+amend its special-use and conditional-use permitting** specifically to make it
+"more practical and consistent with the city's development needs." A city
+loosening its permitting is a very different counterparty from one defending
+its residential character.
+
+Two things to establish: the parcel's **current zoning** and whether the path is
+rezoning to HM, a **PUD**, or a special use permit; and whether any part of the
+site sits **within 300 feet of residential or school property**, which triggers
+a discretionary SUP with hearings before both the Zoning and Planning Commission
+and Council.
+
+#### Utilities — a genuine advantage
+
+**Lakeway MUD supplies both water and wastewater**, serving 4,200 water and
+3,000 wastewater customers, and is actively expanding (S-5 water recycling plant
+expansion, a new elevated storage tank). For a spa — water-intensive, effluent-
+heavy — a piped utility rather than a commercial OSSF removes the single
+largest technical risk on any Hill Country site.
+
+Get a **written service availability letter for this parcel**, and ask about the
+commercial density multiplier: restaurants are billed at 2× the volume rate, and
+a spa with food and beverage will be assessed on the same logic.
+
+#### The two real problems
+
+**1. Distance. It breaks your stated criterion.** Lakeway is ~25 miles
+north-west of downtown. Realistic drive times are **30–40 minutes normally and
+around 45 at peak** via RM 620 — and this site is *on* RM 620, not on the faster
+Highway 71. Only an off-peak run down 71 approaches 25 minutes, and that is not
+this parcel's route.
+
+**2. Character. A wellness sanctuary opposite a Lexus dealership.** The site
+fronts a commercial arterial in a car-dealership and retail context. At $500+
+ADR you are selling seclusion and landscape, and the approach sequence is part
+of the product. Nine and a half acres is enough to build inward and turn away
+from the road — and the fact that a topographical survey is offered suggests
+useful grade change — but this needs to be seen on the ground before anything
+else. **It is the first thing to go and look at.**
+
+#### The question this raises about your brief
+
+Your 25-minute rule may be borrowed from urban hotel logic and may not serve
+this product. Austin's actual $500+ ADR wellness comp set is **not** downtown-
+proximate: Miraval Austin sits on 220 acres out by Lake Travis, and Lake Austin
+Spa Resort is out the same way. Destination wellness in this market has always
+been further out, and guests accept the drive as part of the arrival.
+
+The membership side cuts the other way — members come weekly, guests come once,
+so proximity matters far more for them. But it may not need to be proximity *to
+downtown*. Lakeway, Bee Cave and Steiner Ranch are among the most affluent
+catchments in the metro, with medians above $550,000 and Lakeway itself around
+$572,500. **A Lakeway membership base would be local to Lakeway** rather than
+commuting from the city.
+
+That is a strategic choice, not a detail: an urban-adjacent club with a hotel
+attached, or a destination resort with a local membership. This site only works
+if the answer is the second. **Worth deciding deliberately rather than by
+default.**
+
+#### What to verify, in order
+
+1. **Walk it.** Character and grade decide whether the rest is worth pursuing.
+2. **Current zoning** and the entitlement path — HM rezoning, PUD or SUP.
+3. **The 300-foot residential/school adjacency** test.
+4. Lakeway MUD **written service availability** for this parcel, plus the
+   commercial density multiplier.
+5. What "site-approved plan" actually means — an approved site plan for a
+   different use may or may not carry any value to you.
+6. **Why it has sat for 18–24 months.** Long marketing on commercial land is
+   either a price problem or a site problem, and the answer is negotiating
+   leverage either way.
 
 ---
 
