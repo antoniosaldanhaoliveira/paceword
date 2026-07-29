@@ -6,10 +6,11 @@
 
 ## Provenance — read this first
 
-**I could not access live listing data.** LoopNet, Crexi, Realtor.com and
-CommercialCafe all returned HTTP 403 to automated requests, which is their
-normal and expected behaviour. Everything below was recovered from **search-
-engine indexes of those listing pages**, not from the platforms themselves.
+**I could not access live listing data.** Every host returns HTTP 403 at this
+environment's network proxy — including example.com, so this is the sandbox's
+egress policy rather than the listing platforms blocking me. Everything below
+was recovered from **search-engine indexes of listing pages**, not from the
+platforms themselves.
 
 That means, for every candidate:
 
@@ -31,35 +32,60 @@ figure it was applied to.
 
 ## Priority 1 — the grandfathered-cover play
 
-These are the ones that fit the strategy in the [site brief](austin-wellness-hotel-site-brief.md):
+These fit the strategy in the [site brief](austin-wellness-hotel-site-brief.md):
 an existing commercial building whose impervious cover you inherit.
 
-### 1. 1715 S Capital of Texas Hwy (Loop 360), Austin 78746 — "The Woods of Westlake"
+### 1. Westlake Oaks Executive Park — 1001 S Capital of Texas Hwy, 78746
+
+**The standout candidate, by a wide margin.**
 
 | | |
 |---|---|
-| Type | Office property, City of Austin |
-| Status | Indexed as available |
-| Price / acreage | **Not recovered — must confirm** |
-| Why it leads | Loop 360 corridor, City of Austin jurisdiction (not West Lake Hills), genuine Westlake address and adjacency, existing building means existing impervious cover |
+| Site | **15.12 acres** |
+| Improvements | **137,000 ft²** across **13 buildings**, park setting, black glass, mature Hill Country trees |
+| Parking | **548 spaces** (4 per 1,000 ft²) |
+| Built | 1982, Class B |
+| Current status | Marketed **for lease**, not for sale — Sandalwood Management |
+| Estimated existing cover | **~284,800 ft² ≈ 43% of site** |
+| At the 15% cap, 15.12 ac would allow | 98,794 ft² |
+| **Grandfathered cover is therefore** | **~2.9× what the cap allows today** |
+| **Headroom over the full programme** | **2.58×** |
 
-**This is the single best-fitting profile I surfaced.** City of Austin means
-hotel use is a listed commercial use rather than a fight with a small council.
-Loop 360 carries the address value that supports rate.
+Run through the screener it passes comfortably — the only candidate that does.
+And the physical form is unusually well suited: **thirteen buildings in a wooded
+park** is close to the bone structure of a pavilion-style wellness resort. You
+would be reorganising an existing campus rather than imposing a hotel on a pad.
 
-**First three questions:** total site acreage; existing impervious cover by
-survey; and whether § 25-8-26 redevelopment rights survive a change of use to
-hotel on this specific parcel.
+**Two things to establish before anything else.**
 
-### 2. The 78746 / 78735 / 78733 office pool
+**Jurisdiction.** Listings show this address as both *West Lake Hills* and
+*Austin*. That is not a clerical detail — it is the difference between a listed
+commercial use and a zoning fight with a council inclined to refuse. **Confirm
+against the City of Austin jurisdiction map before spending another hour on it.**
 
-Indexed counts of office listings for sale: **9 in 78746**, **2 in 78735**,
-**2 in 78733**. Austin-wide, 256 office listings averaging **$454/ft²**.
+**It is not for sale.** Leased and managed means an off-market approach: find
+the ownership entity in TCAD, and go to them directly. That is the §3.6 play in
+the guide, and a 1982 Class B office park in a softening Austin office market is
+exactly the owner profile most likely to listen.
 
-These are not individually screened — they are **the pool to screen**, and the
-screen is not price. Rank them by **existing impervious cover and site acreage**,
-then look at price. A high-cover, low-glamour 1980s building is worth more to
-this project than a prettier one on a tight pad.
+### 2. The rest of the Loop 360 office pool — too small, and that is the finding
+
+| Property | Site | Building | Est. cover | Verdict |
+|---|---|---|---|---|
+| 1715 S Capital of Texas — West Bank Bldg | 1.00 ac | 14,751 ft², Class C 1982, 52 spaces | ~30,100 ft² (69%) | **Reject — 1 acre.** Very high cover ratio, nowhere near enough of it |
+| 2301 S Capital of Texas — Reserve Bldg II | ~0.8 ac | 10,250 ft², 2 storey | ~21,000 ft² (60%) | Reject — too small |
+| 1101 S Capital of Texas | 0.48 ac | 11,848 ft², 24.3% vacant | estimate exceeds site area | Reject — too small |
+
+*The 1101 estimate exceeding 100% shows the heuristic breaking down: on a small
+pad inside a shared-parking park, the parcel record excludes parking that the
+building actually uses. Treat every estimated-cover figure as a screening
+number, never a finding.*
+
+**The useful conclusion:** the Loop 360 corridor is mostly **half-acre to
+one-acre office pads**. Individually none of them can hold 50 keys, however
+generous their grandfathered cover. So on this corridor it is **Westlake Oaks,
+or an assemblage of adjacent pads** — and assemblage means multiple owners,
+multiple closings, and a much longer clock.
 
 ---
 
