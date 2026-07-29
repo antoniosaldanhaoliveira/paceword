@@ -1,0 +1,690 @@
+<title>West Austin wellness hotel — target list</title>
+
+<style>
+  /* ---- tokens -------------------------------------------------------- */
+  :root {
+    --paper:      #F7F8F5;   /* drafting stock, faint green-grey bias      */
+    --surface:    #FFFFFF;
+    --sunk:       #EFF2EC;
+    --ink:        #1A1F1C;
+    --ink-soft:   #45504A;
+    --muted:      #6B7370;
+    --rule:       #DCE2DB;
+    --rule-firm:  #C3CCC1;
+    --accent:     #0F6E62;   /* the water layer of a topographic sheet     */
+    --accent-dim: #0F6E6218;
+    --caution:    #9C6B14;
+    --caution-bg: #9C6B1412;
+
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua",
+             "URW Palladio L", Georgia, ui-serif, serif;
+    --mono:  ui-monospace, "SF Mono", SFMono-Regular, "Cascadia Mono", Menlo,
+             Consolas, "Liberation Mono", monospace;
+
+    --measure: 68ch;
+    --step-0: 1.0625rem;
+    --step-1: 1.1875rem;
+    --step-2: 1.5rem;
+    --step-3: 2rem;
+    --step-4: 2.75rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:      #101413;
+      --surface:    #161B19;
+      --sunk:       #1B211E;
+      --ink:        #E7EDE8;
+      --ink-soft:   #B6C0B8;
+      --muted:      #8A948C;
+      --rule:       #2A312D;
+      --rule-firm:  #3C453F;
+      --accent:     #58C3B1;
+      --accent-dim: #58C3B11F;
+      --caution:    #D9A441;
+      --caution-bg: #D9A4411A;
+    }
+  }
+
+  /* The viewer's own toggle must win over the OS preference, both ways. */
+  :root[data-theme="dark"] {
+    --paper:      #101413;
+    --surface:    #161B19;
+    --sunk:       #1B211E;
+    --ink:        #E7EDE8;
+    --ink-soft:   #B6C0B8;
+    --muted:      #8A948C;
+    --rule:       #2A312D;
+    --rule-firm:  #3C453F;
+    --accent:     #58C3B1;
+    --accent-dim: #58C3B11F;
+    --caution:    #D9A441;
+    --caution-bg: #D9A4411A;
+  }
+  :root[data-theme="light"] {
+    --paper:      #F7F8F5;
+    --surface:    #FFFFFF;
+    --sunk:       #EFF2EC;
+    --ink:        #1A1F1C;
+    --ink-soft:   #45504A;
+    --muted:      #6B7370;
+    --rule:       #DCE2DB;
+    --rule-firm:  #C3CCC1;
+    --accent:     #0F6E62;
+    --accent-dim: #0F6E6218;
+    --caution:    #9C6B14;
+    --caution-bg: #9C6B1412;
+  }
+
+  /* ---- frame --------------------------------------------------------- */
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation: none !important; transition: none !important; }
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: var(--step-0);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+  @media (min-width: 1060px) {
+    .shell { grid-template-columns: 15.5rem minmax(0, 1fr); gap: 4rem; }
+  }
+
+  /* ---- masthead ------------------------------------------------------ */
+  .masthead {
+    grid-column: 1 / -1;
+    padding: 4.5rem 0 2rem;
+    border-bottom: 2px solid var(--ink);
+    display: grid;
+    gap: 1.25rem 4rem;
+    align-items: start;
+  }
+  @media (min-width: 1060px) {
+    .masthead {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      column-gap: 5rem;
+    }
+    .masthead .eyebrow { grid-column: 1 / -1; }
+    .masthead h1 { grid-row: 2; grid-column: 1; margin: 0; }
+    .masthead .standfirst { grid-row: 2; grid-column: 2; align-self: end; }
+    .masthead .stamp { grid-row: 3; grid-column: 2; }
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .masthead h1 {
+    font-size: var(--step-4);
+    line-height: 1.06;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    max-width: 20ch;
+  }
+  .masthead .standfirst {
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+    max-width: 52ch;
+    text-wrap: pretty;
+  }
+  .masthead .stamp {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: var(--muted);
+    border-left: 2px solid var(--rule-firm);
+    padding-left: 0.9rem;
+    max-width: 60ch;
+  }
+
+  /* ---- index --------------------------------------------------------- */
+  .index { display: none; }
+  @media (min-width: 1060px) {
+    .index {
+      display: block;
+      position: sticky;
+      top: 0;
+      align-self: start;
+      max-height: 100vh;
+      overflow-y: auto;
+      padding: 2.25rem 0 3rem;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      line-height: 1.5;
+    }
+  }
+  .index h2 {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .index ol { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; }
+  .index a {
+    display: block;
+    padding: 0.3rem 0.5rem 0.3rem 0;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    padding-left: 0.7rem;
+  }
+  .index a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .index li.part-row a {
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.66rem;
+    margin-top: 1.1rem;
+    border-left-color: var(--rule-firm);
+  }
+
+  /* ---- article ------------------------------------------------------- */
+  .article { min-width: 0; padding-top: 2.25rem; }
+  .article > * { max-width: var(--measure); }
+
+  .article h1 {  /* part dividers */
+    max-width: none;
+    font-size: var(--step-3);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.1;
+    margin: 5rem 0 2.5rem;
+    padding: 1.5rem 0 1.25rem;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    text-wrap: balance;
+  }
+  .article h1:first-child { margin-top: 0; }
+
+  .article h2 {
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 3.25rem 0 1rem;
+    text-wrap: balance;
+  }
+  .article h3 {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 2.25rem 0 0.75rem;
+  }
+  .article p { margin: 0 0 1.1rem; text-wrap: pretty; }
+  .article a { color: var(--accent); text-underline-offset: 0.18em; }
+  .article strong { font-weight: 600; }
+
+  .article ul, .article ol { margin: 0 0 1.4rem; padding-left: 1.3rem; }
+  .article li { margin-bottom: 0.5rem; padding-left: 0.2rem; }
+  .article li::marker { color: var(--muted); font-family: var(--mono); font-size: 0.85em; }
+
+  .article hr {
+    max-width: none;
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: 3.5rem 0;
+  }
+
+  /* Notices — the ETJ warning and its kin */
+  .article blockquote {
+    max-width: var(--measure);
+    margin: 1.75rem 0;
+    padding: 1.15rem 1.35rem;
+    background: var(--caution-bg);
+    border-left: 3px solid var(--caution);
+    border-radius: 2px;
+  }
+  .article blockquote p { margin-bottom: 0.7rem; }
+  .article blockquote p:last-child { margin-bottom: 0; }
+  .article blockquote strong { color: var(--caution); }
+
+  .article code {
+    font-family: var(--mono);
+    font-size: 0.85em;
+    background: var(--sunk);
+    padding: 0.12em 0.38em;
+    border-radius: 3px;
+  }
+
+  /* ---- tables -------------------------------------------------------- */
+  .table-wrap {
+    max-width: none;
+    overflow-x: auto;
+    margin: 1.75rem 0 2rem;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--surface);
+  }
+  .article table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+  .article thead th {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--muted);
+    background: var(--sunk);
+    padding: 0.7rem 0.95rem;
+    border-bottom: 1px solid var(--rule-firm);
+    white-space: nowrap;
+  }
+  .article tbody td {
+    padding: 0.72rem 0.95rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  .article tbody tr:last-child td { border-bottom: 0; }
+  .article tbody td:first-child { font-weight: 600; }
+  /* Figures line up: any cell that is essentially numeric gets mono digits. */
+  .article td.num, .article th.num {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+
+  /* ---- footer -------------------------------------------------------- */
+  .colophon {
+    grid-column: 1 / -1;
+    margin-top: 5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 68ch;
+  }
+
+  :where(a, button):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+</style>
+
+<div class="shell">
+  <header class="masthead">
+    <p class="eyebrow">Target list · West Austin · screened, not verified</p>
+    <h1>West Austin wellness hotel — target list</h1>
+    <p class="standfirst">Candidates screened against the impervious-cover math, plus the structured-parking decision, the city inquiry to send, and the broker brief. Read the provenance note first.</p>
+    <p class="stamp">Compiled July 2026 from search-engine indexes of listing pages — the platforms themselves block automated access. Prices, acreage and availability are unconfirmed.<br>A screening list to hand a broker, not a buy list.</p>
+  </header>
+  <nav class="index" aria-label="Contents"><h2>Contents</h2><ol><li><a href="#provenance-read-this-first">Provenance — read this first</a></li><li><a href="#priority-1-the-grandfathered-cover-play">Priority 1 — the grandfathered-cover play</a></li><li><a href="#priority-2-sized-land-viable-jurisdiction">Priority 2 — sized land, viable jurisdiction</a></li><li><a href="#ruled-out-and-why">Ruled out, and why</a></li><li><a href="#land-pricing-what-the-indexed-comps-imply">Land pricing — what the indexed comps imply</a></li><li><a href="#the-structured-parking-decision-resolved">The structured-parking decision — resolved</a></li><li><a href="#next-actions-in-order">Next actions, in order</a></li><li><a href="#what-i-could-not-do-and-what-it-would-take">What I could not do, and what it would take</a></li></ol></nav>
+  <article class="article">
+<h2 id="provenance-read-this-first">Provenance — read this first</h2>
+<p><strong>I could not access live listing data.</strong> LoopNet, Crexi, Realtor.com and
+CommercialCafe all returned HTTP 403 to automated requests, which is their
+normal and expected behaviour. Everything below was recovered from <strong>search-
+engine indexes of those listing pages</strong>, not from the platforms themselves.</p>
+<p>That means, for every candidate:</p>
+<ul>
+<li><strong>The price and acreage are as indexed, not as confirmed.</strong> Both may be stale.</li>
+<li><strong>The listing may already be sold, withdrawn or under contract.</strong> Index
+  entries persist long after a listing closes.</li>
+<li><strong>I have not verified watershed, impervious cover, zoning or wastewater on any
+  parcel.</strong> Those determinations require the City of Austin property profile and
+  TCAD, per-parcel.</li>
+</ul>
+<p>Treat this as <strong>a screening list to hand a broker</strong>, not a buy list. Every line
+needs confirmation before it justifies an hour of your time.</p>
+<p>Where I have applied judgement — jurisdiction, size against the impervious-cover
+math — I say so explicitly, and that judgement is only as good as the indexed
+figure it was applied to.</p>
+<hr>
+<h2 id="priority-1-the-grandfathered-cover-play">Priority 1 — the grandfathered-cover play</h2>
+<p>These are the ones that fit the strategy in the <a href="austin-wellness-hotel-site-brief.md">site brief</a>:
+an existing commercial building whose impervious cover you inherit.</p>
+<h3>1. 1715 S Capital of Texas Hwy (Loop 360), Austin 78746 — &ldquo;The Woods of Westlake&rdquo;</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Type</td>
+<td>Office property, City of Austin</td>
+</tr>
+<tr>
+<td>Status</td>
+<td>Indexed as available</td>
+</tr>
+<tr>
+<td>Price / acreage</td>
+<td><strong>Not recovered — must confirm</strong></td>
+</tr>
+<tr>
+<td>Why it leads</td>
+<td>Loop 360 corridor, City of Austin jurisdiction (not West Lake Hills), genuine Westlake address and adjacency, existing building means existing impervious cover</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>This is the single best-fitting profile I surfaced.</strong> City of Austin means
+hotel use is a listed commercial use rather than a fight with a small council.
+Loop 360 carries the address value that supports rate.</p>
+<p><strong>First three questions:</strong> total site acreage; existing impervious cover by
+survey; and whether § 25-8-26 redevelopment rights survive a change of use to
+hotel on this specific parcel.</p>
+<h3>2. The 78746 / 78735 / 78733 office pool</h3>
+<p>Indexed counts of office listings for sale: <strong>9 in 78746</strong>, <strong>2 in 78735</strong>,
+<strong>2 in 78733</strong>. Austin-wide, 256 office listings averaging <strong>$454/ft²</strong>.</p>
+<p>These are not individually screened — they are <strong>the pool to screen</strong>, and the
+screen is not price. Rank them by <strong>existing impervious cover and site acreage</strong>,
+then look at price. A high-cover, low-glamour 1980s building is worth more to
+this project than a prettier one on a tight pad.</p>
+<hr>
+<h2 id="priority-2-sized-land-viable-jurisdiction">Priority 2 — sized land, viable jurisdiction</h2>
+<h3>3. Sweetwater Crossing — TX-71, ~5 miles west of RR 620</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Type</td>
+<td>145-acre master-planned commercial development, parcels available</td>
+</tr>
+<tr>
+<td>Uses cited</td>
+<td>Office, medical, retail, restaurant</td>
+</tr>
+<tr>
+<td>Frontage</td>
+<td>1.5 miles on Hwy 71, signalised main entrance</td>
+</tr>
+<tr>
+<td>Distance</td>
+<td>~25 min to downtown — at the edge of your limit</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Why it&rsquo;s interesting:</strong> you can size the parcel to the impervious-cover
+requirement rather than forcing the programme onto a fixed tract. Signalised
+access solves a real problem — Loop 360 and Bee Cave Road curb cuts are
+contentious and can involve TxDOT.</p>
+<p><strong>Confirm:</strong> whether hospitality is a permitted use in the development&rsquo;s own
+covenants (retail/medical/office are cited; <strong>hotel is not</strong>), the watershed,
+and the wastewater arrangement.</p>
+<h3>4. Lakeway 78734 — 9.47 acres, $4,700,000 (~$496k/acre)</h3>
+<p>The <strong>only indexed tract that clears the Barton Springs Zone minimum</strong> on
+acreage alone. At 9.47 acres it works at 20–25% cover with surface parking, or
+at 15% with a parking deck.</p>
+<p><strong>Confirm:</strong> jurisdiction (Lakeway city vs Travis County), watershed, whether
+hotel use is permitted, wastewater. ~25–30 min downtown — verify the drive at
+the hour that matters.</p>
+<hr>
+<h2 id="ruled-out-and-why">Ruled out, and why</h2>
+<p>Recording these matters as much as the shortlist — the reasons are reusable.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Indexed</th>
+<th>Why out</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>3701 Bee Caves Rd</strong>, West Lake Hills</td>
+<td>4.27 ac, <strong>$5,400,000</strong> (~$1.26M/acre)</td>
+<td><strong>West Lake Hills city limits</strong> — 50 keys means a zoning fight with a council inclined to refuse. Also 4.27 ac is below the BSZ minimum for a new build</td>
+</tr>
+<tr>
+<td><strong>3663 Bee Caves Rd</strong>, West Lake Hills</td>
+<td>5.12 ac strip commercial centre</td>
+<td>Same jurisdiction problem. Genuinely frustrating — an existing strip centre is exactly the grandfathered-cover asset you want, in exactly the wrong municipality</td>
+</tr>
+<tr>
+<td><strong>1301 S Capital of Texas Hwy</strong>, Austin</td>
+<td>Full-floor office <strong>condominium</strong></td>
+<td>A condo interest gives you no site control. You cannot redevelop a parcel you own a floor of</td>
+</tr>
+<tr>
+<td><strong>Lakeway 78738</strong></td>
+<td>3 ac, $1,750,000</td>
+<td>Too small — below every regime except grandfathered cover, and it is raw land</td>
+</tr>
+<tr>
+<td><strong>Bee Cave 78738</strong></td>
+<td>3.43 ac, $1,990,000</td>
+<td>Too small on the same logic</td>
+</tr>
+<tr>
+<td><strong>Austin 78734</strong></td>
+<td>2.47 ac, $1,832,000</td>
+<td>Too small</td>
+</tr>
+</tbody>
+</table></div>
+<p>The Bee Caves Road pair is the clearest illustration of the brief&rsquo;s central
+point: <strong>the right asset in the wrong jurisdiction is not a near miss, it is a
+no.</strong> Both would work beautifully inside City of Austin limits.</p>
+<hr>
+<h2 id="land-pricing-what-the-indexed-comps-imply">Land pricing — what the indexed comps imply</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Comparable</th>
+<th>$/acre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lakeway, 9.47 ac</td>
+<td class="num">$496,000</td>
+</tr>
+<tr>
+<td>Bee Cave, 3.43 ac</td>
+<td class="num">$580,000</td>
+</tr>
+<tr>
+<td>Lakeway, 3 ac</td>
+<td class="num">$583,000</td>
+</tr>
+<tr>
+<td>Austin 78734, 2.47 ac</td>
+<td class="num">$742,000</td>
+</tr>
+<tr>
+<td><strong>West Lake Hills, 4.27 ac</strong></td>
+<td class="num"><strong>$1,265,000</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>Two readings. <strong>Smaller parcels carry a per-acre premium</strong>, so acreage gets
+cheaper per unit as you go up — which works in your favour given the
+impervious-cover math pushes you larger. And <strong>West Lake Hills trades at roughly
+2.5× the Lakeway rate</strong>, for land you most likely cannot build this on. You are
+paying a premium for an address that will not permit the use.</p>
+<p><em>These are asking prices from search indexes, in a non-disclosure state. They are
+not transaction evidence. See the guide, §4.</em></p>
+<hr>
+<h2 id="the-structured-parking-decision-resolved">The structured-parking decision — resolved</h2>
+<p>I said this trade should be run before shortlisting. Here it is, at 145 spaces
+(midpoint of the 120–170 the programme needs).</p>
+<p><strong>2026 cost per stall:</strong> surface $3,000–8,000 · above-grade deck $18,000–35,000 ·
+underground $60,000–120,000.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Extra build cost</th>
+<th>Land saved @15% (BSZ)</th>
+<th>Value of land saved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Above-grade deck</strong></td>
+<td>$1.45M – $4.64M</td>
+<td class="num">5.0 – 6.6 acres</td>
+<td><strong>$2.49M – $8.28M</strong></td>
+</tr>
+<tr>
+<td>Underground</td>
+<td>$7.54M – $16.97M</td>
+<td class="num">5.0 – 6.6 acres</td>
+<td>$2.49M – $8.28M</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Build the deck.</strong> In the Barton Springs Zone an above-grade structure pays for
+itself on land savings alone, and comfortably so at West Austin land values —
+before counting the site-plan freedom it buys you.</p>
+<p><strong>Do not go underground for land economics.</strong> It costs two to three times what
+it saves. Underground is justified only by aesthetics, topography, or a site so
+constrained there is no alternative — all legitimate reasons for a $500 ADR
+property, but they are design arguments, not land arguments.</p>
+<p>Second-order effect worth modelling: a deck cuts the parking footprint out of
+your impervious budget, which frees cover for <strong>pool decks, terraces and hard
+landscape</strong> — the outdoor activation that is the product. On a 15%-cover site
+that reallocation may matter more than the acreage.</p>
+<hr>
+<h2 id="next-actions-in-order">Next actions, in order</h2>
+<h3>A. The § 25-8-26 inquiry — do this first, it is free</h3>
+<p>The entire grandfathered-cover strategy rests on one unconfirmed point. Send
+this to City of Austin Development Services and Watershed Protection:</p>
+<blockquote>
+<p><strong>Subject:</strong> Redevelopment exception under § 25-8-26 — change of use to hotel</p>
+<p>I am evaluating existing commercial and office properties in the Barton
+Springs Zone for redevelopment as a hotel with associated spa and food and
+beverage.</p>
+<ol>
+<li>Does the redevelopment exception under City Code § 25-8-26 apply where the
+   redevelopment involves a <strong>change of use</strong> — for example from office to
+   hotel — provided total impervious cover on the site is not increased?</li>
+<li>If it does, what documentation establishes the site&rsquo;s existing impervious
+   cover for this purpose, and is a current survey sufficient?</li>
+<li>Are there additional water-quality or treatment requirements triggered by
+   the change of use, even where cover does not increase?</li>
+<li>Does the answer differ between the recharge zone, the Barton Creek
+   watershed, and the contributing zone?</li>
+</ol>
+<p>I am not asking for a determination on a specific parcel at this stage.</p>
+</blockquote>
+<p><strong>If the answer is no, Priority 1 collapses and the search moves to the Lake
+Austin watershed and Water Supply zones.</strong> Ask before you spend anything else.</p>
+<h3>B. Watershed determination on the shortlist</h3>
+<p>For each surviving candidate, pull the City of Austin property profile and
+TCAD record and establish: watershed and zone, current zoning, city limits vs
+ETJ vs county, existing impervious cover, floodplain (both FEMA and Austin&rsquo;s
+Atlas 14 mapping), and Critical Water Quality Zone.</p>
+<p>Do this before touring. It will remove candidates faster than any site visit.</p>
+<h3>C. Broker brief — send verbatim</h3>
+<p>Named starting points: <strong>Marcus &amp; Millichap Austin</strong> (9600 N MoPac Expy; active
+hospitality division with Austin hotel transaction history), plus the Austin
+offices of <strong>JLL Hotels &amp; Hospitality</strong> and <strong>CBRE Hotels</strong>. Add one West Austin
+land specialist.</p>
+<blockquote>
+<p><strong>Requirement — West Austin hotel/spa site</strong></p>
+<p>Boutique membership hotel-spa, approximately 50 keys, positioned at $500+ ADR,
+with significant outdoor amenity. Within 25 minutes of downtown Austin.</p>
+<p><strong>Acquiring either:</strong> an existing hotel, office or industrial building for
+conversion, <strong>or</strong> land. Existing buildings are preferred — see below.</p>
+<p><strong>The binding constraint is impervious cover, not price.</strong> In the Barton
+Springs Zone at 15% cover, the programme needs 11–17 acres with surface
+parking, or 6–10 acres with a parking deck. Accordingly:</p>
+<ul>
+<li>Existing commercial or office buildings with <strong>high grandfathered impervious
+  cover</strong> are of most interest, and we will look at 3+ acres on that basis.</li>
+<li>Raw land in the BSZ recharge zone is only of interest at <strong>10+ acres</strong>.</li>
+<li><strong>Water Supply zones (Lake Austin watershed) at 20–40% cover are of strong
+  interest</strong> at 4+ acres.</li>
+</ul>
+<p><strong>Must have:</strong> hotel use permitted or a credible path to it; confirmed
+wastewater capacity; usable outdoor area outside floodplain and Critical Water
+Quality Zone.</p>
+<p><strong>Not interested in:</strong> anything inside West Lake Hills or Rollingwood city
+limits; condominium interests; sites with no wastewater path.</p>
+<p>Off-market strongly preferred. Please include watershed, existing impervious
+cover and wastewater arrangement in any submission.</p>
+</blockquote>
+<p>That last paragraph does real work. It tells a broker within thirty seconds
+that you understand the market, which changes what they send you.</p>
+<h3>D. Set the budget</h3>
+<p>The $2–20M range in the profile is a placeholder I chose, not a number you gave
+me. The indexed comps put West Austin commercial land at <strong>$500k–1.26M/acre</strong>,
+so a 10-acre BSZ site is $5–12M of land before any construction. HVS publishes
+an annual US hotel development cost survey worth pulling for the vertical side.</p>
+<p><strong>Give me the capital stack and I will rebuild the search bands around it</strong> —
+the difference between a $6M and a $15M site budget changes which of the four
+target zones are even in play.</p>
+<hr>
+<h2 id="what-i-could-not-do-and-what-it-would-take">What I could not do, and what it would take</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Blocked</th>
+<th>Why</th>
+<th>How to unblock</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Verified live listings with price, acreage, status</td>
+<td>LoopNet/Crexi/Realtor return 403 to automated access</td>
+<td>A logged-in session, or a broker running the search</td>
+</tr>
+<tr>
+<td>Per-parcel watershed and impervious cover</td>
+<td>Requires the City of Austin property profile per parcel</td>
+<td>Doable manually; ~15 min per candidate</td>
+</tr>
+<tr>
+<td>Sold comparables</td>
+<td>Texas is a non-disclosure state</td>
+<td>An agent with MLS access, or CoStar</td>
+</tr>
+<tr>
+<td>Off-market inventory</td>
+<td>Not published anywhere</td>
+<td>Brokers. At this size, two or three of them know every candidate</td>
+</tr>
+</tbody>
+</table></div>
+<p>The honest position: <strong>at 5–20 acres, hotel-capable, West Austin, the qualifying
+inventory is small enough that a good broker knows all of it.</strong> The screening
+work above is what makes you worth their time — but it does not substitute for
+them.</p>
+  </article>
+  <footer class="colophon">
+    Compiled from primary sources and market data, July 2026. Full source list
+    at the end. Market figures move weekly; the structural facts — impervious
+    cover caps, non-disclosure, the option period, ETJ status — move on their
+    own schedule and are worth re-checking before you act on any of them.
+  </footer>
+</div>

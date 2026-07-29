@@ -30,6 +30,19 @@ DOCS = {
         "this document changes — verify at purchase time.<br>Nothing here is "
         "legal or tax advice.",
     ),
+    "shortlist": (
+        ROOT / "docs" / "austin-wellness-hotel-shortlist.md",
+        ROOT / "docs" / "austin-wellness-hotel-shortlist.html",
+        "Target list · West Austin · screened, not verified",
+        "West Austin wellness hotel — target list",
+        "Candidates screened against the impervious-cover math, plus the "
+        "structured-parking decision, the city inquiry to send, and the broker "
+        "brief. Read the provenance note first.",
+        "Compiled July 2026 from search-engine indexes of listing pages — the "
+        "platforms themselves block automated access. Prices, acreage and "
+        "availability are unconfirmed.<br>A screening list to hand a broker, "
+        "not a buy list.",
+    ),
     "hotel": (
         ROOT / "docs" / "austin-wellness-hotel-site-brief.md",
         ROOT / "docs" / "austin-wellness-hotel-site-brief.html",
