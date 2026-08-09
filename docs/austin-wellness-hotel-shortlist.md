@@ -583,7 +583,7 @@ convention and golf demand you do not want anyway.
 | Site | **~27 acres** |
 | Improvements | 3,842 ft² Mediterranean house, 3 bed |
 | Location | North of the Barton Creek Habitat Preserve, near Bee Caves Rd and Creeks Edge Parkway |
-| Price | **$5.5M when listed in 2018**; relisted with price on request |
+| Price | **$5.5M when listed in 2018.** ⚠ My only source is a **December 2020** article — availability today is unverified and probably stale. See the source-links section |
 | Listing | Eric Copper, Austin Portfolio Real Estate |
 | Noted | Land "could be divided into parcels for future development"; room for a helipad |
 
@@ -645,6 +645,106 @@ There is also a **precedent worth knowing**: the Brodie Oaks Redevelopment PUD
 fought its way through environmental review in the Barton Springs area. A PUD
 is a slower, more negotiated path than the § 25-8-26 redevelopment exception,
 but it exists, and on a 27-acre site it may be the more flexible route.
+
+
+---
+
+# Source links for every property named
+
+**What each link is matters as much as the link.** Three kinds appear below and
+they are not interchangeable:
+
+- **Listing page** — a marketing page for a property offered for sale or lease.
+- **Property record** — a database page that exists whether or not anything is
+  for sale. Most CommercialCafe / PropertyShark / LoopNet `/property/` URLs are
+  these. **A property record is not evidence of availability.**
+- **Article / company page** — news or an owner's own site. Neither is an offer.
+
+## ⚠ Correction on 9209 Scenic Bluff Drive
+
+**My only source is a CultureMap article dated December 2020**, reporting that
+the estate had come to market, and noting a 2018 asking price of $5.5M. I
+presented it as a current candidate. **That was wrong** — a six-year-old news
+article is not evidence a property is available today, and it has most likely
+sold or been withdrawn.
+
+The *analysis* stands: 27 acres in the Barton Creek watershed clears the cover
+math where almost nothing else does. **The availability does not.** Treat this
+as "a parcel of the right shape exists here," and have someone check TCAD for
+current ownership before spending anything on it.
+
+- Article (Dec 2020): https://austin.culturemap.com/news/real-estate/12-30-20-nearly-27-acre-estate-in-austin-near-barton-creek-flows-onto-market/
+
+## Priority candidates
+
+**Westlake Oaks Executive Park — 1001 S Capital of Texas Hwy**
+- https://www.loopnet.com/Listing/1001-S-Capital-Of-Texas-Hwy-Austin-TX/29987439/ *(listing)*
+- https://www.loopnet.com/Listing/1001-S-Capital-Of-Texas-Hwy-West-Lake-Hills-TX/31679468/ *(listing — note this one says **West Lake Hills**, the one above says **Austin**. This is the jurisdiction ambiguity, visible in the sources themselves)*
+- https://www.commercialcafe.com/commercial-property/us/tx/austin/westlake-oaks-executive-park/ *(record)*
+- https://www.commercialsearch.com/commercial-property/us/tx/austin/westlake-oaks-executive-park/ *(record)*
+- https://www.propertyshark.com/cre/commercial-property/us/tx/austin/westlake-oaks-executive-park/ *(record)*
+
+**108 S Ranch Road 620, Lakeway — 9.44 ac, $4.7M**
+- https://www.loopnet.com/Listing/108-S-Ranch-Road-620-Lakeway-TX/27761171/ *(listing)*
+- https://www.loopnet.com/Listing/108-S-Ranch-Road-620-Lakeway-TX/33489868/ *(listing — second entry, hence the 18–24 month marketing read)*
+- https://www.showcase.com/108-s-ranch-road-620-lakeway-tx-78734/24258509/ *(listing)*
+- https://www.loopnet.com/property/108-ranch-road-620-s-lakeway-tx-78734/48453-841057/ *(record — APN 841057, useful for the TCAD lookup)*
+
+**Mountain Star Lodge — 3573 RM 620 S** *(operating hotel, not listed)*
+- https://mountainstarlodge.com/ *(company)*
+- https://www.tripadvisor.com/Hotel_Review-g3169208-d288725-Reviews-Mountain_Star_Lodge_and_Hotel-Bee_Cave_Texas.html *(reviews — source of the "needs care" reading)*
+- https://laketravis.com/lake-travis/mountain-star-lodge/ *(directory)*
+
+## Off-market office parks
+
+| Property | Links |
+|---|---|
+| **Los Arboles at Barton Creek**, 7004 Bee Caves Rd | [CommercialCafe](https://www.commercialcafe.com/commercial-property/us/tx/austin/los-arboles-at-barton-creek/) · [CommercialSearch](https://www.commercialsearch.com/commercial-property/us/tx/austin/los-arboles-at-barton-creek/) · [OfficeSpace](https://www.officespace.com/tx/austin/322363-7004-fm-2244-rd) |
+| **Crystal Mountain Office Park**, 9433 Bee Cave Rd | [CommercialCafe](https://www.commercialcafe.com/commercial-property/us/tx/austin/crystal-mountain-office-park/) · [PropertyShark](https://www.propertyshark.com/cre/commercial-property/us/tx/austin/crystal-mountain-office-park/) · [ECR](https://ecrtx.com/properties/crystal-mountain-office-park) |
+| **Westway Office Park**, 925 S Capital of Texas | [LoopNet](https://www.loopnet.com/Listing/925-Capital-Of-Texas-S-Austin-TX/23067914/) · [ECR](https://www.ecrtx.com/properties/westway-office-park/) · [PropertyShark](https://www.propertyshark.com/cre/commercial-property/us/tx/austin/westway-office-park/) |
+| **The Overlook at Barton Creek** *(not yet sized)* | [ECR](https://www.ecrtx.com/properties/the-overlook-at-barton-creek/) |
+| **Seven Oaks East** *(not yet sized)* | [ECR](https://www.ecrtx.com/properties/seven-oaks-east/) |
+
+**ECR (Equitable Commercial Realty) manages at least three of these.** One
+conversation with them covers Westway, Crystal Mountain, the Overlook and Seven
+Oaks — a far better use of a call than four separate approaches.
+
+## Rejected — links kept so the reasoning is checkable
+
+| Property | Link | Why out |
+|---|---|---|
+| 1715 S Capital of Texas *(West Bank Bldg)* | [LoopNet](https://www.loopnet.com/Listing/1715-Capital-Of-Texas-Hwy-S-Austin-TX/28929346/) · [OfficeSpace](https://www.officespace.com/tx/austin/460483-1715-s-capital-of-texas-hwy) | 1 acre |
+| 2301 S Capital of Texas *(Reserve II)* | [LoopNet](https://www.loopnet.com/Listing/2301-Capital-Of-Texas-Hwy-S-Austin-TX/31952506/) | ~0.8 acre |
+| 1301 S Capital of Texas | [LoopNet](https://www.loopnet.com/Listing/1301-S-Capital-Of-Texas-Hwy-Austin-TX/30019130/) | Condominium — no site control |
+| 1101 S Capital of Texas | [Realmo](https://realmo.com/listing/1101-s-capital-of-texas-hwy-austin-tx-78746/11856758) | 0.48 acre |
+| 3701 Bee Caves Rd | [LoopNet](https://www.loopnet.com/property/3701-bee-caves-rd-west-lake-hills-tx-78746/48453-111032/) | West Lake Hills city limits |
+| 3663 Bee Caves Rd | [LoopNet](https://www.loopnet.com/property/3663-bee-caves-rd-west-lake-hills-tx-78746/48453-107812/) | West Lake Hills city limits |
+
+## Land, retreat and lodging references
+
+| Property | Link |
+|---|---|
+| **Sweetwater Crossing**, Hwy 71 | https://www.sweetwatercrossing.com/ |
+| **Spicewood Retreat** *(unrestricted for development)* | [Republic Ranches](https://republicranches.com/properties/texas/hill-country/spicewood-retreat/) |
+| **Cypress Creek Ranch**, 22 ac parcel | [LandSearch](https://www.landsearch.com/properties/spicewood-tx-78669/4994759) |
+| **Peaceful Waters Retreat Center** | https://www.peacefulwatersretreat.com/ |
+| **Highland Lakes Camp** *(outside the 30-min ring)* | https://hlccc.org/ |
+| **Resort Ranch Marina**, Lake Travis | [LakeTravis.com](https://laketravis.com/lake-travis/resort-ranch-marina/resort-ranch-marina-01/) |
+| **Stratus Properties** — Barton Creek holdings | https://www.stratusproperties.com/property/barton/ |
+
+## Market benchmarks
+
+- **Omni Barton Creek** — https://www.omnihotels.com/hotels/austin-barton-creek
+- **Omni Resort Homes at $1,500/night (2026)** — https://hoodline.com/2026/08/omni-barton-creek-unveils-1-500-a-night-resort-homes-in-west-austin/
+- **Lakeway Resort & Spa, $37.8M sale (May 2026)** — [Hotel Online](https://www.hotel-online.com/news/trestle-studio-acquires-lakeway-resort-spa-in-travis-county-texas) · [Hoodline](https://hoodline.com/2026/05/lake-travis-hotel-icon-to-get-top-to-bottom-makeover-after-37-8-million-sale/)
+- **Barton Creek wastewater interceptor removal** — [Community Impact](https://communityimpact.com/austin/lake-travis-westlake/government/2024/08/27/barton-creek-sewage-line-removal-may-prompt-redevelopment/) · [Austin Monitor](https://austinmonitor.com/stories/2024/05/council-moves-to-relocate-and-expand-barton-creek-sewage-pipe/)
+
+## Before you open any of these
+
+I could not load a single one of these pages — this environment's proxy refuses
+every host. **Every URL came from a search-engine index**, so some will be dead,
+some will have sold, and prices will have moved. Open them yourself; the first
+click tells you more than anything I can infer from an index entry.
 
 
 ---
