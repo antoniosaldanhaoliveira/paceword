@@ -1,0 +1,151 @@
+{
+ "n": 16,
+ "records": [
+  {
+   "id": "AKKADIAN-COLLAPSE-2154BCE",
+   "ultra": 0.405547,
+   "author": 0.3,
+   "indep": 0.5555555555555556,
+   "src": "Seshat",
+   "delta": -0.4557
+  },
+  {
+   "id": "AN-LUSHAN-REBELLION-755",
+   "ultra": 0.474849,
+   "author": 0.3,
+   "indep": 0.5555555555555556,
+   "src": "Seshat",
+   "delta": -0.4268
+  },
+  {
+   "id": "CHINESE-REVOLUTION-1949",
+   "ultra": 0.422339,
+   "author": 0.44,
+   "indep": 0.7929061916811926,
+   "src": "V-Dem",
+   "delta": -0.0915
+  },
+  {
+   "id": "ENGLISH-CIVIL-WAR-1642",
+   "ultra": 0.59813,
+   "author": 0.42,
+   "indep": 0.4444444444444444,
+   "src": "Seshat",
+   "delta": -0.1533
+  },
+  {
+   "id": "FALL-OF-ROME-476",
+   "ultra": 0.517168,
+   "author": 0.28,
+   "indep": 0.4444444444444444,
+   "src": "Seshat",
+   "delta": -0.4532
+  },
+  {
+   "id": "FRENCH-REVOLUTION-1789",
+   "ultra": 0.606561,
+   "author": 0.36,
+   "indep": 0.2195378274814765,
+   "src": "Seshat+V-Dem",
+   "delta": -0.4734
+  },
+  {
+   "id": "GREAT-DEPRESSION-1929",
+   "ultra": 0.579438,
+   "author": 0.38,
+   "indep": 0.5220972806678109,
+   "src": "V-Dem",
+   "delta": -0.3038
+  },
+  {
+   "id": "HISPANIC-INDEPENDENCE-1810",
+   "ultra": 0.38492,
+   "author": 0.48,
+   "indep": 0.40571870194401743,
+   "src": "V-Dem",
+   "delta": 0.0387
+  },
+  {
+   "id": "INDIAN-INDEPENDENCE-1947",
+   "ultra": 0.450017,
+   "author": 0.65,
+   "indep": 0.23740164728222957,
+   "src": "V-Dem",
+   "delta": 0.117
+  },
+  {
+   "id": "INDUSTRIAL-REVOLUTION-1780",
+   "ultra": 0.775695,
+   "author": 0.68,
+   "indep": 0.3303236123014044,
+   "src": "V-Dem",
+   "delta": 0.1554
+  },
+  {
+   "id": "MEIJI-RESTORATION-1868",
+   "ultra": 0.784661,
+   "author": 0.72,
+   "indep": 0.72585804187446,
+   "src": "V-Dem",
+   "delta": 0.1703
+  },
+  {
+   "id": "NORMAN-CONQUEST-1066",
+   "ultra": 0.831339,
+   "author": 0.6,
+   "indep": 0.7777777777777778,
+   "src": "Seshat",
+   "delta": 0.0776
+  },
+  {
+   "id": "QIN-UNIFICATION-221BCE",
+   "ultra": 0.680313,
+   "author": 0.58,
+   "indep": 0.2222222222222222,
+   "src": "Seshat",
+   "delta": 0.1164
+  },
+  {
+   "id": "ROMAN-REPUBLIC-CRISIS-49BCE",
+   "ultra": 0.497135,
+   "author": 0.45,
+   "indep": 0.4444444444444444,
+   "src": "Seshat",
+   "delta": -0.185
+  },
+  {
+   "id": "RUSSIAN-REVOLUTION-1917",
+   "ultra": 0.469286,
+   "author": 0.33,
+   "indep": 0.47047217876247754,
+   "src": "V-Dem",
+   "delta": -0.4247
+  },
+  {
+   "id": "US-CONSTITUTION-1787",
+   "ultra": 0.760374,
+   "author": 0.78,
+   "indep": 0.351304136968112,
+   "src": "V-Dem",
+   "delta": 0.1573
+  }
+ ],
+ "r_author_vs_independent": -0.09181723756430578,
+ "spearman_author_vs_independent": -0.17692577490152642,
+ "r_kernel_vs_author": 0.6736698137824112,
+ "r_kernel_vs_independent": 0.05047971383687599,
+ "mae": {
+  "CTH kernel (ultraCTH)": 0.18651514397437322,
+  "constant 0.5": 0.1474647964260674,
+  "climatology (mean)": 0.1398680692667492,
+  "linear(deltaCTH) LOO": 0.1595907373673228,
+  "author's hand coding": 0.20550992988248828
+ },
+ "overlap_between_sources": [
+  {
+   "id": "FRENCH-REVOLUTION-1789",
+   "seshat": 0.11111111111111116,
+   "vdem": 0.3279645438518418
+  }
+ ]
+}

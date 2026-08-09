@@ -48,28 +48,59 @@ beats_linear               false
 
 ### 2. The first independent-target test
 
-Never previously run. 8 corpus events matched to the
-[Seshat Crisis Consequences](https://github.com/datasets/seshat) dataset (169 expert-coded
-crises, published 2023, no knowledge of CTHmodules). Match quality was declared before scoring.
+Never previously run. 16 corpus events given outcome targets from two sources that know
+nothing about CTHmodules:
+
+- **[Seshat Crisis Consequences](https://github.com/datasets/seshat)** — 169 expert-coded
+  crises, published 2023; severity 0–9 (ancient → 1918)
+- **[V-Dem](https://github.com/vdeminstitute/vdemdata)** — measured 30-year trajectory in
+  GDP per capita and rule of law, percentile-ranked against all 16,277 country-year
+  windows in the dataset (1789 → 2025)
+
+Every event→source match and the target construction were declared before scoring.
 
 ```
-r(author's coding, Seshat independent coding)  = +0.0983
-r(ultraCTH, author's targets)                  = +0.8409
-r(ultraCTH, Seshat independent targets)        = +0.1114
+r(author's coding, independent targets)   -0.0918      Spearman -0.1769
+r(ultraCTH, author's targets)             +0.6737
+r(ultraCTH, independent targets)          +0.0505
 
-kernel MAE vs independent targets   0.1896
-constant-0.5 MAE                    0.1528
-climatology MAE                     0.1389
+MAE vs independent targets (n = 16):
+  climatology (mean)     0.1399   <- best
+  constant 0.5           0.1475
+  linear(deltaCTH) LOO   0.1596
+  CTH kernel             0.1865
+  author's hand coding   0.2055   <- worst
 ```
 
-Against independent targets the kernel loses to both trivial baselines.
+The kernel tracks the author at r = 0.67 and independent reality at r = 0.05. Against
+independent targets it loses to every trivial baseline.
 
-**Limits — this is a probe, not a verdict.** n = 8 is severely underpowered (95% CI on
-r = 0.11 spans roughly −0.65 to +0.75). Seshat's *Severity* scores polity crisis periods
-while the author scores adaptive transformation after a discrete event — some disagreement
-is definitional. Matching is many-to-one. The Qin case illustrates it: author 0.58
-(successful unification), Seshat severity 7. Both defensible; Qin unified China *and*
-collapsed within fifteen years.
+**Robustness.** The V-Dem target embeds two of my choices — a 30-year horizon and rule of
+law as the institutional axis. Both were swept (4 horizons × 4 indicators, `robustness.py`):
+
+```
+16 specifications tested
+r range: -0.1509 to +0.3498   mean +0.0396
+specifications with r > 0.3:  1/16
+```
+
+The near-zero agreement is not an artifact of the specification.
+
+**Limits — still a probe, not a verdict.**
+
+- n = 16 is small; the 95% CI on r = 0.05 spans roughly −0.45 to +0.53.
+- **The independent sources disagree with each other.** On the single overlapping event
+  (French Revolution) Seshat says 0.111 and V-Dem says 0.328 — a gap of 0.217. Some of the
+  measured disagreement is noise in the yardstick, not error in the corpus.
+- **Construct validity is genuinely contested.** The V-Dem measure scores the Chinese
+  Revolution at 0.793 because GDP per capita rose 1949–1979 — true, and it passes over the
+  Great Leap Forward. The Qin case cuts the other way: author 0.58 (successful
+  unification), Seshat severity 7. Qin unified China *and* collapsed within fifteen years.
+
+The fair reading is not "the corpus is wrong." It is: **the corpus has never been shown to
+track any external measure, and attempting it reveals that the outcome construct itself is
+under-defined.** A target that two expert sources code 0.217 apart cannot support a claimed
+MAE of 0.0356.
 
 ### 3. The output barely responds to its inputs
 
@@ -154,6 +185,9 @@ node scripts/entropy-mc.mjs         # entropy + "Monte Carlo" internals
 node scripts/close-gaps.mjs         # adapter, sensitivity, multi-token
 python3 scripts/independent-test.py # Seshat independent-target comparison
 node scripts/rerun-independent.mjs  # kernel scored against Seshat targets
+python3 scripts/build-vdem-targets.py  # V-Dem 30yr trajectory targets
+node scripts/final-independent.mjs     # combined n=16 independent-target run
+python3 scripts/robustness.py          # 16-specification robustness sweep
 ```
 
 Independent datasets (both public, cloned via git):
@@ -171,13 +205,27 @@ the audit environment (egress policy denials), so they are cited but not used.
 
 ## What would settle it
 
-Run the full 32-event corpus against outcome targets coded by someone other than the
-author — V-Dem for the modern subset, Seshat for the ancient. The repo's CSV adapter is
-already shaped for V-Dem rows and has a passing test. Either the kernel beats linear
-regression when the targets come from outside, or it doesn't.
+This audit did the afternoon's work: 16 of the 32 events now have independent targets from
+Seshat and V-Dem, and the kernel does not track them. But the exercise surfaced a deeper
+problem than the one it set out to test.
 
-Right now nobody knows, including the author. It is the only open question that matters,
-and it is an afternoon's work with free data.
+**Before the framework can be validated, the target has to be defined.** Two expert sources
+code the same event 0.217 apart. A 30-year GDP measure and a crisis-severity measure
+disagree about the Chinese Revolution by 0.35. "Did this society adapt or collapse?" is not
+currently a well-posed quantity, and no amount of entropy or simulation downstream can fix
+an undefined dependent variable.
+
+So the ordered next steps are:
+
+1. **Define the construct.** Publish a coding manual with worked examples and boundary
+   cases, so two coders working independently produce the same number.
+2. **Measure inter-coder reliability.** Two or more coders, blind to each other, on all 32
+   events. Report Krippendorff's alpha. If it is low, stop — nothing downstream is testable.
+3. **Only then** re-run calibration against the independently coded targets, and compare
+   to the linear baseline the repo's own harness already runs.
+
+The remaining 16 events need pre-1789 economic series (Maddison) and non-European polity
+coverage; both exist and neither was reachable from this audit environment.
 
 ---
 
@@ -188,3 +236,4 @@ and it is an afternoon's work with free data.
 - [V-Dem Institute](https://github.com/vdeminstitute/vdemdata)
 - Goldstone et al., [*A Global Model for Forecasting Political Instability*](https://www.systemicpeace.org/vlibrary/PITFForecastingInstabilityAJPS2010.pdf), AJPS 2010 — 80%+ two-year out-of-sample accuracy, the fair benchmark
 - [Explainable models for forecasting political instability](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0254350), PLOS One 2021 — AUPRC 0.108–0.115, showing how hard this genuinely is
+- Rocha, [*Towards Asimov's Psychohistory: Harnessing Topological Data Analysis, AI and Social Media data*](https://arxiv.org/abs/2407.03446), arXiv:2407.03446, 2024 — a theoretical position paper arguing feasibility; reports no forecasting track record, so it is a statement of ambition rather than evidence
