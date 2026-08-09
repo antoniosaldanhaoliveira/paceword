@@ -1,0 +1,6 @@
+# cloned externally — see README
+CTHmodules/
+data/
+node_modules/
+*.RData
+__pycache__/

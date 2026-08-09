@@ -1,0 +1,92 @@
+[
+ {
+  "id": "INDUSTRIAL-REVOLUTION-1780",
+  "country": "United Kingdom",
+  "year": 1789,
+  "econ_pct": 0.33341524851016774,
+  "inst_pct": 0.32723197609264104,
+  "indep": 0.3303236123014044,
+  "q": "DEFENSIBLE"
+ },
+ {
+  "id": "US-CONSTITUTION-1787",
+  "country": "United States of America",
+  "year": 1789,
+  "econ_pct": 0.37537629784358295,
+  "inst_pct": 0.32723197609264104,
+  "indep": 0.351304136968112,
+  "q": "STRONG"
+ },
+ {
+  "id": "FRENCH-REVOLUTION-1789",
+  "country": "France",
+  "year": 1789,
+  "econ_pct": 0.18240462001597346,
+  "inst_pct": 0.4735244676877101,
+  "indep": 0.3279645438518418,
+  "q": "STRONG"
+ },
+ {
+  "id": "HISPANIC-INDEPENDENCE-1810",
+  "country": "Mexico",
+  "year": 1810,
+  "econ_pct": 0.08926706395527431,
+  "inst_pct": 0.7221703399327606,
+  "indep": 0.40571870194401743,
+  "q": "DEFENSIBLE"
+ },
+ {
+  "id": "MEIJI-RESTORATION-1868",
+  "country": "Japan",
+  "year": 1868,
+  "econ_pct": 0.5199361061620692,
+  "inst_pct": 0.9317799775868509,
+  "indep": 0.72585804187446,
+  "q": "STRONG"
+ },
+ {
+  "id": "WORLD-WAR-I-1914",
+  "country": "Germany",
+  "year": 1914,
+  "econ_pct": 0.7272838975241138,
+  "inst_pct": 0.0007004109077325364,
+  "indep": 0.3639921542159232,
+  "q": "AMBIGUOUS"
+ },
+ {
+  "id": "RUSSIAN-REVOLUTION-1917",
+  "country": "Russia",
+  "year": 1917,
+  "econ_pct": 0.8560545555077717,
+  "inst_pct": 0.08488980201718341,
+  "indep": 0.47047217876247754,
+  "q": "STRONG"
+ },
+ {
+  "id": "GREAT-DEPRESSION-1929",
+  "country": "United States of America",
+  "year": 1929,
+  "econ_pct": 0.7169625852429808,
+  "inst_pct": 0.32723197609264104,
+  "indep": 0.5220972806678109,
+  "q": "STRONG"
+ },
+ {
+  "id": "INDIAN-INDEPENDENCE-1947",
+  "country": "India",
+  "year": 1947,
+  "econ_pct": 0.4114394544449223,
+  "inst_pct": 0.0633638401195368,
+  "indep": 0.23740164728222957,
+  "q": "STRONG"
+ },
+ {
+  "id": "CHINESE-REVOLUTION-1949",
+  "country": "China",
+  "year": 1949,
+  "econ_pct": 0.7903790624808011,
+  "inst_pct": 0.7954333208815839,
+  "indep": 0.7929061916811926,
+  "q": "STRONG"
+ }
+]
