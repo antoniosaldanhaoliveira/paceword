@@ -549,6 +549,104 @@ buy — and a tired operator will usually tell you the first number without
 realising it prices the second.
 
 
+## Barton Creek and surrounds
+
+The most constrained ground in the search, and also where the rate is proven.
+Worth understanding as three separate things that share a name: the **Barton
+Creek watershed** (regulatory, 20% cover), the **Barton Creek community**
+(4,000-acre master-planned, gated, golf), and the **Barton Creek Habitat
+Preserve** (conservation land, not available at any price).
+
+### The rate benchmark — and the incumbent
+
+**Omni Barton Creek Resort & Spa.** 493 keys across 4,000 acres, four
+championship golf courses, the Mokara Spa, and a **$150M+ renovation completed
+in 2019**. In 2026 it launched private 2,500 ft² **Resort Homes at $1,500 a
+night**, bookings opening September.
+
+That single number is the most useful market fact in this whole document:
+**$1,500/night is being achieved in Barton Creek today.** Your $500 ADR target
+sits well below a locally demonstrated ceiling. The thesis is not ambitious —
+if anything it is conservative.
+
+The other half of the reading: Omni is the incumbent, it is enormous, and it
+just spent $150M. You are not going to out-resource it. **A 50-key
+membership-led product is a genuinely different proposition** — intimate,
+local, recurring-revenue — and reads better as a complement to Omni's presence
+than a challenger to it. Omni proves the market is there and absorbs the
+convention and golf demand you do not want anyway.
+
+### The real candidate — 9209 Scenic Bluff Drive
+
+| | |
+|---|---|
+| Site | **~27 acres** |
+| Improvements | 3,842 ft² Mediterranean house, 3 bed |
+| Location | North of the Barton Creek Habitat Preserve, near Bee Caves Rd and Creeks Edge Parkway |
+| Price | **$5.5M when listed in 2018**; relisted with price on request |
+| Listing | Eric Copper, Austin Portfolio Real Estate |
+| Noted | Land "could be divided into parcels for future development"; room for a helipad |
+
+| Cover regime | Allowed | vs full programme |
+|---|---|---|
+| **Barton Creek watershed, 20%** | **234,353 ft²** | **2.12×** |
+| Recharge zone, 15% | 175,765 ft² | 1.59× |
+
+**It passes on either reading, which almost nothing in the Barton Springs Zone
+does.** Twenty-seven acres is enough that even the harshest cap leaves real
+headroom, and the setting — adjacent to a permanent nature preserve, on Bee
+Cave Road — is exactly the seclusion that supports rate. A helipad mention is a
+fair signal of both the buyer profile and the topography.
+
+**Verify:** exact watershed and zone per parcel; whether it sits in Austin city
+limits, ETJ or county; wastewater (this is the question on a 27-acre estate
+tract); and the current asking price, since 2018's $5.5M tells you little in
+2026.
+
+### The forward-looking signal — the Barton Creek wastewater interceptor
+
+In **May 2024 Austin City Council resolved to plan removal of the Barton Creek
+Wastewater Interceptor**, a 2+ mile line running through Barton Hills and
+Zilker, buried in and near the creek. It would be replaced by a larger line
+routed outside the environmentally sensitive area, with more than two miles of
+new pipeline proposed along MoPac.
+
+The stated intent includes unlocking development: a council member has
+explicitly linked it to enabling revitalisation of Barton Creek Square, and
+Simon Property has said it spent roughly a decade trying to redevelop that site,
+**passing on options because of capacity limits**.
+
+**Read that as a capacity constraint being actively fixed.** In the Barton
+Hills / Zilker corridor, wastewater — not cover — has been the binding limit for
+some sites. If the replacement proceeds, parcels there become materially more
+developable over the next few years. Worth tracking: it changes which sites are
+viable on a two-to-four-year horizon, which is roughly your build timeline
+anyway.
+
+### Also in the area, with verdicts
+
+| Property | Note | Verdict |
+|---|---|---|
+| **10+ acre tract, RM 1826 frontage** | Seller "will allow light commercial"; pitched for **venue, brewery and similar** | **Marginal.** Clears the low programme at 20% cover (87,120 ft²) but not the full one, and fails at 15%. Venue-friendly seller posture is genuinely interesting — worth a look if the programme trims |
+| **Village at Spanish Oaks** | ~80 acres between Hwy 71 and Little Barton Creek; residential plus amenities planned | Cover is not the issue at 80 acres — my screen rejects it only because the config caps at 60. Real question is whether a hotel fits the master plan, and whether a parcel can be carved out |
+| **Seven Oaks** | Between Bee Cave and West Lake Hills, within the Barton Creek Habitat area | Investigate. Habitat-area adjacency cuts both ways: setting versus constraint |
+| **Barton Creek Square** | Simon Property, 1980s mall, decade of stalled redevelopment | Wrong product and wrong scale, but **watch it** — it is the bellwether for whether the interceptor project actually unlocks capacity |
+| **Barton Creek Habitat Preserve** | Conserved **in perpetuity** following City of Austin acquisition | **Not available. Do not spend time here.** Listed so nobody chases it |
+| **Stratus Properties** | Central Texas developer holding Barton Creek land | A counterparty, not a listing. Worth a call about parcels they would carve |
+
+### How Barton Creek compares
+
+Against the rest of the list, Barton Creek offers **the best-proven rate and the
+worst regulatory constraint**. That combination means only large parcels or
+grandfathered buildings work — 9209 Scenic Bluff is the former, Westlake Oaks
+is the latter, and almost nothing in between qualifies.
+
+There is also a **precedent worth knowing**: the Brodie Oaks Redevelopment PUD
+fought its way through environmental review in the Barton Springs area. A PUD
+is a slower, more negotiated path than the § 25-8-26 redevelopment exception,
+but it exists, and on a 27-acre site it may be the more flexible route.
+
+
 ---
 
 # Operating playbook
