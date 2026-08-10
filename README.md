@@ -262,6 +262,30 @@ the hand-coded input of 0.22 used in the registered prediction sits almost exact
 that median. This is a projection with an empirical band, **not** a coding, and must
 never be merged into V-Dem data.
 
+**Propagating the bounds flips the call.** `bound-and-propagate.py` tightens the 2026
+band using GWF's classification of the Islamic Republic as *party-based* (n=25 comparable
+breakdowns from a similar institutional baseline), and places the economic input
+empirically: IMF's projected -6.1% GDP for 2026 sits at the **1.5th percentile** of 21,981
+country-year GDP changes in V-Dem — a tenfold correction to the 0.15 used by judgement in
+the registered entry. `propagate.mjs` then pushes 2,000 bootstrap draws through the kernel:
+
+```
+ultraCTH   p5 0.4603   median 0.5196   p95 0.6349    90% width 0.1746
+CMN (decline) share: 678/2000 = 33.9%
+registered point prediction: 0.497551
+```
+
+The registered entry says CMN (decline). The same evidence, coded more rigorously, returns
+**RMD (adaptive transformation) 66% of the time**. Note the mechanism: the economic input
+was made ten times *worse* and the prediction moved *up* — the `Math.abs(d)` non-monotonicity
+of Finding 6, now visible in a live forecast. Uncertainty transmission is incoherent in the
+same way: a 0.102 political-input span becomes a 0.175 output span (amplified 1.7x) while a
+0.366 social-input span becomes the same 0.175 (damped 0.48x).
+
+This does not invalidate the registered prediction, which stands as committed, and it says
+nothing new about Iran. It shows the framework's answer is unstable under defensible
+re-specification by the same analyst on the same day.
+
 **The commitment hash is not a timestamp.** The registry hashes an entry against itself;
 `registered_at` is self-generated. The only third-party attestation is this repository's
 git commit date. That is the point of committing it.
@@ -292,6 +316,8 @@ python3 scripts/seshat-spells.py       # collapse to 399 polity successions
 node    scripts/seshat-validate.mjs    # leave-one-NGA-out validation
 node    scripts/mapping-robustness.mjs # 62-configuration fairness sweep (slow)
 python3 scripts/project-2026.py        # empirical 2026 bands from V-Dem dynamics
+python3 scripts/bound-and-propagate.py # tightened bands + 2000 bootstrap input vectors
+node    scripts/propagate.mjs          # prediction interval; directional call flips
 ```
 
 Independent datasets (both public, cloned via git):
