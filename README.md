@@ -333,6 +333,26 @@ the audit environment (egress policy denials), so they are cited but not used.
 
 ---
 
+## A working alternative
+
+See **[FORECASTING.md](FORECASTING.md)**. The audit's negative findings imply a positive
+one: this data does support prediction, just not the way CTHmodules attempts it.
+
+`scripts/forecaster.py` rebuilds the Baillie et al. (2021) minimal design — regime type,
+fertility (proxying infant mortality), years of stability — validated on temporal splits:
+
+```
+                              train   test     base    AUPRC   AUROC    lift
+3 predictors, train<=1970      3075   5866   0.0796   0.1375   0.624    1.73x
+3 predictors, train<=1990      5302   3639   0.0800   0.1294   0.608    1.62x
+3 predictors, train<=2000      6569   2372   0.0927   0.1370   0.581    1.48x
+```
+
+Modest, real, stable across four splits. It independently reproduces Goldstone's ordering
+(factionalised partial democracy riskiest, full democracy safest) with hazard decay
+dominating. Applied to Iran it returns 5.6%-14.2% depending on whether February 2026 is
+coded as a regime break — and reporting that fork is the method, not a weakness in it.
+
 ## What would settle it
 
 This audit did the afternoon's work: 16 of the 32 events now have independent targets from
