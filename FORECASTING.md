@@ -137,6 +137,16 @@ to electoral autocracy in 2024):
 
 4.5%-19.7% across defensible codings, each with an interval and a sample size.
 
+## Version 3 — the hybrid layer
+
+See **[HYBRID.md](HYBRID.md)**: deep research on the field (ForecastBench, AIA Forecaster,
+Samotsvety, Metaculus AIB, ViEWS) and a full execution of the parity-achieving
+architecture — outside-view prior from this tool, retrieval increments in log-odds,
+supervisor reconciliation, calibration guards — on the pre-registered Iran question.
+Result: P(regime replaced by 2029-08-09) = 0.17 [0.09, 0.32]; composite ≈ 0.48
+[0.35, 0.62]. Near the kernel's registered 0.4976 — but decomposable, arguable,
+and updatable, which is the entire difference between a number and a forecast.
+
 ## The protocol
 
 1. **Define a resolvable event.** Not "will Iran decline" but *"will the incumbent regime
