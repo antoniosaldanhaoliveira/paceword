@@ -338,20 +338,29 @@ the audit environment (egress policy denials), so they are cited but not used.
 See **[FORECASTING.md](FORECASTING.md)**. The audit's negative findings imply a positive
 one: this data does support prediction, just not the way CTHmodules attempts it.
 
-`scripts/forecaster.py` rebuilds the Baillie et al. (2021) minimal design — regime type,
-fertility (proxying infant mortality), years of stability — validated on temporal splits:
+The working method is a **rolling reference class** evaluated **walk-forward** — for every
+year, re-estimate from prior years only:
 
 ```
-                              train   test     base    AUPRC   AUROC    lift
-3 predictors, train<=1970      3075   5866   0.0796   0.1375   0.624    1.73x
-3 predictors, train<=1990      5302   3639   0.0800   0.1294   0.608    1.62x
-3 predictors, train<=2000      6569   2372   0.0927   0.1370   0.581    1.48x
+  window      n     base   Brier(base)  Brier(refclass)    skill    AUPRC
+      10   6698   0.0642       0.05996          0.05716  +0.0468   0.1622
+      20   6698   0.0642       0.05993          0.05746  +0.0413   0.1454
+      50   6698   0.0642       0.06031          0.05782  +0.0412   0.1333
 ```
 
-Modest, real, stable across four splits. It independently reproduces Goldstone's ordering
-(factionalised partial democracy riskiest, full democracy safest) with hazard decay
-dominating. Applied to Iran it returns 5.6%-14.2% depending on whether February 2026 is
-coded as a regime break — and reporting that fork is the method, not a weakness in it.
+Brier skill +0.047, AUPRC lift 2.53x. Skill decreases monotonically with window length —
+recent history beats deep history, because the world is non-stationary.
+
+Two corrections were made during construction and are documented rather than patched away:
+a frozen logistic model had positive *ranking* skill (AUPRC lift ~1.5x) but **negative**
+Brier skill; and GWF right-censoring (189 of 631 spells stamped with the 2020 cutoff) was
+initially read as regime collapse. Fixing the censoring improved every number. The bug was
+caught only because a base rate jumped unexpectedly — the reference-class table looked
+entirely sensible throughout, which is precisely the failure mode this audit documents in
+CTHmodules' own corpus.
+
+Applied to Iran: 1.8%-16.5% depending on whether February 2026 is coded as a regime break.
+Reporting that fork is the method, not a weakness in it.
 
 ## What would settle it
 
