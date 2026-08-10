@@ -1,108 +1,141 @@
 /**
- * Pace fetch proxy — internal Docker sidecar.
+ * Pace fetch proxy — bare Node.js HTTP server, no npm dependencies.
+ * Accepts GET /fetch?url=<encoded> and returns the raw HTML body.
  *
- * Accepts: GET /fetch?url=<encoded>
- * Returns: the raw HTML of the target page, or an error status.
- *
- * Only reachable from the pace nginx container (not Traefik-exposed).
- * Blocks private/loopback addresses so the container can't be used as
- * an SSRF vector against internal VPS services.
+ * Security guards:
+ *   - Blocks private/loopback IP ranges (SSRF protection)
+ *   - 20-second upstream timeout
+ *   - 5 MB response size cap
+ *   - Enforces text/html content-type
  */
 
-import { createServer } from 'node:http';
+import http from 'node:http';
+import https from 'node:https';
 import { URL } from 'node:url';
 
 const PORT = 3001;
+const MAX_BYTES = 5 * 1024 * 1024;
 const TIMEOUT_MS = 20_000;
-const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
 
-// Private / loopback CIDR blocks to block (simple prefix checks).
-const BLOCKED_HOSTS = [
-  'localhost', '127.', '0.', '10.', '169.254.',
-  '192.168.', '::1', '[::1]',
+const BLOCKED_PREFIXES = [
+  'localhost', '127.', '0.', '10.', '169.254.', '192.168.', '::1', '[::1]',
 ];
 
 function isBlockedHost(hostname) {
-  const h = hostname.toLowerCase();
-  return BLOCKED_HOSTS.some((prefix) => h === prefix.slice(0, -1) || h.startsWith(prefix));
+  const lower = hostname.toLowerCase();
+  return BLOCKED_PREFIXES.some((p) => lower === p.replace('.', '') || lower.startsWith(p));
 }
 
-createServer(async (req, res) => {
-  if (req.method !== 'GET') {
-    res.writeHead(405); res.end('Method not allowed'); return;
+function respond(res, status, body) {
+  res.writeHead(status, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+  res.end(JSON.stringify({ error: body }));
+}
+
+function respondHtml(res, html) {
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
+  res.end(html);
+}
+
+http.createServer((req, res) => {
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET' });
+    res.end();
+    return;
   }
 
-  const reqUrl = new URL(req.url, `http://localhost:${PORT}`);
+  const reqUrl = new URL(req.url ?? '/', `http://localhost:${PORT}`);
   if (reqUrl.pathname !== '/fetch') {
-    res.writeHead(404); res.end('Not found'); return;
+    respond(res, 404, 'not found');
+    return;
   }
 
-  const target = reqUrl.searchParams.get('url');
-  if (!target) {
-    res.writeHead(400); res.end('Missing url parameter'); return;
+  const raw = reqUrl.searchParams.get('url');
+  if (!raw) {
+    respond(res, 400, 'missing url param');
+    return;
   }
 
-  let parsed;
-  try { parsed = new URL(target); } catch {
-    res.writeHead(400); res.end('Invalid URL'); return;
-  }
-
-  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-    res.writeHead(400); res.end('Only http and https URLs are supported'); return;
-  }
-
-  if (isBlockedHost(parsed.hostname)) {
-    res.writeHead(403); res.end('Blocked host'); return;
-  }
-
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
-
+  let target;
   try {
-    const upstream = await fetch(target, {
-      signal: controller.signal,
-      redirect: 'follow',
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (compatible; Pace-Reader/1.0; +https://pace.solay.cloud)',
-        Accept: 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9',
-      },
-    });
+    target = new URL(decodeURIComponent(raw));
+  } catch {
+    respond(res, 400, 'invalid url');
+    return;
+  }
 
-    clearTimeout(timer);
+  if (!['http:', 'https:'].includes(target.protocol)) {
+    respond(res, 400, 'blocked');
+    return;
+  }
 
-    const ct = upstream.headers.get('content-type') ?? '';
+  if (isBlockedHost(target.hostname)) {
+    respond(res, 400, 'blocked');
+    return;
+  }
+
+  const client = target.protocol === 'https:' ? https : http;
+  const options = {
+    hostname: target.hostname,
+    port: target.port || (target.protocol === 'https:' ? 443 : 80),
+    path: target.pathname + target.search,
+    method: 'GET',
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (compatible; PaceReader/1.0)',
+      Accept: 'text/html,application/xhtml+xml',
+    },
+    timeout: TIMEOUT_MS,
+  };
+
+  const upstream = client.request(options, (upRes) => {
+    const ct = upRes.headers['content-type'] ?? '';
     if (!ct.includes('text/html') && !ct.includes('application/xhtml')) {
-      res.writeHead(422); res.end('URL does not return HTML'); return;
+      upRes.destroy();
+      respond(res, 422, 'not-html');
+      return;
     }
 
-    // Stream with size cap.
-    const reader = upstream.body?.getReader();
-    if (!reader) { res.writeHead(502); res.end('Empty body'); return; }
+    if (upRes.statusCode && upRes.statusCode >= 400) {
+      upRes.destroy();
+      respond(res, upRes.statusCode, `upstream ${upRes.statusCode}`);
+      return;
+    }
 
     const chunks = [];
     let total = 0;
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      total += value.length;
-      if (total > MAX_BYTES) { reader.cancel(); break; }
-      chunks.push(value);
-    }
 
-    const html = Buffer.concat(chunks).toString('utf-8');
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(html);
+    upRes.on('data', (chunk) => {
+      total += chunk.length;
+      if (total > MAX_BYTES) {
+        upRes.destroy();
+        respond(res, 413, 'too large');
+        return;
+      }
+      chunks.push(chunk);
+    });
 
-  } catch (err) {
-    clearTimeout(timer);
-    if (err.name === 'AbortError') {
-      res.writeHead(504); res.end('Request timed out');
+    upRes.on('end', () => {
+      respondHtml(res, Buffer.concat(chunks).toString('utf8'));
+    });
+
+    upRes.on('error', () => {
+      respond(res, 502, 'upstream error');
+    });
+  });
+
+  upstream.on('timeout', () => {
+    upstream.destroy();
+    respond(res, 504, 'timeout');
+  });
+
+  upstream.on('error', (err) => {
+    if (err.message?.includes('ECONNREFUSED') || err.message?.includes('ENOTFOUND')) {
+      respond(res, 502, 'network');
     } else {
-      res.writeHead(502); res.end('Failed to fetch URL');
+      respond(res, 502, 'upstream error');
     }
-  }
+  });
+
+  upstream.end();
 }).listen(PORT, () => {
-  console.log(`[pace-proxy] listening on port ${PORT}`);
+  console.log(`pace-proxy listening on :${PORT}`);
 });

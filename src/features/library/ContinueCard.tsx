@@ -4,9 +4,9 @@
  * Hero card pinned to the top of the Library screen whenever there is at
  * least one text with in-progress reading (0 < progress < 1). Tapping the
  * card resumes the reader at the saved token position. Pure-visual: progress
- * and minutes-left are derived solely from the supplied `ReadingText` and
- * the caller-supplied `wpm` (the user's live preference). Rendered as a
- * styled `<button>` so keyboard and screen-reader users get first-class access.
+ * and minutes-left are derived solely from the supplied `ReadingText`; no
+ * preferences or repositories are read here. Rendered as a styled `<button>`
+ * so keyboard and screen-reader users get first-class access.
  *
  * See: .gsd/milestones/M001/slices/S03/S03-PLAN.md §6.2 (Library screen —
  *      Continue card) and the design handoff at

@@ -1,24 +1,4 @@
 services:
-  pace:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: pace:latest
-    container_name: pace
-    restart: unless-stopped
-    networks:
-      - traefik
-    depends_on:
-      - pace-proxy
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=n8n_default"
-      - "traefik.http.routers.pace.rule=Host(`pace.solay.cloud`)"
-      - "traefik.http.routers.pace.entrypoints=websecure"
-      - "traefik.http.routers.pace.tls=true"
-      - "traefik.http.routers.pace.tls.certresolver=mytlschallenge"
-      - "traefik.http.services.pace.loadbalancer.server.port=80"
-
   pace-proxy:
     image: node:20-alpine
     container_name: pace-proxy
@@ -29,7 +9,26 @@ services:
     restart: unless-stopped
     networks:
       - traefik
-    # Not Traefik-labelled — only reachable from pace nginx internally.
+
+  pace:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pace:latest
+    container_name: pace
+    restart: unless-stopped
+    depends_on:
+      - pace-proxy
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=n8n_default"
+      - "traefik.http.routers.pace.rule=Host(`pace.solay.cloud`)"
+      - "traefik.http.routers.pace.entrypoints=websecure"
+      - "traefik.http.routers.pace.tls=true"
+      - "traefik.http.routers.pace.tls.certresolver=mytlschallenge"
+      - "traefik.http.services.pace.loadbalancer.server.port=80"
 
 networks:
   traefik:

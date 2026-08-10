@@ -1,247 +1,173 @@
-/**
- * Pace PWA — URL import flow
- *
- * Full-screen stage for the `/new/url` route. Accepts a URL, fetches the
- * page through the internal proxy, extracts article text with Readability,
- * saves to library via `createText`, and opens the reader. Handles common
- * failure modes (timeout, paywall, non-HTML, JS-only pages) with plain-
- * language messages.
- *
- * See: pace_dev_brief.md §8 (Text Input Pipeline — URL extraction, v2 item
- *      pulled forward).
- */
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { createText } from '@/core/persistence/texts';
-import { UrlFetchError } from '@/core/text-processing/url';
+import type { UrlFetchError } from '@/core/text-processing/url';
 
-type FlowState =
-  | 'idle'
-  | 'fetching'
-  | 'extracting'
-  | 'success'
-  | 'error';
+const STATUS_BAR_HEIGHT = 44;
 
-const SUCCESS_NAV_DELAY_MS = 400;
-const SPINNER_KEYFRAMES = '@keyframes pace-spin { to { transform: rotate(360deg); } }';
+type Phase = 'idle' | 'loading' | 'done' | 'error';
 
 const stageStyle: CSSProperties = {
-  width: '100%',
-  height: '100dvh',
-  background: 'var(--stage)',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: 24,
-  gap: 16,
-  textAlign: 'center',
+  width: '100%', height: '100dvh', background: 'var(--stage)',
+  display: 'flex', flexDirection: 'column', overflow: 'hidden',
 };
-
-const headingStyle: CSSProperties = {
-  fontFamily: 'var(--font-display)',
-  fontStyle: 'italic',
-  fontSize: 18,
-  color: 'var(--ink)',
-  margin: 0,
-  maxWidth: 320,
-  lineHeight: 1.4,
+const topBarStyle: CSSProperties = {
+  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+  padding: '12px 20px', flexShrink: 0,
 };
-
-const subStyle: CSSProperties = {
-  fontFamily: 'var(--font-ui)',
-  fontSize: 12,
-  color: 'var(--ink-3)',
-  margin: 0,
-  maxWidth: 320,
+const cancelButtonStyle: CSSProperties = {
+  fontFamily: 'var(--font-ui)', fontSize: 11, letterSpacing: '0.18em',
+  textTransform: 'uppercase', color: 'var(--ink-2)',
+  background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
 };
-
+const titleStyle: CSSProperties = {
+  fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 400,
+  color: 'var(--ink)', letterSpacing: '-0.02em',
+};
+const bodyStyle: CSSProperties = {
+  flex: 1, display: 'flex', flexDirection: 'column',
+  padding: '24px 20px 32px', gap: 16,
+};
+const labelStyle: CSSProperties = {
+  fontFamily: 'var(--font-ui)', fontSize: 11, letterSpacing: '0.14em',
+  color: 'var(--ink-3)', fontWeight: 500,
+};
 const inputStyle: CSSProperties = {
-  width: '100%',
-  maxWidth: 360,
-  height: 44,
-  borderRadius: 'var(--r-md)',
-  border: '1px solid var(--line-2)',
-  background: 'var(--surface)',
-  color: 'var(--ink)',
-  fontFamily: 'var(--font-ui)',
-  fontSize: 13,
-  padding: '0 14px',
-  outline: 'none',
-  textAlign: 'left',
+  width: '100%', background: 'var(--surface-2)', border: '1px solid var(--line-2)',
+  borderRadius: 'var(--r-md)', padding: '12px 14px',
+  fontFamily: 'var(--font-ui)', fontSize: 14, color: 'var(--ink)',
+  outline: 'none', boxSizing: 'border-box',
 };
-
-const primaryButtonStyle: CSSProperties = {
-  fontFamily: 'var(--font-ui)',
-  fontSize: 11,
-  fontWeight: 500,
-  letterSpacing: '0.18em',
-  textTransform: 'uppercase',
-  height: 36,
-  padding: '0 18px',
-  borderRadius: 'var(--r-md)',
-  background: 'var(--accent)',
-  color: '#fff',
-  border: 'none',
+const submitButtonStyle: CSSProperties = {
+  marginTop: 8, height: 44, borderRadius: 'var(--r-md)', border: 'none',
+  background: 'var(--accent)', color: '#fff',
+  fontFamily: 'var(--font-ui)', fontSize: 13, fontWeight: 500,
   cursor: 'pointer',
 };
-
-const ghostButtonStyle: CSSProperties = {
-  fontFamily: 'var(--font-ui)',
-  fontSize: 11,
-  letterSpacing: '0.18em',
-  textTransform: 'uppercase',
-  color: 'var(--ink-2)',
-  background: 'transparent',
-  border: 'none',
-  padding: 0,
-  cursor: 'pointer',
+const disabledButtonStyle: CSSProperties = {
+  ...submitButtonStyle, opacity: 0.4, cursor: 'default',
 };
-
+const centreStyle: CSSProperties = {
+  flex: 1, display: 'flex', flexDirection: 'column',
+  alignItems: 'center', justifyContent: 'center', gap: 12, padding: '0 32px',
+};
 const spinnerStyle: CSSProperties = {
-  width: 32,
-  height: 32,
-  borderRadius: '50%',
-  border: '2px solid var(--line)',
-  borderTopColor: 'var(--accent)',
-  animation: 'pace-spin 0.9s linear infinite',
+  width: 28, height: 28, borderRadius: '50%',
+  border: '2px solid var(--line-2)', borderTopColor: 'var(--accent)',
+  animation: 'pace-spin 0.8s linear infinite',
+};
+const errorHeadStyle: CSSProperties = {
+  fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--ink)',
+  textAlign: 'center', letterSpacing: '-0.01em',
+};
+const errorBodyStyle: CSSProperties = {
+  fontFamily: 'var(--font-ui)', fontSize: 13, color: 'var(--ink-2)',
+  textAlign: 'center', lineHeight: 1.5,
+};
+const retryButtonStyle: CSSProperties = {
+  marginTop: 8, padding: '10px 24px', borderRadius: 'var(--r-md)',
+  border: '1px solid var(--line-2)', background: 'transparent',
+  fontFamily: 'var(--font-ui)', fontSize: 12, color: 'var(--ink-2)',
+  cursor: 'pointer',
 };
 
-const buttonRowStyle: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: 12,
+const FRIENDLY: Record<string, string> = {
+  network: 'Could not reach that URL. Check your connection and try again.',
+  timeout: 'The page took too long to load. Try again.',
+  'not-html': "That URL doesn't point to a webpage we can read.",
+  'no-content': "We couldn't find enough text to read on that page.",
+  blocked: 'That URL is not accessible.',
 };
 
-const errorHeadingStyle: CSSProperties = { ...headingStyle, color: 'var(--accent)' };
-
-function isValidUrl(raw: string): boolean {
-  try {
-    const { protocol } = new URL(raw.trim());
-    return protocol === 'http:' || protocol === 'https:';
-  } catch {
-    return false;
-  }
-}
-
-export default function UrlImportFlow(): JSX.Element {
+export default function UrlImportFlow() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const [state, setState] = useState<FlowState>('idle');
-  const [urlInput, setUrlInput] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [url, setUrl] = useState(params.get('prefill') ?? '');
+  const [phase, setPhase] = useState<Phase>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
 
-  // Pre-fill from /share?url= query parameter.
   useEffect(() => {
-    const prefill = params.get('prefill');
-    if (prefill) setUrlInput(prefill);
-  }, [params]);
+    const style = document.createElement('style');
+    style.textContent = '@keyframes pace-spin { to { transform: rotate(360deg); } }';
+    document.head.appendChild(style);
+    return () => { document.head.removeChild(style); };
+  }, []);
 
-  const canSubmit = isValidUrl(urlInput) && state === 'idle';
-
-  const handleExtract = async (): Promise<void> => {
-    if (!canSubmit) return;
-    setErrorMessage('');
-    setState('fetching');
-
+  async function handleSubmit() {
+    const trimmed = url.trim();
+    if (!trimmed) return;
+    setPhase('loading');
     try {
       const { extractFromUrl } = await import('@/core/text-processing/url');
-      setState('extracting');
-      const article = await extractFromUrl(urlInput.trim());
-
-      const text = await createText({
-        title: article.title,
-        content: article.content,
-        sourceType: 'url',
-        ...(article.author ? { author: article.author } : {}),
-        url: urlInput.trim(),
-      });
-
-      setState('success');
-      window.setTimeout(
-        () => navigate(`/reader/${text.id}`, { replace: true }),
-        SUCCESS_NAV_DELAY_MS,
-      );
+      const article = await extractFromUrl(trimmed);
+      const text = await createText({ title: article.title, content: article.content, sourceType: 'url', url: article.url });
+      setPhase('done');
+      navigate(`/reader/${text.id}`, { replace: true });
     } catch (err) {
-      const message =
-        err instanceof UrlFetchError
-          ? err.message
-          : 'Something went wrong. Please try again.';
-      setErrorMessage(message);
-      setState('error');
+      const kind = (err as UrlFetchError).kind ?? 'network';
+      setErrorMsg(FRIENDLY[kind] ?? 'Something went wrong. Please try again.');
+      setPhase('error');
     }
-  };
+  }
 
-  const resetToIdle = (): void => {
-    setState('idle');
-    setErrorMessage('');
-  };
+  const canSubmit = url.trim().length > 0 && phase === 'idle';
 
   return (
     <div style={stageStyle}>
-      <style>{SPINNER_KEYFRAMES}</style>
+      <div style={{ height: STATUS_BAR_HEIGHT, flexShrink: 0 }} />
 
-      {state === 'idle' && (
-        <>
-          <p style={headingStyle}>Paste an article URL.</p>
+      <div style={topBarStyle}>
+        <button type="button" style={cancelButtonStyle} onClick={() => navigate(-1)}>
+          Cancel
+        </button>
+        <div style={titleStyle}>From a URL</div>
+        <div style={{ width: 50 }} />
+      </div>
+
+      {phase === 'loading' && (
+        <div style={centreStyle}>
+          <div style={spinnerStyle} />
+          <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color: 'var(--ink-3)', letterSpacing: '0.14em' }}>
+            EXTRACTING…
+          </div>
+        </div>
+      )}
+
+      {phase === 'error' && (
+        <div style={centreStyle}>
+          <div style={errorHeadStyle}>Couldn't load article</div>
+          <div style={errorBodyStyle}>{errorMsg}</div>
+          <button type="button" style={retryButtonStyle} onClick={() => setPhase('idle')}>
+            Try again
+          </button>
+        </div>
+      )}
+
+      {(phase === 'idle' || phase === 'done') && (
+        <div style={bodyStyle}>
+          <div style={labelStyle}>ARTICLE URL</div>
           <input
-            ref={inputRef}
             type="url"
-            value={urlInput}
-            placeholder="https://example.com/article"
             inputMode="url"
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
+            placeholder="https://example.com/article"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter' && canSubmit) void handleSubmit(); }}
             style={inputStyle}
-            onChange={(e) => setUrlInput(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter' && canSubmit) void handleExtract(); }}
+            autoFocus
           />
-          <div style={buttonRowStyle}>
-            <button
-              type="button"
-              style={{ ...primaryButtonStyle, opacity: canSubmit ? 1 : 0.4, cursor: canSubmit ? 'pointer' : 'not-allowed' }}
-              disabled={!canSubmit}
-              onClick={() => { void handleExtract(); }}
-            >
-              Extract article
-            </button>
-            <button type="button" style={ghostButtonStyle} onClick={() => navigate(-1)}>
-              Cancel
-            </button>
-          </div>
-          <p style={subStyle}>Works best on text-heavy articles. Paywalled pages may not extract.</p>
-        </>
-      )}
-
-      {(state === 'fetching' || state === 'extracting') && (
-        <>
-          <div style={spinnerStyle} />
-          <p style={headingStyle}>
-            {state === 'fetching' ? 'Fetching page…' : 'Extracting article…'}
-          </p>
-        </>
-      )}
-
-      {state === 'error' && (
-        <>
-          <p style={errorHeadingStyle}>¶</p>
-          <p style={headingStyle}>{errorMessage}</p>
-          <div style={buttonRowStyle}>
-            <button type="button" style={primaryButtonStyle} onClick={resetToIdle}>
-              Try another URL
-            </button>
-            <button type="button" style={ghostButtonStyle} onClick={() => navigate(-1)}>
-              Back
-            </button>
-          </div>
-        </>
-      )}
-
-      {state === 'success' && (
-        <p style={headingStyle}>Saved. Opening reader…</p>
+          <button
+            type="button"
+            style={canSubmit ? submitButtonStyle : disabledButtonStyle}
+            disabled={!canSubmit}
+            onClick={() => { void handleSubmit(); }}
+          >
+            Extract &amp; read
+          </button>
+        </div>
       )}
     </div>
   );

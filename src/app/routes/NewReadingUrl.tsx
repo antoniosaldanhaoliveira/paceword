@@ -4,7 +4,7 @@ const UrlImportFlow = lazy(() => import('@/features/new-reading/UrlImportFlow'))
 
 export default function NewReadingUrl() {
   return (
-    <Suspense fallback={<div style={{ minHeight: '100dvh', background: 'var(--stage)' }} />}>
+    <Suspense fallback={null}>
       <UrlImportFlow />
     </Suspense>
   );

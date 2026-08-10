@@ -105,8 +105,8 @@ function NewReadingSheet() {
     },
     {
       key: 'url', icon: globeIcon, title: 'From a URL',
-      desc: 'Extracts article text from any link',
-      iconColor: 'var(--ink-2)', disabled: false,
+      desc: 'Article extraction',
+      iconColor: 'var(--accent)', disabled: false,
       onClick: () => navigate('/new/url'),
     },
   ];

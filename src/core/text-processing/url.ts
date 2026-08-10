@@ -1,29 +1,9 @@
-/**
- * URL article extraction for the Pace PWA.
- *
- * Fetches the target URL through the internal fetch proxy (which handles
- * CORS), then runs Mozilla Readability to pull the article text. Returns
- * clean plain text ready for tokenization.
- *
- * The proxy endpoint is `/api/fetch?url=<encoded>` — in production this is
- * handled by nginx → the pace-proxy sidecar; in development the Vite dev
- * server proxies it to a locally-running `node proxy/server.mjs`.
- *
- * See: .gsd/milestones/M001/slices/S07/S07-PLAN.md (share target context)
- *      and pace_dev_brief.md §8 (Text Input Pipeline).
- */
-
-import { Readability } from '@mozilla/readability';
 import { normalizeWhitespace } from './clean';
-
-const FETCH_ENDPOINT = '/api/fetch';
-const MIN_WORD_COUNT = 50;
 
 export interface ExtractedArticle {
   title: string;
   content: string;
-  author?: string;
-  siteName?: string;
+  url: string;
 }
 
 export class UrlFetchError extends Error {
@@ -36,56 +16,68 @@ export class UrlFetchError extends Error {
   }
 }
 
-function mapProxyStatus(status: number): UrlFetchError {
-  if (status === 403) return new UrlFetchError('This URL is not allowed.', 'blocked');
-  if (status === 404) return new UrlFetchError('Page not found.', 'network');
-  if (status === 422) return new UrlFetchError('URL does not return an HTML page.', 'not-html');
-  if (status === 504) return new UrlFetchError('Request timed out — the site took too long to respond.', 'timeout');
-  return new UrlFetchError(`Could not reach the page (HTTP ${status}).`, 'network');
+const MIN_WORD_COUNT = 50;
+
+function hostnameTitle(rawUrl: string): string {
+  try {
+    return new URL(rawUrl).hostname.replace(/^www\./, '');
+  } catch {
+    return rawUrl;
+  }
 }
 
 export async function extractFromUrl(rawUrl: string): Promise<ExtractedArticle> {
-  const url = rawUrl.trim();
+  const proxyUrl = `/api/fetch?url=${encodeURIComponent(rawUrl)}`;
 
-  const response = await fetch(`${FETCH_ENDPOINT}?url=${encodeURIComponent(url)}`).catch(
-    () => { throw new UrlFetchError('Network error — check your connection.', 'network'); },
-  );
+  let res: Response;
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 25_000);
+    res = await fetch(proxyUrl, { signal: controller.signal });
+    clearTimeout(timer);
+  } catch (err) {
+    const isAbort = err instanceof DOMException && err.name === 'AbortError';
+    throw new UrlFetchError(
+      isAbort ? 'Request timed out' : 'Network error',
+      isAbort ? 'timeout' : 'network',
+    );
+  }
 
-  if (!response.ok) throw mapProxyStatus(response.status);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({ error: 'unknown' })) as { error?: string };
+    const kind = body.error === 'blocked' ? 'blocked'
+      : body.error === 'timeout' ? 'timeout'
+      : body.error === 'not-html' ? 'not-html'
+      : 'network';
+    throw new UrlFetchError(`Proxy returned ${res.status}: ${body.error ?? ''}`, kind);
+  }
 
-  const html = await response.text();
+  const html = await res.text();
 
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-
-  // Set canonical base so Readability resolves relative links in meta correctly.
+  const { Readability } = await import('@mozilla/readability');
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
   const base = doc.createElement('base');
-  base.setAttribute('href', url);
+  base.href = rawUrl;
   doc.head.prepend(base);
 
   const reader = new Readability(doc);
   const article = reader.parse();
 
   if (!article?.textContent) {
-    throw new UrlFetchError(
-      'Could not extract readable content from this page. It may require JavaScript or a login.',
-      'no-content',
-    );
+    throw new UrlFetchError('Could not extract readable content', 'no-content');
   }
 
-  const content = normalizeWhitespace(article.textContent);
-  const wordCount = content.trim().split(/\s+/u).filter(Boolean).length;
+  const content = normalizeWhitespace(article.textContent).replace(/[ \t]+/g, ' ');
+  const wordCount = content.split(/\s+/).filter(Boolean).length;
 
   if (wordCount < MIN_WORD_COUNT) {
-    throw new UrlFetchError(
-      'Not enough text found — the page may be behind a paywall or require a login.',
-      'no-content',
-    );
+    throw new UrlFetchError('Not enough content to read', 'no-content');
   }
 
   return {
-    title: article.title || new URL(url).hostname,
+    title: article.title?.trim() || hostnameTitle(rawUrl),
     content,
-    ...(article.byline ? { author: article.byline } : {}),
-    ...(article.siteName ? { siteName: article.siteName } : {}),
+    url: rawUrl,
   };
 }

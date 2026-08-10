@@ -91,11 +91,10 @@ function GearIcon() {
 
 function LibraryView() {
   const navigate = useNavigate();
-  // `useLiveQuery` returns `undefined` on the first synchronous render before
-  // Dexie has resolved the query. We render a lean skeleton (stage + wordmark)
-  // during that window so the user never sees a flash of "0 TEXTS" / empty.
   const texts = useLiveQuery(() => listTexts(), []);
-  const prefs = useLiveQuery(() => db.preferences.get('singleton'), [], DEFAULT_PREFERENCES) ?? DEFAULT_PREFERENCES;
+  const prefs =
+    useLiveQuery(() => db.preferences.get('singleton'), [], DEFAULT_PREFERENCES) ??
+    DEFAULT_PREFERENCES;
 
   if (texts === undefined) {
     return (

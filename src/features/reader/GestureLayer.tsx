@@ -7,12 +7,9 @@ import {
 
 /**
  * Hand-rolled pointer-events wrapper that classifies user input into
- * tap / swipe-left / swipe-right / swipe-up / swipe-down. Sized and
- * styled by the parent; `touch-action: none` so mobile browsers don't
- * eat the gestures for pull-to-refresh or back-navigation.
- *
- * Swipe-up is zone-gated to the bottom 30% of the stage (settings drawer).
- * Swipe-down is zone-gated to the top 30% of the stage (dismiss reader).
+ * tap / swipe-left / swipe-right / swipe-up. Sized and styled by the
+ * parent; `touch-action: none` so mobile browsers don't eat the
+ * gestures for pull-to-refresh or back-navigation.
  *
  * See `.gsd/milestones/M001/slices/S02/tasks/T04-PLAN.md`.
  */
