@@ -15,12 +15,9 @@
 import type { CSSProperties } from 'react';
 import type { ReadingText } from '@/core/persistence/schema';
 
-/** Default WPM used for the minutes-left estimate. S05 will replace this
- *  with the user's actual preference once the preferences store lands. */
-const DEFAULT_WPM = 350;
-
 export interface ContinueCardProps {
   text: ReadingText;
+  wpm: number;
   onOpen: () => void;
 }
 
@@ -75,11 +72,11 @@ const metaStyle: CSSProperties = {
   letterSpacing: '0.08em', fontWeight: 500,
 };
 
-function ContinueCard({ text, onOpen }: ContinueCardProps) {
+function ContinueCard({ text, wpm, onOpen }: ContinueCardProps) {
   const safeWordCount = Math.max(text.wordCount, 1);
   const progress = clampProgress(text.currentTokenIndex / safeWordCount);
   const wordsRemaining = Math.max(text.wordCount - text.currentTokenIndex, 0);
-  const minsLeft = Math.ceil(wordsRemaining / DEFAULT_WPM);
+  const minsLeft = Math.ceil(wordsRemaining / wpm);
   const percent = Math.round(progress * 100);
 
   const fillStyle: CSSProperties = {

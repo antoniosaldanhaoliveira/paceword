@@ -20,6 +20,7 @@ const SWIPE_MIN_DISTANCE_PX = 40;
 const SWIPE_MAX_ORTHOGONAL_PX = 40;
 const SWIPE_MAX_MS = 500;
 const BOTTOM_SWIPE_ZONE_RATIO = 0.7;
+const TOP_SWIPE_ZONE_RATIO = 0.3;
 
 export interface GestureLayerProps {
   children: ReactNode;
@@ -27,6 +28,7 @@ export interface GestureLayerProps {
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
   onSwipeUp?: () => void;
+  onSwipeDown?: () => void;
   className?: string;
   style?: CSSProperties;
 }
@@ -44,6 +46,7 @@ export default function GestureLayer({
   onSwipeLeft,
   onSwipeRight,
   onSwipeUp,
+  onSwipeDown,
   className,
   style,
 }: GestureLayerProps) {
@@ -84,9 +87,14 @@ export default function GestureLayer({
       return;
     }
 
-    if (dy < -SWIPE_MIN_DISTANCE_PX && absX < SWIPE_MAX_ORTHOGONAL_PX) {
-      const startedInBottom = start.y > start.heightAtStart * BOTTOM_SWIPE_ZONE_RATIO;
-      if (startedInBottom) onSwipeUp?.();
+    if (absY >= SWIPE_MIN_DISTANCE_PX && absX < SWIPE_MAX_ORTHOGONAL_PX) {
+      if (dy < 0) {
+        const startedInBottom = start.y > start.heightAtStart * BOTTOM_SWIPE_ZONE_RATIO;
+        if (startedInBottom) onSwipeUp?.();
+      } else {
+        const startedInTop = start.y < start.heightAtStart * TOP_SWIPE_ZONE_RATIO;
+        if (startedInTop) onSwipeDown?.();
+      }
     }
   }
 

@@ -273,7 +273,7 @@ const SLIDER_ROW_STYLE: CSSProperties = { padding: '10px 0', borderBottom: '1px 
 const SLIDER_HEADER_STYLE: CSSProperties = { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' };
 const SLIDER_LABEL_STYLE: CSSProperties = { fontFamily: 'var(--font-ui)', fontSize: 13, color: 'var(--ink)' };
 const SLIDER_VALUE_STYLE: CSSProperties = { fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--ink-2)', letterSpacing: '0.04em' };
-const PREVIEW_TILE_STYLE: CSSProperties = { height: 100, borderRadius: 'var(--r-lg)', background: 'var(--reader)', border: '1px solid var(--line-2)', position: 'relative', overflow: 'hidden', marginBottom: 14 };
+const PREVIEW_TILE_BASE_STYLE: CSSProperties = { height: 100, borderRadius: 'var(--r-lg)', border: '1px solid var(--line-2)', position: 'relative', overflow: 'hidden', marginBottom: 14 };
 const PREVIEW_EYEBROW_STYLE: CSSProperties = { position: 'absolute', left: 10, top: 10, fontFamily: 'var(--font-mono)', fontSize: 8, letterSpacing: '0.22em', color: 'rgba(255,255,255,0.3)' };
 const SWATCH_RIGHT_STYLE: CSSProperties = { display: 'flex', alignItems: 'center', gap: 10 };
 const SWATCH_HEX_STYLE: CSSProperties = { fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--ink-2)', letterSpacing: '0.06em' };
@@ -375,9 +375,15 @@ export default function SettingsView() {
         <div style={SECTION_STYLE}>
           <Eyebrow>APPEARANCE</Eyebrow>
 
-          <div style={PREVIEW_TILE_STYLE}>
+          <div style={{ ...PREVIEW_TILE_BASE_STYLE, background: prefs.backgroundColor }}>
             <div style={PREVIEW_EYEBROW_STYLE}>PREVIEW</div>
-            <ReaderWord word="preview" size={28} />
+            <ReaderWord
+              word="preview"
+              size={28}
+              color={prefs.textColor}
+              pinColor={prefs.highlightPin ? prefs.pinColor : prefs.textColor}
+              fontFamily={prefs.fontFamily}
+            />
           </div>
 
           <SettingRow label="Background" onClick={() => pickColor(bgColorRef)}
@@ -401,6 +407,9 @@ export default function SettingsView() {
         {/* BEHAVIOR */}
         <div style={SECTION_STYLE}>
           <Eyebrow>BEHAVIOR</Eyebrow>
+          <SettingRow label="Highlight pin"
+            right={<Toggle on={prefs.highlightPin} label="Highlight pin"
+              onChange={(v) => { void setPreference('highlightPin', v); }} />} />
           <SettingRow label="Show center guide lines"
             right={<Toggle on={prefs.showGuideLines} label="Show center guide lines"
               onChange={(v) => { void setPreference('showGuideLines', v); }} />} />

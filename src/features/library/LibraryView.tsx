@@ -15,7 +15,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { useNavigate } from 'react-router-dom';
 
 import { listTexts, deleteText } from '@/core/persistence/texts';
-import type { ReadingText } from '@/core/persistence/schema';
+import { db, DEFAULT_PREFERENCES, type ReadingText } from '@/core/persistence/schema';
 import Wordmark from '@/design-system/components/Wordmark';
 import Eyebrow from '@/design-system/components/Eyebrow';
 
@@ -91,10 +91,10 @@ function GearIcon() {
 
 function LibraryView() {
   const navigate = useNavigate();
-  // `useLiveQuery` returns `undefined` on the first synchronous render before
-  // Dexie has resolved the query. We render a lean skeleton (stage + wordmark)
-  // during that window so the user never sees a flash of "0 TEXTS" / empty.
   const texts = useLiveQuery(() => listTexts(), []);
+  const prefs =
+    useLiveQuery(() => db.preferences.get('singleton'), [], DEFAULT_PREFERENCES) ??
+    DEFAULT_PREFERENCES;
 
   if (texts === undefined) {
     return (
@@ -132,7 +132,7 @@ function LibraryView() {
 
       <div style={scrollStyle}>
         {inProgress && (
-          <ContinueCard text={inProgress} onOpen={() => handleOpen(inProgress.id)} />
+          <ContinueCard text={inProgress} wpm={prefs.wpm} onOpen={() => handleOpen(inProgress.id)} />
         )}
 
         <Eyebrow style={{ marginTop: 32, marginBottom: 4, paddingLeft: 2, fontSize: 9.5 }}>

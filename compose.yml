@@ -1,4 +1,15 @@
 services:
+  pace-proxy:
+    image: node:20-alpine
+    container_name: pace-proxy
+    working_dir: /app
+    volumes:
+      - ./proxy:/app:ro
+    command: node server.mjs
+    restart: unless-stopped
+    networks:
+      - traefik
+
   pace:
     build:
       context: .
@@ -6,6 +17,8 @@ services:
     image: pace:latest
     container_name: pace
     restart: unless-stopped
+    depends_on:
+      - pace-proxy
     networks:
       - traefik
     labels:
