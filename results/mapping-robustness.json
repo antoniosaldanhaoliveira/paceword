@@ -1,0 +1,498 @@
+[
+ {
+  "map": "Info/Hier_n/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.10827165918679482,
+  "rho": -0.1065315192613726,
+  "MAE": 0.2982667106402369
+ },
+ {
+  "map": "Info/Money/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.1084047873451875,
+  "rho": -0.10604957635015985,
+  "MAE": 0.29820396465093224
+ },
+ {
+  "map": "Money/Info/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.13287778106612708,
+  "rho": -0.13866410517411937,
+  "MAE": 0.2989257860761529
+ },
+ {
+  "map": "Money/Hier_n/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.13312893802398726,
+  "rho": -0.13892560680133617,
+  "MAE": 0.2990612914237465
+ },
+ {
+  "map": "Info/Gov/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.16424712906616798,
+  "rho": -0.15830585941420194,
+  "MAE": 0.2994591197110422
+ },
+ {
+  "map": "Info/Money/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.16466114254121872,
+  "rho": -0.1587410072973864,
+  "MAE": 0.2994808496575663
+ },
+ {
+  "map": "Money/Info/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.17548490108990406,
+  "rho": -0.1724572264196929,
+  "MAE": 0.3086817808022729
+ },
+ {
+  "map": "Money/Infra/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.17553554686341613,
+  "rho": -0.1724815414832762,
+  "MAE": 0.3086189037969255
+ },
+ {
+  "map": "Hier_n/Info/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.1827818678663381,
+  "rho": -0.19232286275465585,
+  "MAE": 0.30122208915336485
+ },
+ {
+  "map": "Hier_n/Gov/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.1828182877809791,
+  "rho": -0.19198038737795875,
+  "MAE": 0.30125905172020984
+ },
+ {
+  "map": "Infra/Gov/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.18286914694080367,
+  "rho": -0.17512224914338145,
+  "MAE": 0.3054558560840604
+ },
+ {
+  "map": "Infra/Money/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.18340120782415437,
+  "rho": -0.17555189172915084,
+  "MAE": 0.3054712571535789
+ },
+ {
+  "map": "Gov/Infra/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.18869040514469884,
+  "rho": -0.19626006795601497,
+  "MAE": 0.30390111120716246
+ },
+ {
+  "map": "Gov/Hier_n/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.1888730239772435,
+  "rho": -0.1961171596106149,
+  "MAE": 0.3040902128114404
+ },
+ {
+  "map": "Money/Gov/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.19362628388640987,
+  "rho": -0.17948932631790226,
+  "MAE": 0.3083599089903902
+ },
+ {
+  "map": "Money/Infra/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.19369488068655782,
+  "rho": -0.17931912087281904,
+  "MAE": 0.3082546843914597
+ },
+ {
+  "map": "Gov/Hier_n/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.19809227171126528,
+  "rho": -0.20140820920130179,
+  "MAE": 0.2986609871001033
+ },
+ {
+  "map": "Gov/Money/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.19826680241282668,
+  "rho": -0.20148138377944402,
+  "MAE": 0.2986162892391408
+ },
+ {
+  "map": "Infra/Gov/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.20540612201292496,
+  "rho": -0.20108179094206535,
+  "MAE": 0.3049652830203851
+ },
+ {
+  "map": "Infra/Info/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.20541867815192585,
+  "rho": -0.20118226261989075,
+  "MAE": 0.30491514398295205
+ },
+ {
+  "map": "Gov/Info/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.20756286334867216,
+  "rho": -0.21468262820604722,
+  "MAE": 0.3040782707168993
+ },
+ {
+  "map": "Gov/Money/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.20797508913858181,
+  "rho": -0.21500491749222234,
+  "MAE": 0.30413855948695273
+ },
+ {
+  "map": "Gov/Infra/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.21182693713048925,
+  "rho": -0.20918467118750986,
+  "MAE": 0.30797773357189756
+ },
+ {
+  "map": "Gov/Money/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.21229528548991436,
+  "rho": -0.20852908202032946,
+  "MAE": 0.3081082148553199
+ },
+ {
+  "map": "Hier_n/Info/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.21548311475455376,
+  "rho": -0.208545827299967,
+  "MAE": 0.2954728616326914
+ },
+ {
+  "map": "Hier_n/Money/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.215921758596303,
+  "rho": -0.2093934137144987,
+  "MAE": 0.29552428141878756
+ },
+ {
+  "map": "Info/Gov/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.21655689664861377,
+  "rho": -0.22148419377499964,
+  "MAE": 0.30561388217870905
+ },
+ {
+  "map": "Info/Hier_n/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.21677307613560393,
+  "rho": -0.22141147797164198,
+  "MAE": 0.30568766560116856
+ },
+ {
+  "map": "Money/Gov/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.21686752363210482,
+  "rho": -0.2169939355708162,
+  "MAE": 0.29917293571495585
+ },
+ {
+  "map": "Money/Hier_n/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.21707902432069798,
+  "rho": -0.21736279049762727,
+  "MAE": 0.2992437218112126
+ },
+ {
+  "map": "Money/Infra/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.22482117544660213,
+  "rho": -0.21915017705839343,
+  "MAE": 0.3046825435647943
+ },
+ {
+  "map": "Money/Hier_n/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.22495928804414023,
+  "rho": -0.21899212914510185,
+  "MAE": 0.3049054098749547
+ },
+ {
+  "map": "Gov/Infra/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.22783427917120433,
+  "rho": -0.22573565970380352,
+  "MAE": 0.30620186175331354
+ },
+ {
+  "map": "Gov/Info/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.22789914473307726,
+  "rho": -0.22565858553999227,
+  "MAE": 0.30626204121265743
+ },
+ {
+  "map": "Info/Infra/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.22976157862862986,
+  "rho": -0.2321101059483018,
+  "MAE": 0.30833892429603416
+ },
+ {
+  "map": "Info/Hier_n/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.22994951760086232,
+  "rho": -0.23210322432653296,
+  "MAE": 0.3085146890019164
+ },
+ {
+  "map": "Infra/Hier_n/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.23145618864584216,
+  "rho": -0.24086215251394244,
+  "MAE": 0.306382024171391
+ },
+ {
+  "map": "Infra/Money/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.23177653217363176,
+  "rho": -0.240814439936345,
+  "MAE": 0.3063154653478617
+ },
+ {
+  "map": "Hier_n/Infra/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.23181729147966257,
+  "rho": -0.25092698312568995,
+  "MAE": 0.30843356374894454
+ },
+ {
+  "map": "Hier_n/Info/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.23184150118993047,
+  "rho": -0.25131556536823846,
+  "MAE": 0.3084810530537573
+ },
+ {
+  "map": "Gov/Info/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.23343637397934242,
+  "rho": -0.22129311407721752,
+  "MAE": 0.3090707890582072
+ },
+ {
+  "map": "Gov/Hier_n/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.23359144814447008,
+  "rho": -0.2209818353858726,
+  "MAE": 0.30919813130419627
+ },
+ {
+  "map": "Infra/Info/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.23895832845699638,
+  "rho": -0.23125609668678584,
+  "MAE": 0.306185959973463
+ },
+ {
+  "map": "Infra/Hier_n/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.23912271467723767,
+  "rho": -0.23120907227136528,
+  "MAE": 0.3063091578344259
+ },
+ {
+  "map": "Money/Gov/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.23995771181009348,
+  "rho": -0.24005975541569297,
+  "MAE": 0.3097269276198519
+ },
+ {
+  "map": "Money/Info/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.2400376321548928,
+  "rho": -0.24030864073633354,
+  "MAE": 0.3096727003471245
+ },
+ {
+  "map": "Hier_n/Money/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.24083515806917177,
+  "rho": -0.23662536737824547,
+  "MAE": 0.3017261485934084
+ },
+ {
+  "map": "Hier_n/Gov/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.24205748872788985,
+  "rho": -0.2490086163639231,
+  "MAE": 0.30991014793668636
+ },
+ {
+  "map": "Hier_n/Infra/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.24209980084940105,
+  "rho": -0.24884460437843184,
+  "MAE": 0.3097995035516597
+ },
+ {
+  "map": "Infra/Info/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.24284204089534356,
+  "rho": -0.22844655990595117,
+  "MAE": 0.314048615388739
+ },
+ {
+  "map": "Hier_n/Infra/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.2429421745444854,
+  "rho": -0.23856506716749581,
+  "MAE": 0.3019078919089169
+ },
+ {
+  "map": "Infra/Money/Info",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.24327239879955237,
+  "rho": -0.228822984616708,
+  "MAE": 0.31410485335665356
+ },
+ {
+  "map": "Info/Gov/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.25678929693839103,
+  "rho": -0.2496348439448897,
+  "MAE": 0.31267983372870645
+ },
+ {
+  "map": "Info/Infra/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.2568107067355655,
+  "rho": -0.2497307278748692,
+  "MAE": 0.31257105565384014
+ },
+ {
+  "map": "Hier_n/Gov/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.26120489583575834,
+  "rho": -0.2538193287551433,
+  "MAE": 0.30492903238041624
+ },
+ {
+  "map": "Hier_n/Money/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.2616443898304217,
+  "rho": -0.2544691832375163,
+  "MAE": 0.30495650564244836
+ },
+ {
+  "map": "Info/Infra/Money",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.28023001253565644,
+  "rho": -0.2734427320038422,
+  "MAE": 0.31963309106992077
+ },
+ {
+  "map": "Info/Money/Infra",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.2805735774697509,
+  "rho": -0.27377488494788604,
+  "MAE": 0.319752484118049
+ },
+ {
+  "map": "Infra/Gov/Hier_n",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.297115514872668,
+  "rho": -0.2839885879772333,
+  "MAE": 0.31432982941310506
+ },
+ {
+  "map": "Infra/Hier_n/Gov",
+  "delta": "on",
+  "policy": "GENERAL",
+  "r": -0.2973249619954226,
+  "rho": -0.28405189889750687,
+  "MAE": 0.3144002304826236
+ },
+ {
+  "map": "Info/Hier_n/Money",
+  "delta": "off",
+  "policy": "GENERAL",
+  "r": -0.2035763315509069,
+  "rho": -0.1918867973219022,
+  "MAE": 0.3053783364092049
+ },
+ {
+  "map": "Info/Hier_n/Money",
+  "delta": "on",
+  "policy": "GEOPOLITICAL",
+  "r": -0.16535268856282032,
+  "rho": -0.15827580966581123,
+  "MAE": 0.27267830784179714
+ }
+]

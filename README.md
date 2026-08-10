@@ -23,6 +23,7 @@ The **engineering claims hold**. The **analytical claims do not survive independ
 | "High-density Monte Carlo" | ❌ no randomness; deterministic function of two scalars |
 | "99.7% confidence" | ❌ returned 0.4976 at its lowest certainty tier |
 | Beats trivial baselines | ❌ the repo's own harness reports `beats_linear: false` |
+| Predicts independent outcomes (n=399) | ❌ r = −0.23; best of 62 configurations still −0.11, vs +0.38 for linear regression |
 
 The author states the central flaw himself in his README, and built the harness that
 reports it. That is to his credit and is the reason this audit was possible.
@@ -102,7 +103,90 @@ track any external measure, and attempting it reveals that the outcome construct
 under-defined.** A target that two expert sources code 0.217 apart cannot support a claimed
 MAE of 0.0356.
 
-### 3. The output barely responds to its inputs
+### 3. Deep-history validation, n = 399 — the decisive test
+
+The n=16 test above was underpowered. This one is not.
+
+**Panel construction.** Seshat's Equinox file contains a complexity panel
+(`AggrSCWarAgriRelig`): 35 NGAs, 373 polities, −13,600 → 1900, on a 100-year grid.
+But that grid is **already an upsampling** — Seshat codes one value per *polity* and
+repeats it across centuries:
+
+```
+consecutive century pairs      1,460
+  same polity in both          1,050  (72%)
+  change exactly zero            68%
+```
+
+So the analysis was rebuilt on the honest unit — **polity succession**:
+
+```
+polity spells   434
+successions     399    35 NGAs, -9300 to 1800
+exact-zero        2%   (vs 68% on the century grid)
+```
+
+Inputs and outcome are both Seshat, neither touched by the framework's author.
+Outcome = complexity change at succession, percentile-ranked. Cross-validation is
+**leave-one-NGA-out** (35 folds); successions inside a region share polities, so
+row-wise CV would leak.
+
+```
+MODEL                          MAE        r      rho
+CTH kernel (ultraCTH)       0.3048  -0.2293  -0.2302
+constant 0.5                0.2501   0.0000  +0.0279
+climatology (mean)          0.2504  -0.1850  -0.1938
+linear, 5 Seshat CCs        0.2335  +0.3835  +0.4015   <- real signal
+linear, prior change        0.2389  +0.2511  +0.1790
+```
+
+Two results, and the first is positive:
+
+**There is genuine predictive signal in social complexity.** A five-feature linear
+regression reaches r = 0.38 out-of-sample under clustered CV. Turchin's variables
+carry real information about whether a successor polity will be more or less complex.
+
+**The CTH kernel is anti-correlated at r = −0.23** — not uninformative but inverted.
+You would do better negating its output.
+
+**Fairness sweep.** The mapping of Seshat variables onto CTH's three input slots was
+the auditor's choice, so all 62 configurations were tested — every permutation of
+{Gov, Infra, Info, Money, Hier} across the three slots, delta on/off, two policies
+(`mapping-robustness.mjs`):
+
+```
+BEST CASE FOR THE FRAMEWORK   r = -0.1083
+worst case                    r = -0.2973
+mean                          r = -0.2151
+configurations with r > 0     0 / 62
+reference: plain linear reg.  r = +0.3835
+```
+
+Not one configuration achieves positive correlation. The negative result is a
+property of the kernel, not of the mapping.
+
+This is the audit's strongest finding, because it is no longer "no skill detectable
+in a small sample." n = 399, the signal is demonstrably present, a trivial model
+finds it, and the framework finds its negative.
+
+### 4. Why the century grid cannot be refined to 10-year points
+
+A natural instinct is to interpolate for more resolution. It manufactures precision:
+
+```
+century grid (as shipped)     1,460 rows    72.0% identical to previous
+10-year grid (interpolated)  14,573 rows    97.2% identical to previous
+
+              n        SE(r)    95% CI      (at the real r = 0.3835)
+honest      399       0.0428    +-0.0838
+century   1,333       0.0234    +-0.0458
+10-year  13,330       0.0074    +-0.0145
+```
+
+The correlation never changes. Only the error bars shrink — by ~6x — because rows
+were copied, not because evidence was added.
+
+### 5. The output barely responds to its inputs
 
 Six very different analyst codings of the same event:
 
@@ -116,14 +200,14 @@ span across all six codings: 0.0936      and the ordering inverts
 
 Replacing hand-coded inputs with V-Dem measurements moved the prediction by **0.0037**.
 
-### 4. Non-monotone in the trend
+### 6. Non-monotone in the trend
 
 `ultraCTH` reverses direction 5–6 times out of 14 steps as the trend input sweeps
 monotonically — under all six policies, and through both adapters. Root cause is
 `Math.abs(d)` in `cth-data-adapters.js:255`, which discards the sign of the trend before
 the engines see it.
 
-### 5. Entropy and "Monte Carlo"
+### 7. Entropy and "Monte Carlo"
 
 Entropy is computed over `[cthGlobal*0.9, cthGlobal*1.1, evei, blackSwan]` — elements 0
 and 1 are the same variable. On realistic inputs it spans 0.792–0.998.
@@ -133,7 +217,7 @@ sine waves, a function of exactly two scalars. Its own audit string calls it
 `deterministic_trig_disruption_simulation`. Iteration count is a *shape* parameter, not a
 precision one — the shipped 25,000 reports 0.833 against an asymptote of ~0.802.
 
-### 6. Individual actors outweigh mass conditions
+### 8. Individual actors outweigh mass conditions
 
 Adding one opposing actor moved the score by **0.126** — more than the 0.094 produced by
 rewriting all three societal indicators. Asimov's founding axiom is the opposite:
@@ -164,6 +248,20 @@ Resolution criterion, with sources named so it is resolvable by a third party:
 0.0024 from a coin flip. It is the climatology baseline. Because the model returns ~0.5
 for nearly any input, resolving it can **falsify** but cannot meaningfully **confirm**.
 
+**On the 2026 inputs.** No independent expert coding exists for 2026 — V-Dem, Freedom
+House and EIU all end at 2025, and V-Dem's 2026 wave ships around March 2027. V-Dem's
+protocol cannot be replicated here either: its expert layer is aggregated by a Bayesian
+IRT model across multiple *independent* coders, and several ratings from one source
+would be read as high inter-coder agreement, returning a falsely narrow interval.
+
+Instead `project-2026.py` bounds 2026 empirically from V-Dem's own dynamics. Across
+27,469 country-years the median one-year change in `v2x_rule` is exactly 0.0000; across
+481 autocratic-regime breakdowns it is still 0.0000, with a p5–p95 band of −0.105 to
++0.134. Iran's projected 2026 `v2x_rule` is therefore 0.104–0.343 (median 0.209) — and
+the hand-coded input of 0.22 used in the registered prediction sits almost exactly on
+that median. This is a projection with an empirical band, **not** a coding, and must
+never be merged into V-Dem data.
+
 **The commitment hash is not a timestamp.** The registry hashes an entry against itself;
 `registered_at` is self-generated. The only third-party attestation is this repository's
 git commit date. That is the point of committing it.
@@ -188,6 +286,12 @@ node scripts/rerun-independent.mjs  # kernel scored against Seshat targets
 python3 scripts/build-vdem-targets.py  # V-Dem 30yr trajectory targets
 node scripts/final-independent.mjs     # combined n=16 independent-target run
 python3 scripts/robustness.py          # 16-specification robustness sweep
+
+python3 scripts/seshat-transitions.py  # century-grid panel (shows the upsampling)
+python3 scripts/seshat-spells.py       # collapse to 399 polity successions
+node    scripts/seshat-validate.mjs    # leave-one-NGA-out validation
+node    scripts/mapping-robustness.mjs # 62-configuration fairness sweep (slow)
+python3 scripts/project-2026.py        # empirical 2026 bands from V-Dem dynamics
 ```
 
 Independent datasets (both public, cloned via git):
