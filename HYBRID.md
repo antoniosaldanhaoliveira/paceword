@@ -130,6 +130,54 @@ standing process, not a one-shot session:
    liquid market on the question), combine and extremize per Satopää — the AIA report
    found model+market beats market alone, which is the realistic ceiling here.
 
+## Version 3.1 — the panel (executed 2026-08-10)
+
+The missing ensemble layer, built three ways in one pass:
+
+**Independent forecasters (Samotsvety pattern, adapted).** Three different models
+(Haiku 4.5, Sonnet 5, Opus 5) each forecast the registered question alone — same
+outside-view table, no access to this file's number, to the increments, or to each
+other. Each ran its own news retrieval and surfaced evidence the others missed.
+
+```
+forecaster    p     90% CI        distinctive evidence
+haiku-4.5    0.19  [0.11,0.29]   IRGC-Army rift, officer defections, Mojtaba invisible
+sonnet-5     0.35  [0.18,0.58]   Hormuz closed since Jul 8; ~12k Jan deaths reported
+opus-5       0.17  [0.08,0.33]   cohesion held under max stress; creeping-coup construct discount
+fable-5      0.17  [0.09,0.32]   log-odds increments on the refclass prior (above)
+
+median 0.18   geometric-odds mean 0.21   extremized (a=1.2) 0.17
+FINAL ENSEMBLE: 0.18  [0.10, 0.35]
+```
+
+Median adopted (robust at n=4). Extremizing reported but not adopted: the panelists
+share a model family and the outside-view table, so their independence is partial —
+full Satopaa extremizing (a~1.7) would manufacture confidence.
+
+**The crowd, found on GitHub (Metaculus workaround).** The
+[forecastbench-datasets](https://github.com/forecastingresearch/forecastbench-datasets)
+repository carries frozen Metaculus/Polymarket/Manifold/INFER values inside its question
+snapshots, current through 2026-08-02 — no API access needed. Iran anchors:
+
+```
+Polymarket "Iran leadership change" (2wk horizon)   Apr 0.105 -> Jul 0.032  (hazard cooled ~3x)
+Polymarket "Israel-Iran permanent peace deal"       0.0155   (war expected to continue)
+Manifold  "Iranian protests end tragically"         0.875
+```
+
+Consistent with a front-loaded, decaying hazard — the shape all four panelists converged on.
+
+**What the disagreement localises.** The 0.17-0.35 spread reduces to two judgements:
+(1) credibility of IRGC-fracture reporting, which traces to opposition-aligned outlets
+(NCRI, Iran International) — weighted by two panelists, discounted by one; and
+(2) the construct discount — Opus's point that the likeliest dramatic outcome, a creeping
+coup leaving Mojtaba a figurehead, would NOT reset the V-Dem regime spell and so resolves
+NO. A resolvable-question forecast is lower than a "regime falls" intuition. This is the
+audit's construct lesson, now doing live work inside a forecast.
+
+Full panel data: `results/panel-forecasts.json`. The git commit of that file is the
+ensemble's timestamp.
+
 ## Sources
 
 - Karger, Bastani, Yueh-Han, Jacobs, Halawi, Zhang & Tetlock, [ForecastBench](https://arxiv.org/abs/2409.19839), ICLR 2025

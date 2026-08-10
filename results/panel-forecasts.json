@@ -1,0 +1,52 @@
+{
+ "question": "P(velayat-e faqih replaced as governing authority of Iran by 2029-08-09), regime-replacement construct (v2regdur reset)",
+ "panel": {
+  "haiku-4.5": {
+   "p": 0.19,
+   "lo": 0.11,
+   "hi": 0.29,
+   "key": "IRGC-Army rift, officer defections, Mojtaba invisible until Aug 8 video"
+  },
+  "sonnet-5": {
+   "p": 0.35,
+   "lo": 0.18,
+   "hi": 0.58,
+   "key": "Hormuz closed since Jul 8; ~12k January deaths reported; but regime absorbed decapitation"
+  },
+  "opus-5": {
+   "p": 0.17,
+   "lo": 0.08,
+   "hi": 0.33,
+   "key": "security cohesion held under max stress; creeping-coup would NOT reset regime spell (construct discount); Iraq-1991 analogy weighted heaviest"
+  },
+  "fable-5 (session, HYBRID.md)": {
+   "p": 0.17,
+   "lo": 0.09,
+   "hi": 0.32,
+   "key": "log-odds increments on refclass prior"
+  }
+ },
+ "market_anchors": {
+  "polymarket \"Iran leadership change\" (2wk horizon)": {
+   "2026-04-12": 0.105,
+   "2026-07-19": 0.032,
+   "note": "leadership!=regime; short-dated longshot bias; hazard cooled ~3x Apr->Jul"
+  },
+  "polymarket \"Israel-Iran permanent peace deal by Jul 31\"": 0.0155,
+  "manifold \"Iranian protests end tragically\"": 0.875,
+  "source": "forecastbench-datasets (GitHub), frozen crowd values through 2026-08-02"
+ },
+ "aggregation": {
+  "median": 0.18,
+  "geometric_odds_mean": 0.212,
+  "extremized_a1_2": 0.172,
+  "final": {
+   "p": 0.18,
+   "lo": 0.1,
+   "hi": 0.35
+  },
+  "rationale": "median preferred for n=4 robustness; extremizing kept mild (a=1.2) and reported, not adopted, because panelists share a model family and the outside-view table"
+ },
+ "crux": "Panelists split on credibility of IRGC-fracture reporting (NCRI/IranIntl are opposition-aligned; Opus discounted, Haiku/Sonnet weighted) and on the construct discount for a creeping coup that leaves the spell unbroken. These two judgements explain nearly the whole 0.17-0.35 spread.",
+ "registered_at_commit": true
+}
