@@ -1,0 +1,25 @@
+V-Dem spell panel: 19330 country-years, 1900-2023
+base rate (fail within 2y): 0.0973
+
+WALK-FORWARD (V-Dem spells, through 2023 outcomes)
+  method                                  n     Brier    skill    AUPRC
+  rolling base rate (20y)             11473   0.08700  +0.0000   0.1270
+  refclass fixed 10y                  11473   0.08472  +0.0263   0.1697
+  refclass fixed 20y                  11473   0.08432  +0.0308   0.1731
+  refclass fixed 30y                  11473   0.08446  +0.0293   0.1704
+  refclass ADAPTIVE (honest)          11473   0.08443  +0.0296   0.1731
+  walk-forward logistic               11473   0.08436  +0.0303   0.1722
+
+  adaptive-refclass Brier skill, country-clustered bootstrap 90% CI: [+0.0218, +0.0372]
+  share of resamples with positive skill: 100%
+
+IRAN — 20y window ending 2023, base rate 0.0584
+  (V-Dem itself reclassified Iran to ELECTORAL autocracy in 2024)
+  scenario                                                   p            90% CI     n
+  A: regime continuous (46y, electoral autocracy)       0.0614   [0.0394, 0.0921]   227
+  A2: continuous, still closed autocracy                0.0447   [0.0254, 0.0700]   230
+  B: Feb 2026 = new regime (electoral autocracy)        0.0953   [0.0732, 0.1271]   328
+  B2: new regime, closed autocracy                      0.1965   [0.1619, 0.2960]   103
+
+wrote improved-results.json
+EXIT=0

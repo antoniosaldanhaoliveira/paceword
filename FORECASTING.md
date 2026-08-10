@@ -82,6 +82,61 @@ worse than no forecast. State the fork.
 (The factionalised bucket coming in below partial autocracy inverts the theoretical
 ordering — a small-sample artifact of a 10-year window. Report it; don't smooth it away.)
 
+## Version 2 — five flaws fixed, one verdict corrected
+
+Auditing our own tool with the audit's standards found five flaws (`scripts/improve.py`):
+
+1. **Window selection leaked.** The 10-year window was chosen because it scored best on
+   the test period. Fixed: adaptive selection — each year picks the window that minimised
+   Brier over the previous decade's forecasts, all computable from the past.
+2. **Stale outcome source.** GWF ends 2020. Fixed: spells rebuilt from V-Dem's own
+   `v2regdur` (regime duration, resets on regime change, through 2025). Panel grows from
+   8,815 to 19,330 country-years; outcomes scoreable through 2023.
+3. **Unfair comparison.** The logistic model was frozen in 1980 while the reference class
+   re-estimated yearly. Fixed: walk-forward logistic, re-fitted annually.
+4. **No uncertainty on quoted rates.** Fixed: Jeffreys 90% intervals per bucket.
+5. **No error bar on skill.** Fixed: country-clustered bootstrap.
+
+```
+  method                                  n     Brier    skill    AUPRC
+  rolling base rate (20y)             11473   0.08700  +0.0000   0.1270
+  refclass fixed 20y                  11473   0.08432  +0.0308   0.1731
+  refclass ADAPTIVE (honest)          11473   0.08443  +0.0296   0.1731
+  walk-forward logistic               11473   0.08436  +0.0303   0.1722
+
+  adaptive skill, country-clustered bootstrap 90% CI: [+0.0218, +0.0372]
+  resamples with positive skill: 100%
+```
+
+The skill number now carries an error bar, and the interval excludes zero.
+
+**Corrected verdict:** treated fairly, the walk-forward logistic (+0.0303) matches the
+reference class (+0.0296). The earlier "the model's probabilities are worse than useless"
+finding was about *freezing*, not about logistic regression. Re-estimation is what
+matters; the functional form is a coin flip.
+
+**Construct-validity warning, again.** Cross-checking our outcome against the V-Dem
+Institute's own [ERT dataset](https://github.com/vdeminstitute/ERT)
+([Maerz et al., JPR 2024](https://journals.sagepub.com/doi/10.1177/00223433231168192)):
+phi = 0.098. Near-zero — because they measure different things. `v2regdur` resets capture
+*regime replacement* (including autocracy-to-autocracy coups); ERT's `row_regch_event`
+captures *category reclassification* (Iran 2024: closed -> electoral autocracy, no new
+regime). Any forecast must name which construct it means. Our Iran criterion
+("velayat-e faqih remains governing authority") is regime replacement — `v2regdur`'s.
+
+**Iran, scored fresh** (20y window ending 2023, base rate 0.0584; V-Dem reclassified Iran
+to electoral autocracy in 2024):
+
+```
+  scenario                                                p            90% CI     n
+  A: regime continuous (46y, electoral autocracy)      0.0614   [0.0394, 0.0921]   227
+  A2: continuous, closed autocracy                     0.0447   [0.0254, 0.0700]   230
+  B: Feb 2026 = new regime (electoral autocracy)       0.0953   [0.0732, 0.1271]   328
+  B2: new regime, closed autocracy                     0.1965   [0.1619, 0.2960]   103
+```
+
+4.5%-19.7% across defensible codings, each with an interval and a sample size.
+
 ## The protocol
 
 1. **Define a resolvable event.** Not "will Iran decline" but *"will the incumbent regime
